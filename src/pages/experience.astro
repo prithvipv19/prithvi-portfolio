@@ -1,7 +1,6 @@
 ---
 import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import CareerTimeline from '../components/CareerTimeline.astro';
 import Contact from '../components/Contact.astro';
 import { resume, toYear, tenure } from '../lib/resume';
 import { url } from '../lib/site';
@@ -27,11 +26,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
     </header>
   </div>
 
-  <section class="section tint no-print" aria-label="Career timeline">
-    <div class="wrap"><CareerTimeline /></div>
-  </section>
-
-  <section class="section" aria-labelledby="roles-title">
+  <section class="section roles-section" aria-labelledby="roles-title">
     <div class="wrap">
       <h2 id="roles-title" class="reveal">Roles in detail</h2>
       <ol class="roles">
@@ -122,6 +117,7 @@ const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 <style>
   .head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-m); }
 
+  .roles-section { padding-top: var(--space-m); }
   .roles { margin: 0 0 var(--space-l); padding: 0; list-style: none; }
   .role {
     display: grid;

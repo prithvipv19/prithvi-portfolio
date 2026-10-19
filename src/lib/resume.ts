@@ -4,6 +4,8 @@ import raw from '../data/resume.yaml?raw';
 export interface Resume {
   basics: {
     name: string;
+    /** Friendly first name used in greetings; falls back to name. */
+    shortName?: string;
     headline: string;
     location?: string;
     email: string;

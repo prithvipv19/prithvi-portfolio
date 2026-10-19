@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# source documents (the public copy lives at public/resume.pdf)
+docs/

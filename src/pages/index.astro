@@ -5,7 +5,7 @@ import Contact from '../components/Contact.astro';
 import { resume } from '../lib/resume';
 import { getWork, url } from '../lib/site';
 
-const { name, headline, intro, now } = resume.basics;
+const { name, shortName = name, headline, intro, now } = resume.basics;
 const featured = (await getWork()).filter((w) => w.data.featured).slice(0, 4);
 ---
 
@@ -13,7 +13,7 @@ const featured = (await getWork()).filter((w) => w.data.featured).slice(0, 4);
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <p class="hello">Hi, I'm {name}, a {headline.toLowerCase()}.</p>
+        <p class="hello">Hi, I'm {shortName}, a {headline.toLowerCase()}.</p>
         <h1>I find the problems worth solving, then help teams ship the fix.</h1>
         <p class="lede measure muted">{intro}</p>
         <div class="actions">

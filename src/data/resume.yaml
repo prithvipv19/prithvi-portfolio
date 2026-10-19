@@ -1,73 +1,129 @@
-# PLACEHOLDER CONTENT — replace with the details from your resume.
-# Every page on the site reads from this file.
+# Resume content. Every page on the site reads from this file.
+# Source: docs/P V PRITHVI - Senior Product Manager.pdf
 
 basics:
-  name: Prithvi
-  headline: Product manager
-  location: Your city, Country
-  email: you@example.com
+  name: P V Prithvi
+  shortName: Prithvi
+  headline: Senior Product Manager
+  location: Bengaluru, India
+  email: prithvi.pv@outlook.com
   intro: >-
-    I'm a product manager who likes the whole messy loop: talking to customers,
-    working out what's worth building with engineers and designers, shipping it,
-    and finding out whether it worked.
+    I've spent 10+ years taking products from 0 to 1 across supply chain, HR and
+    data platforms. Lately I build AI agents that take real work off people's plates.
   now: >-
-    Exploring how AI changes the way product teams run discovery.
+    Building AI agents and a no-code agent builder at o9 Solutions.
   socials:
     - label: LinkedIn
-      url: https://www.linkedin.com/in/your-handle
-    - label: GitHub
-      url: https://github.com/your-handle
+      url: https://www.linkedin.com/in/prithvipv/
 
 about:
   - >-
-    Placeholder bio. Say how you got into product, the kinds of problems you
-    enjoy, and what teams can expect when they work with you.
+    I've been building products for over 10 years, and the part I enjoy most is the
+    0-to-1 stretch: finding a real problem, shaping something people can use, and
+    getting it out the door. I've done that in HR software, customer experience,
+    procurement and supply chain, for small businesses and large enterprises.
   - >-
-    A second paragraph for what you care about outside work, or the questions
-    you're currently chewing on.
+    These days most of my work is in AI. At o9 Solutions I led the UI for a no-code
+    AI agent builder that teams used to ship 35+ agents in three months. At Zycus I
+    led generative AI work that made invoice data extraction 15–20% more accurate.
+  - >-
+    I also like to build things myself: full-stack apps with Claude Code, agent
+    workflows with MCP, and automations in n8n. I started out as a test engineer and
+    then did an MBA in Information Systems, so I tend to think about quality and the
+    business case at the same time.
 
 experience:
-  - company: Company name
-    role: Senior Product Manager
-    start: 2022
+  - company: o9 Solutions Inc.
+    role: R&D Product Manager 2
+    start: Mar 2024
     end: Present
-    location: City
-    summary: One line about the product, team or customers.
+    location: Bengaluru
+    summary: Core Data Platform widgets (pivots, charts, filters, workflows, KPIs) and AI agents for o9's enterprise planning platform.
     highlights:
-      - Led a cross-functional team of 8 to launch a feature that grew weekly active users by 18%.
-      - Ran 40+ customer interviews to reshape the roadmap around the top three pain points.
-      - Introduced a lightweight experiment process; the team now ships 2x more tests per quarter.
-  - company: Previous company
+      - Built 70+ features for the Core Data Platform widgets (Pivot, Charts, Filters, Workflows, KPIs and Performance Monitor), turning requirements into PRDs, prioritised backlogs and releases.
+      - Managed requirements and feature delivery for customers contributing $6M in ARR, keeping multiple teams aligned.
+      - Migrated charting from the legacy JQPlot library to Highcharts, enabling 11 new features and 5 new chart types.
+      - Led the UI for a no-code AI Agent Builder that let teams deploy 35+ agents in 3 months.
+      - Built AI agents for PRDs, test cases and bug analysis, cutting team effort by ~30% and speeding up bug triage ~6x.
+
+  - company: Zycus
+    role: Senior Product Manager
+    start: Nov 2022
+    end: Feb 2024
+    location: Bengaluru
+    summary: Generative AI for Source-to-Pay (S2P) invoice processing.
+    highlights:
+      - Led Generative AI initiatives for S2P invoice data extraction, managing APMs to raise extraction accuracy by 15–20%.
+      - Built an AI workflow that prioritises emails in a daily batch job, which helped win 2 new enterprise customers.
+      - Automated invoice routing using historical patterns and invoice coding, cutting manual assignment time by 30% and freeing a week of AP team time each month.
+      - Built the business case for large-scale model training and launched Invoice Predictive Path, cutting invoice processing time by 12% and raising earned discounts by 6%.
+
+  - company: Greytip Software Ltd
+    role: Product Manager L3
+    start: May 2019
+    end: Jul 2022
+    location: Bengaluru
+    summary: HRMS product, building new modules from 0 to 1.
+    highlights:
+      - Built 6 HRMS modules from 0 to 1, including Employee Separation (300+ customers), Facial Attendance (1,000+ customers), Overtime (100+ enterprises), Letter Generation and Employee Confirmation.
+      - Revamped an unstable mobile Employee Self-Service app with 15 developers and 2 APMs, delivering 18+ screens and a stable, better mobile experience.
+      - Secured buy-in from 5 departments for product launches, backed by A/B test results, so releases reached the market on time.
+      - Automated the employee separation process, cutting it from 2–3 days to a fraction of that with immediate ROI.
+      - Launched AI-based facial recognition attendance during COVID-19, restoring 40% of biometric swipes.
+
+  - company: Survaider
     role: Product Manager
-    start: 2019
-    end: 2022
-    location: City
-    summary: One line about the product, team or customers.
+    start: Nov 2018
+    end: May 2019
+    summary: Customer experience management (CXM) platform.
     highlights:
-      - Owned the onboarding funnel end to end and cut first-week drop-off by 22%.
-      - Partnered with sales to turn recurring customer asks into a self-serve admin console.
-  - company: Earlier company
+      - Launched a sentiment-based AI Task Creator that turns customer reviews into tasks, projecting a 10% lift in review scores within 5 months.
+      - Replaced blocked web crawlers with API integrations to pull reviews from 5+ channels, and expanded the product into checklists and operational reviews.
+
+  - company: People Tech Group
     role: Associate Product Manager
-    start: 2017
-    end: 2019
+    start: May 2017
+    end: Nov 2018
+    location: Bellevue, USA
+    summary: A new Jury Management System.
     highlights:
-      - Shipped the first mobile release and grew it to 50k monthly users.
+      - Set product strategy for a new Jury Management System and won stakeholder and customer buy-in for a project with 1.5x revenue potential, despite 30% developer capacity constraints.
+      - Ran product demos that brought in 4 letters of intent and new Statements of Work from existing customers.
+      - Worked with IT and engineering to resolve A/B testing issues, preventing user disruption and enabling a successful release.
+
+  - company: Tech Mahindra
+    role: Software Test Engineer
+    start: Dec 2013
+    end: Jul 2015
+    location: Bengaluru
+    summary: Mediation platform for a leading Netherlands-based telecom operator.
+    highlights:
+      - Wrote and executed 500+ test cases and earned 2 performance awards.
 
 education:
-  - school: University name
-    degree: Degree, Major
-    start: 2013
+  - school: Indiana University of Pennsylvania, USA
+    degree: MBA, Information Systems
+    start: 2015
     end: 2017
+  - school: Visvesvaraya Technological University
+    degree: Bachelor of Engineering, Telecommunications
+    start: 2009
+    end: 2013
 
 skills:
-  - group: Product
-    items: [Discovery, Roadmapping, Prioritization, Experimentation, Product analytics]
-  - group: Tools
-    items: [Figma, Jira, Amplitude, SQL, Notion]
-  - group: Working style
-    items: [Stakeholder management, Writing specs, Running workshops]
+  - group: Domains
+    items: [Supply chain, HRMS, Data & analytics platforms, GenAI & AI agents, Enterprise SaaS, 0-to-1 products]
+  - group: Product strategy
+    items: [Product strategy, Product lifecycle management, Roadmaps, Prioritisation, Product requirements, Product research, Product analytics, AI product management]
+  - group: Delivery & growth
+    items: [Stakeholder management, Cross-functional collaboration, Agile & Scrum, Backlog management, Go-to-market, Product launches, A/B testing, Data analysis]
+  - group: AI & tools
+    items: [Claude Code, Claude Agent SDK, Cursor, GitHub Copilot, MCP, n8n, Figma Make, Prompt & context engineering]
 
 certifications:
-  - name: Certification name
-    issuer: Issuer
-    year: 2023
+  - name: "CSCMP Supply Chain Foundations: Procurement Professional Certificate"
+    issuer: CSCMP
+    year: 2026
+  - name: "CSCMP Supply Chain Foundations: The Essentials Professional Certificate"
+    issuer: CSCMP
+    year: 2026

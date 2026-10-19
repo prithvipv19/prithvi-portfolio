@@ -7,22 +7,59 @@ interface Props {
 }
 
 const { entry, headingLevel: Heading = 'h3' } = Astro.props;
-const { title, type, kind, icon, tone, impact } = entry.data;
+const { title, type, kind, icon, tone, impact, demo } = entry.data;
+const href = url(`work/${entry.id}/`);
 ---
 
-<a class="tile" href={url(`work/${entry.id}/`)}>
-  <div class:list={['art', tone]}>
-    <i class={`ti ti-${icon}`} aria-hidden="true"></i>
-    <span class="go" aria-hidden="true"><i class="ti ti-arrow-up-right"></i></span>
-  </div>
-  <div class="txt">
-    <span class="kind">{kind ?? typeLabel(type)}</span>
-    <Heading class="title">{title}</Heading>
-    {impact && <span class="impact">{impact}</span>}
-  </div>
-</a>
+{demo ? (
+  <article class="tile has-ctas">
+    <div class:list={['art', tone]} aria-hidden="true">
+      <i class={`ti ti-${icon}`}></i>
+    </div>
+    <div class="txt">
+      <span class="kind">{kind ?? typeLabel(type)}</span>
+      <Heading class="title">{title}</Heading>
+      {impact && <span class="impact">{impact}</span>}
+      <div class="ctas">
+        <a class="cta cta-try" href={url(demo)}><i class="ti ti-player-play" aria-hidden="true"></i>Try me<span class="visually-hidden">: {title} demo</span></a>
+        <a class="cta" href={href}><i class="ti ti-route" aria-hidden="true"></i>Show the flow<span class="visually-hidden">: {title}</span></a>
+      </div>
+    </div>
+  </article>
+) : (
+  <a class="tile" href={href}>
+    <div class:list={['art', tone]}>
+      <i class={`ti ti-${icon}`} aria-hidden="true"></i>
+      <span class="go" aria-hidden="true"><i class="ti ti-arrow-up-right"></i></span>
+    </div>
+    <div class="txt">
+      <span class="kind">{kind ?? typeLabel(type)}</span>
+      <Heading class="title">{title}</Heading>
+      {impact && <span class="impact">{impact}</span>}
+    </div>
+  </a>
+)}
 
 <style>
+  .has-ctas .txt { display: flex; flex-direction: column; flex: 1; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: auto; padding-top: 0.9rem; }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0 0.9rem;
+    border: 1.5px solid var(--violet);
+    border-radius: 999px;
+    color: var(--violet);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .cta:hover { background: var(--lav-100); color: var(--violet); }
+  .cta-try { border-color: var(--mustard); background: var(--mustard); color: var(--mustard-ink); }
+  .cta-try:hover { background: #f0c455; color: var(--mustard-ink); }
   .tile {
     display: flex;
     flex-direction: column;

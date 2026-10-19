@@ -1,13 +1,13 @@
 ---
-title: Overtime, from attendance to payslip
+title: Overtime
 summary: An overtime module that turns extra hours in attendance into approved, policy-checked, payroll-ready pay or comp-off.
 date: 2021-01-01
 type: case-study
 kind: 0 to 1
 icon: clock-plus
 tone: mustard
-featured: false
-draft: true
+featured: true
+order: 0
 company: Greytip (greytHR)
 role: Product Manager L3
 impact: 100+ enterprises
@@ -26,12 +26,6 @@ flow:
     note: Admin considers or ignores each record and picks the payroll month
   - label: Pay
     note: Regular, arrear or reversal on an overtime payslip
-# Add mockups to public/images/overtime/ and list them here, e.g.
-# gallery:
-#   - src: overtime/policy-payout.png
-#     alt: Payout settings with a pay-rate grid by day type
-#     caption: One grid sets rate, multiplier or comp-off for each day type.
-# prototype: https://www.figma.com/proto/...
 ---
 
 ## The problem

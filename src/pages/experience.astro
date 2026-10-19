@@ -1,0 +1,206 @@
+---
+import { existsSync } from 'node:fs';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { resume } from '../lib/resume';
+import { url } from '../lib/site';
+
+const { basics, experience, education, skills, certifications } = resume;
+// The download button appears when public/resume.pdf exists.
+const hasPdf = existsSync('public/resume.pdf');
+const range = (start?: string | number, end?: string | number) => [start, end].filter(Boolean).join('–');
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
+---
+
+<BaseLayout title="Experience" description={`Experience of ${basics.name}, ${basics.headline}.`}>
+  <div class="section">
+    <div class="wrap page">
+      <header class="head">
+        <div>
+          <h1>Experience</h1>
+          <p class="lede">{basics.name}, {basics.headline}{basics.location && <span class="muted">, {basics.location}</span>}</p>
+          <ul class="contact">
+            <li><a href={`mailto:${basics.email}`}>{basics.email}</a></li>
+            {basics.socials.map((s) => <li><a href={s.url}>{s.label}</a></li>)}
+          </ul>
+        </div>
+        <div class="actions no-print">
+          {hasPdf && <a class="btn btn-primary" href={url('resume.pdf')} download>Download resume (PDF)</a>}
+          <button class="btn" type="button" data-print>Print</button>
+        </div>
+      </header>
+
+      <section aria-label="Work history">
+        <ol class="timeline">
+          {experience.map((job) => (
+            <li>
+              <div class="when muted">{range(job.start, job.end)}</div>
+              <div>
+                <h2 class="role">{job.role}, <span class="company">{job.company}</span></h2>
+                {job.summary && <p class="muted">{job.summary}</p>}
+                <ul>{job.highlights.map((h) => <li>{h}</li>)}</ul>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div class="drops">
+        <details class="drop">
+          <summary>
+            <h2>Skills</h2>
+            <span class="count muted">{plural(skills.length, 'group')}</span>
+          </summary>
+          <dl class="skills">
+            {skills.map((s) => (
+              <div>
+                <dt>{s.group}</dt>
+                <dd>
+                  <ul class="tags">{s.items.map((item) => <li class="pill">{item}</li>)}</ul>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </details>
+
+        <details class="drop">
+          <summary>
+            <h2>Education</h2>
+            <span class="count muted">{plural(education.length, 'degree')}</span>
+          </summary>
+          <ul class="plain">
+            {education.map((e) => (
+              <li><strong>{e.degree}</strong><br />{e.school} <span class="muted">{range(e.start, e.end)}</span></li>
+            ))}
+          </ul>
+        </details>
+
+        {certifications.length > 0 && (
+          <details class="drop">
+            <summary>
+              <h2>Certifications</h2>
+              <span class="count muted">{plural(certifications.length, 'certificate')}</span>
+            </summary>
+            <ul class="plain">
+              {certifications.map((c) => (
+                <li><strong>{c.name}</strong><br />{c.issuer} <span class="muted">{c.year}</span></li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  document.querySelector('[data-print]')?.addEventListener('click', () => window.print());
+
+  // Expand every dropdown while printing, then restore what the reader had open.
+  const drops = [...document.querySelectorAll<HTMLDetailsElement>('details.drop')];
+  let wasOpen: boolean[] = [];
+  window.addEventListener('beforeprint', () => {
+    wasOpen = drops.map((d) => d.open);
+    drops.forEach((d) => (d.open = true));
+  });
+  window.addEventListener('afterprint', () => drops.forEach((d, i) => (d.open = wasOpen[i])));
+</script>
+
+<style>
+  .page { max-width: 60rem; }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding-bottom: var(--space-m);
+    margin-bottom: var(--space-l);
+    border-bottom: 1px solid var(--line);
+  }
+  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; margin-bottom: 0.15em; }
+  .lede { margin-bottom: 0.5rem; }
+  .contact { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 0; padding: 0; list-style: none; }
+  .contact a { display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* Work history is a real sequence, so it gets a timeline */
+  .timeline { margin: 0 0 var(--space-l); padding: 0; list-style: none; }
+  .timeline > li {
+    position: relative;
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding: 0 0 var(--space-m) 1.5rem;
+    border-left: 2px solid var(--line);
+  }
+  .timeline > li::before {
+    content: '';
+    position: absolute;
+    left: -7px;
+    top: 0.4rem;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--note);
+    border: 2px solid var(--paper);
+  }
+  .timeline > li:last-child { border-left-color: transparent; }
+  @media (min-width: 48rem) {
+    .timeline > li { grid-template-columns: 8rem minmax(0, 1fr); }
+  }
+  .when { font-size: var(--step--1); padding-top: 0.2rem; font-variant-numeric: tabular-nums; }
+  .role { font-size: var(--step-1); letter-spacing: -0.01em; }
+  .company { font-weight: 600; color: var(--slate); }
+  .timeline ul { padding-left: 1.2rem; }
+  .timeline ul li + li { margin-top: 0.3rem; }
+
+  /* Dropdowns for skills, education and certifications */
+  .drops { border-top: 1px solid var(--line); }
+  .drop { border-bottom: 1px solid var(--line); }
+  .drop summary {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 44px;
+    padding-block: 1.1rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .drop summary::-webkit-details-marker { display: none; }
+  .drop summary h2 { margin: 0; font-size: var(--step-2); }
+  .drop summary::after {
+    content: '';
+    margin-left: auto;
+    flex: none;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-right: 2.5px solid var(--ink);
+    border-bottom: 2.5px solid var(--ink);
+    transform: translateY(-25%) rotate(45deg);
+    transition: transform 150ms ease;
+  }
+  .drop[open] summary::after { transform: translateY(25%) rotate(-135deg); }
+  .drop summary:hover h2 { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  .count { font-size: var(--step--1); }
+  .drop > :not(summary) { margin-bottom: var(--space-m); }
+
+  .skills { display: grid; gap: var(--space-m); }
+  @media (min-width: 48rem) { .skills { grid-template-columns: 1fr 1fr; } }
+  dt { font-weight: 700; margin-bottom: 0.4rem; }
+  dd { margin: 0; }
+  .tags { margin: 0; }
+  .plain { margin: 0; padding: 0; list-style: none; }
+  .plain li + li { margin-top: 1rem; }
+
+  @media print {
+    :global(.site-header), :global(.site-footer), :global(.skip-link), .no-print { display: none !important; }
+    :global(body) { background: #fff; color: #000; font-size: 11pt; }
+    :global(.section) { padding: 0; }
+    h1 { font-size: 24pt; }
+    .role { font-size: 12pt; }
+    .drop summary { padding-block: 6pt; }
+    .drop summary h2 { font-size: 14pt; }
+    .drop summary::after, .count { display: none; }
+    .timeline > li { grid-template-columns: 7rem 1fr; break-inside: avoid; }
+    .drop { break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>

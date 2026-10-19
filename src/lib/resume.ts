@@ -10,7 +10,6 @@ export interface Resume {
     location?: string;
     email: string;
     intro: string;
-    now?: string;
     socials: { label: string; url: string }[];
   };
   about: string[];

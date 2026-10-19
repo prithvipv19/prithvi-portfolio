@@ -29,7 +29,7 @@ Adding new work = adding one file. No code changes.
 | `/` | Hero (name, one-line pitch, CTAs), featured work (3–4), short about, contact |
 | `/work` | Grid of all work, filterable by type |
 | `/work/[slug]` | Layout by type. Case study: problem → approach → outcome. Video: embedded player. Design: gallery. Code: repo and demo links |
-| `/resume` | Web resume from `resume.yaml`, Download PDF button, print-friendly |
+| `/experience` | Work history timeline from `resume.yaml`; Skills, Education and Certifications as separate dropdowns; Download PDF button; print-friendly (`/resume` redirects here) |
 | `/about` | Longer bio and photo (optional; could be merged into home) |
 
 ## Project structure
@@ -78,7 +78,7 @@ public/                    # resume.pdf, images/, favicon
 - After pushing, the deploy workflow passes and the live URL loads
 
 ## Open questions / notes
-- **Design direction:** product-workshop feel. The one bold element is a yellow sticky note in the hero ("Right now…"); everything else stays quiet. Colors: cool off-white paper, deep ink text, teal links, sticky-note yellow accent. Fonts: Bricolage Grotesque (headings) + Atkinson Hyperlegible Next (body, chosen for readability).
-- **Where to edit content:** `src/data/resume.yaml` (resume, bio, "Right now" note) and `src/content/work/*.md` (one file per project; copy a sample to add more). Gallery images go in `public/images/`. Add `public/resume.pdf` and the Download PDF button appears.
+- **Design direction:** typography-led and calm; the large hero headline carries the personality. (The "Right now" sticky note was removed at Prithvi's request.) Colors: cool off-white paper, deep ink text, teal links, sticky-note yellow accent. Fonts: Bricolage Grotesque (headings) + Atkinson Hyperlegible Next (body, chosen for readability).
+- **Where to edit content:** `src/data/resume.yaml` (experience, skills, education, certifications, intro, bio) and `src/content/work/*.md` (one file per project; copy a sample to add more). Gallery images go in `public/images/`. Add `public/resume.pdf` and the Download PDF button appears.
 - **Preview locally:** `npm run dev` → http://localhost:4321
 - All copy is placeholder until the resume is in and the tone of voice is set (step 5).

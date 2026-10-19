@@ -1,0 +1,685 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { dayTypes } from '../../../lib/overtime-demo';
+import { url } from '../../../lib/site';
+
+const steps = [
+  { id: 'policy', n: 1, label: 'Set the policy', who: 'HR admin' },
+  { id: 'employee', n: 2, label: 'Apply for OT', who: 'Employee' },
+  { id: 'manager', n: 3, label: 'Review & apply for team', who: 'Manager' },
+  { id: 'finalize', n: 4, label: 'Finalize for payroll', who: 'HR admin' },
+];
+const blocks = [1, 5, 10, 15, 30];
+const multipliers = [1, 1.5, 2, 2.5, 3];
+---
+
+<BaseLayout title="Overtime demo" description="Try the overtime flow end to end: policy, employee request, manager approval and payroll finalization, on fictional data.">
+  <div class="wrap">
+    <a class="more back" href={url('work/overtime-module/')}><i class="ti ti-arrow-left" aria-hidden="true"></i> Back to the case study</a>
+    <header class="demo-head">
+      <h1>Try the overtime flow</h1>
+      <p class="lede">Set the rules, apply for overtime, approve it, and send it to payroll. Each step uses what you did in the last one.</p>
+      <ul class="chips">
+        <li class="chip chip-mustard"><i class="ti ti-flask" aria-hidden="true"></i>Fictional data</li>
+        <li class="chip chip-lav"><i class="ti ti-refresh" aria-hidden="true"></i>Resets when you reload</li>
+      </ul>
+    </header>
+
+    <div class="ot-demo" id="ot-demo">
+      <nav class="steps" aria-label="Demo steps">
+        {steps.map((s) => (
+          <button type="button" data-view={s.id} aria-pressed={s.id === 'policy' ? 'true' : 'false'}>
+            <span class="n" aria-hidden="true">{s.n}</span>
+            <span><strong>{s.label}</strong><small>{s.who}</small></span>
+          </button>
+        ))}
+      </nav>
+
+      <!-- 1. Policy (static form, bound in the script) -->
+      <section class="view" data-panel="policy">
+        <p class="hint"><i class="ti ti-bulb" aria-hidden="true"></i>Change any rule and watch the calculator. The other steps use these rules too.</p>
+        <div class="policy-grid">
+          <form class="card policy-form" id="policy-form" onsubmit="return false">
+            <label class="field">Policy name <input name="name" maxlength="60" /></label>
+
+            <fieldset>
+              <legend>Eligibility, in minutes</legend>
+              <div class="tbl">
+                <table>
+                  <thead><tr><th scope="col">Day type</th><th scope="col">Break deducted</th><th scope="col">Minimum to qualify</th></tr></thead>
+                  <tbody>
+                    {dayTypes.map((d) => (
+                      <tr>
+                        <th scope="row">{d.label}</th>
+                        <td><input type="number" min="0" max="120" step="5" name={`break-${d.id}`} aria-label={`${d.label} break deducted, minutes`} /></td>
+                        <td><input type="number" min="0" max="240" step="5" name={`min-${d.id}`} aria-label={`${d.label} minimum to qualify, minutes`} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Rounding and caps</legend>
+              <div class="row">
+                <label class="field">Block time
+                  <select name="block">{blocks.map((b) => <option value={b}>{b} min</option>)}</select>
+                </label>
+                <label class="field">Round to block
+                  <select name="rounding">
+                    <option value="down">Round down</option>
+                    <option value="up">Round up</option>
+                    <option value="normal">Normal round</option>
+                    <option value="none">No rounding</option>
+                  </select>
+                </label>
+                <label class="field">Daily cap (h) <input type="number" min="1" max="12" name="dailyCap" /></label>
+                <label class="field">Monthly cap (h) <input type="number" min="1" max="100" name="monthlyCap" /></label>
+              </div>
+            </fieldset>
+
+            <fieldset>
+              <legend>Payout</legend>
+              <div class="radios">
+                <label><input type="radio" name="method" value="component" /> Basic salary × multiplier</label>
+                <label><input type="radio" name="method" value="flat" /> Flat ₹ per hour</label>
+              </div>
+              <div class="tbl">
+                <table>
+                  <thead><tr><th scope="col">Day type</th><th scope="col" class="m-comp">Multiplier</th><th scope="col" class="m-flat">₹ per hour</th></tr></thead>
+                  <tbody>
+                    {dayTypes.map((d) => (
+                      <tr>
+                        <th scope="row">{d.label}</th>
+                        <td class="m-comp">
+                          <select name={`mult-${d.id}`} aria-label={`${d.label} multiplier`}>{multipliers.map((m) => <option value={m}>{m}×</option>)}</select>
+                        </td>
+                        <td class="m-flat"><input type="number" min="0" step="10" name={`flat-${d.id}`} aria-label={`${d.label} rupees per hour`} /></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </fieldset>
+          </form>
+
+          <aside class="card calc" aria-labelledby="calc-title">
+            <h2 id="calc-title">Try the rules</h2>
+            <div class="row">
+              <label class="field">Employee <select id="calc-emp"></select></label>
+              <label class="field">Day type
+                <select id="calc-day">{dayTypes.map((d) => <option value={d.id}>{d.label}</option>)}</select>
+              </label>
+            </div>
+            <label class="field">Time beyond shift: <output id="calc-out" for="calc-extra"></output>
+              <input type="range" id="calc-extra" min="0" max="480" step="1" value="140" />
+            </label>
+            <ol class="breakdown" id="calc-breakdown" aria-live="polite"></ol>
+          </aside>
+        </div>
+      </section>
+
+      <section class="view" data-panel="employee" hidden></section>
+      <section class="view" data-panel="manager" hidden></section>
+      <section class="view" data-panel="finalize" hidden></section>
+
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  import {
+    clocked, currentMonth, dayTypes, defaultPolicy, eligibleOt, employees, hhmm, hourlyRate,
+    managerName, me, monthOf, rupees, seededReversal, seedRequests,
+    type DayType, type OtRequest, type Policy,
+  } from '../../../lib/overtime-demo';
+
+  let policy: Policy = defaultPolicy();
+  let requests: OtRequest[] = seedRequests();
+  let nextId = 100;
+  let empTab: 'apply' | 'pending' | 'history' = 'apply';
+  let mgrTab: 'review' | 'closed' | 'team' = 'review';
+  let payMonth = currentMonth;
+
+  const root = document.getElementById('ot-demo')!;
+  const panel = (id: string) => root.querySelector<HTMLElement>(`[data-panel="${id}"]`)!;
+  const emp = (id: string) => employees.find((e) => e.id === id)!;
+  const dayOf = (empId: string, date: string): DayType =>
+    clocked.find((c) => c.empId === empId && c.date === date)?.dayType ?? 'regular';
+  const dayLabel = (d: DayType) => dayTypes.find((t) => t.id === d)!.label;
+  const fmtDate = (iso: string) =>
+    new Date(iso + 'T00:00:00Z').toLocaleDateString('en-IN', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const monthLabel = (m: string) =>
+    new Date(m + '-01T00:00:00Z').toLocaleDateString('en-IN', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+  const esc = (s: string) =>
+    s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
+  const active = (r: OtRequest) => r.status === 'pending' || r.status === 'approved';
+  const usedThisMonth = (empId: string) =>
+    requests.filter((r) => r.empId === empId && active(r) && monthOf(r.date) === currentMonth).reduce((s, r) => s + r.minutes, 0);
+  const hasActive = (empId: string, date: string) => requests.some((r) => r.empId === empId && r.date === date && active(r));
+  const statusChip = (s: string) => `<span class="st st-${s}">${s[0].toUpperCase() + s.slice(1)}</span>`;
+
+  let toastTimer = 0;
+  function toast(msg: string, bad = false) {
+    const t = document.getElementById('toast')!;
+    t.textContent = msg;
+    t.classList.toggle('bad', bad);
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  // ---------- Navigation ----------
+  function show(view: string) {
+    root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === view)));
+    root.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== view));
+    render(view);
+  }
+  root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.addEventListener('click', () => show(b.dataset.view!)));
+
+  function render(view: string) {
+    if (view === 'policy') renderCalc();
+    if (view === 'employee') renderEmployee();
+    if (view === 'manager') renderManager();
+    if (view === 'finalize') renderFinalize();
+  }
+
+  // ---------- 1. Policy ----------
+  const form = document.getElementById('policy-form') as HTMLFormElement;
+  const f = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
+
+  function fillForm() {
+    f('name').value = policy.name;
+    for (const d of dayTypes) {
+      f(`break-${d.id}`).value = String(policy.breakMin[d.id]);
+      f(`min-${d.id}`).value = String(policy.minMin[d.id]);
+      f(`mult-${d.id}`).value = String(policy.multiplier[d.id]);
+      f(`flat-${d.id}`).value = String(policy.flatRate[d.id]);
+    }
+    f('block').value = String(policy.block);
+    f('rounding').value = policy.rounding;
+    f('dailyCap').value = String(policy.dailyCapMin / 60);
+    f('monthlyCap').value = String(policy.monthlyCapMin / 60);
+    form.querySelectorAll<HTMLInputElement>('[name="method"]').forEach((r) => (r.checked = r.value === policy.method));
+    form.dataset.method = policy.method;
+  }
+
+  const num = (name: string, fallback: number) => {
+    const v = Number(f(name).value);
+    return Number.isFinite(v) && v >= 0 ? v : fallback;
+  };
+
+  form.addEventListener('input', () => {
+    policy.name = f('name').value || 'Untitled policy';
+    for (const d of dayTypes) {
+      policy.breakMin[d.id] = num(`break-${d.id}`, policy.breakMin[d.id]);
+      policy.minMin[d.id] = num(`min-${d.id}`, policy.minMin[d.id]);
+      policy.multiplier[d.id] = num(`mult-${d.id}`, policy.multiplier[d.id]);
+      policy.flatRate[d.id] = num(`flat-${d.id}`, policy.flatRate[d.id]);
+    }
+    policy.block = num('block', policy.block);
+    policy.rounding = f('rounding').value as Policy['rounding'];
+    policy.dailyCapMin = Math.max(60, num('dailyCap', 4) * 60);
+    policy.monthlyCapMin = Math.max(60, num('monthlyCap', 20) * 60);
+    policy.method = (form.querySelector<HTMLInputElement>('[name="method"]:checked')?.value ?? 'component') as Policy['method'];
+    form.dataset.method = policy.method;
+    renderCalc();
+  });
+
+  const calcEmp = document.getElementById('calc-emp') as HTMLSelectElement;
+  const calcDay = document.getElementById('calc-day') as HTMLSelectElement;
+  const calcExtra = document.getElementById('calc-extra') as HTMLInputElement;
+  calcEmp.innerHTML = employees.map((e) => `<option value="${e.id}">${esc(e.name)} · Basic ${rupees(e.basic)}</option>`).join('');
+  [calcEmp, calcDay, calcExtra].forEach((el) => el.addEventListener('input', renderCalc));
+
+  function renderCalc() {
+    const day = calcDay.value as DayType;
+    const extra = Number(calcExtra.value);
+    const e = emp(calcEmp.value);
+    const b = eligibleOt(policy, day, extra);
+    const rate = hourlyRate(policy, e, day);
+    document.getElementById('calc-out')!.textContent = `${hhmm(extra)} h`;
+    const roundLabel = { down: 'rounded down', up: 'rounded up', normal: 'rounded to nearest', none: 'not rounded' }[policy.rounding];
+    const rateNote = policy.method === 'component'
+      ? `${rupees(e.basic)} ÷ 208 h × ${policy.multiplier[day]}`
+      : 'flat rate';
+    document.getElementById('calc-breakdown')!.innerHTML = `
+      <li><span>Time beyond shift</span><b>${hhmm(b.worked)}</b></li>
+      <li><span>Minus break (${policy.breakMin[day]} min)</span><b>${hhmm(b.afterBreak)}</b></li>
+      <li class="${b.belowMin ? 'warn' : ''}"><span>Minimum ${policy.minMin[day]} min</span><b>${b.belowMin ? 'Not met' : 'Met'}</b></li>
+      <li><span>${policy.block}-min blocks, ${roundLabel}</span><b>${hhmm(b.rounded)}</b></li>
+      <li class="${b.capped ? 'warn' : ''}"><span>Daily cap ${hhmm(policy.dailyCapMin)}</span><b>${b.capped ? 'Capped' : 'Within cap'}</b></li>
+      <li class="total"><span>Eligible OT</span><b>${hhmm(b.eligible)} h</b></li>
+      <li><span>Rate (${rateNote})</span><b>${rupees(rate)}/h</b></li>
+      <li class="total pay"><span>Pay for this day</span><b>${rupees((b.eligible / 60) * rate)}</b></li>`;
+  }
+
+  // ---------- 2. Employee ----------
+  function tabs(name: string, current: string, items: [string, string][]) {
+    return `<div class="tabs" role="group" aria-label="${name}">${items
+      .map(([id, label]) => `<button type="button" data-tab="${id}" aria-pressed="${id === current}">${label}</button>`)
+      .join('')}</div>`;
+  }
+
+  function renderEmployee() {
+    const p = panel('employee');
+    const used = usedThisMonth(me);
+    const clockedTotal = clocked.filter((c) => c.empId === me && monthOf(c.date) === currentMonth).reduce((s, c) => s + c.extraMin, 0);
+    const mine = requests.filter((r) => r.empId === me);
+    const pending = mine.filter((r) => r.status === 'pending');
+    const history = mine.filter((r) => r.status !== 'pending');
+    let body = '';
+
+    if (empTab === 'apply') {
+      const rows = clocked
+        .filter((c) => c.empId === me && !hasActive(me, c.date))
+        .sort((a, b) => a.date.localeCompare(b.date))
+        .map((c) => {
+          const b = eligibleOt(policy, c.dayType, c.extraMin);
+          const ok = b.eligible > 0;
+          return `<tr class="${ok ? '' : 'off'}">
+            <td><input type="checkbox" data-date="${c.date}" ${ok ? '' : 'disabled'} aria-label="Select ${fmtDate(c.date)}"></td>
+            <td>${fmtDate(c.date)}</td><td>${dayLabel(c.dayType)}</td><td>${hhmm(c.extraMin)}</td>
+            <td><b>${ok ? hhmm(b.eligible) : '—'}</b>${ok ? '' : '<small>Below minimum</small>'}</td>
+            <td><input type="text" data-reason="${c.date}" placeholder="Reason" ${ok ? '' : 'disabled'} aria-label="Reason for ${fmtDate(c.date)}"></td>
+          </tr>`;
+        })
+        .join('');
+      body = rows
+        ? `<div class="tbl"><table><thead><tr><th scope="col"><span class="visually-hidden">Select</span></th><th scope="col">Date</th><th scope="col">Day type</th><th scope="col">Clocked extra</th><th scope="col">Eligible OT</th><th scope="col">Reason</th></tr></thead><tbody>${rows}</tbody></table></div>
+           <label class="field">Remarks (required) <textarea id="emp-remarks" rows="2" placeholder="e.g. Covered the Line 2 backlog"></textarea></label>
+           <div class="actions"><button type="button" class="btn btn-primary" data-act="emp-submit"><i class="ti ti-send" aria-hidden="true"></i>Submit to ${managerName}</button></div>`
+        : `<p class="empty">Nothing left to apply for this month. Check the Pending tab.</p>`;
+    } else {
+      const list = empTab === 'pending' ? pending : history;
+      body = list.length
+        ? `<div class="tbl"><table><thead><tr><th scope="col">Date</th><th scope="col">OT hours</th><th scope="col">Reason</th><th scope="col">Status</th><th scope="col"><span class="visually-hidden">Action</span></th></tr></thead><tbody>${list
+            .map((r) => `<tr><td>${fmtDate(r.date)}</td><td>${hhmm(r.minutes)}</td><td>${esc(r.reason)}${r.remarks ? `<small>Reviewer: ${esc(r.remarks)}</small>` : ''}</td><td>${statusChip(r.status)}</td>
+              <td>${r.status === 'pending' ? `<button type="button" class="link" data-act="withdraw" data-id="${r.id}">Withdraw</button>` : ''}</td></tr>`)
+            .join('')}</tbody></table></div>`
+        : `<p class="empty">${empTab === 'pending' ? 'No pending requests.' : 'No closed requests yet.'}</p>`;
+    }
+
+    p.innerHTML = `
+      <p class="hint"><i class="ti ti-user" aria-hidden="true"></i>You're <b>${esc(emp(me).name)}</b> (${esc(emp(me).dept)}). Eligible hours come from attendance and the policy, so you only pick days and add a reason.</p>
+      <div class="stats">
+        <div><span>Clocked extra in ${monthLabel(currentMonth)}</span><b>${hhmm(clockedTotal)} h</b></div>
+        <div><span>Applied or approved</span><b>${hhmm(used)} h</b></div>
+        <div><span>Monthly cap left</span><b>${hhmm(Math.max(0, policy.monthlyCapMin - used))} h</b></div>
+      </div>
+      ${tabs('Employee views', empTab, [['apply', 'Apply'], ['pending', `Pending (${pending.length})`], ['history', 'History']])}
+      <div class="card">${body}</div>`;
+  }
+
+  panel('employee').addEventListener('click', (ev) => {
+    const t = (ev.target as HTMLElement).closest<HTMLElement>('[data-tab],[data-act]');
+    if (!t) return;
+    if (t.dataset.tab) { empTab = t.dataset.tab as typeof empTab; return renderEmployee(); }
+    if (t.dataset.act === 'withdraw') {
+      const r = requests.find((x) => x.id === Number(t.dataset.id));
+      if (r) r.status = 'withdrawn';
+      toast('Request withdrawn.');
+      return renderEmployee();
+    }
+    if (t.dataset.act === 'emp-submit') {
+      const p = panel('employee');
+      const picked = [...p.querySelectorAll<HTMLInputElement>('input[data-date]:checked')].map((c) => c.dataset.date!);
+      const remarks = (p.querySelector('#emp-remarks') as HTMLTextAreaElement).value.trim();
+      if (!picked.length) return toast('Select at least one day.', true);
+      if (!remarks) return toast('Remarks are required.', true);
+      const items = picked.map((date) => {
+        const c = clocked.find((x) => x.empId === me && x.date === date)!;
+        const reason = (p.querySelector(`[data-reason="${date}"]`) as HTMLInputElement).value.trim() || remarks;
+        return { date, minutes: eligibleOt(policy, c.dayType, c.extraMin).eligible, reason };
+      });
+      const total = items.reduce((s, i) => s + i.minutes, 0);
+      if (usedThisMonth(me) + total > policy.monthlyCapMin) {
+        return toast(`That's over your monthly cap of ${hhmm(policy.monthlyCapMin)} h. Pick fewer days.`, true);
+      }
+      items.forEach((i) => requests.push({ id: nextId++, empId: me, by: 'employee', status: 'pending', ...i }));
+      toast(`Sent ${items.length} day(s), ${hhmm(total)} h, to ${managerName}. Next: step 3.`);
+      empTab = 'pending';
+      renderEmployee();
+    }
+  });
+
+  // ---------- 3. Manager ----------
+  function renderManager() {
+    const p = panel('manager');
+    const pending = requests.filter((r) => r.status === 'pending');
+    const closed = requests.filter((r) => r.status !== 'pending' && !r.final);
+    let body = '';
+
+    if (mgrTab === 'review') {
+      body = pending.length
+        ? `<ul class="queue">${pending
+            .map((r) => {
+              const d = dayOf(r.empId, r.date);
+              return `<li class="card">
+                <div class="who"><b>${esc(emp(r.empId).name)}</b><small>${esc(emp(r.empId).dept)} · ${fmtDate(r.date)} · ${dayLabel(d)}</small></div>
+                <div class="hrs"><b>${hhmm(r.minutes)} h</b><small>${rupees((r.minutes / 60) * hourlyRate(policy, emp(r.empId), d))}</small></div>
+                <p class="why">${esc(r.reason)}</p>
+                <div class="decide">
+                  <input type="text" data-remarks="${r.id}" placeholder="Remarks (optional)" aria-label="Remarks for ${esc(emp(r.empId).name)}">
+                  <button type="button" class="btn btn-ghost sm" data-act="reject" data-id="${r.id}">Reject</button>
+                  <button type="button" class="btn btn-primary sm" data-act="approve" data-id="${r.id}">Approve</button>
+                </div>
+              </li>`;
+            })
+            .join('')}</ul>`
+        : `<p class="empty card">The queue is clear. Try <b>Apply for team</b>, or go to step 4.</p>`;
+    } else if (mgrTab === 'closed') {
+      body = closed.length
+        ? `<div class="card tbl"><table><thead><tr><th scope="col">Employee</th><th scope="col">Date</th><th scope="col">OT hours</th><th scope="col">Applied by</th><th scope="col">Status</th></tr></thead><tbody>${closed
+            .map((r) => `<tr><td>${esc(emp(r.empId).name)}</td><td>${fmtDate(r.date)}</td><td>${hhmm(r.minutes)}</td><td>${r.by === 'manager' ? 'Manager' : 'Employee'}</td><td>${statusChip(r.status)}</td></tr>`)
+            .join('')}</tbody></table></div>`
+        : `<p class="empty card">No closed requests yet.</p>`;
+    } else {
+      // Running monthly total per employee so caps are checked row by row.
+      const running = new Map(employees.map((e) => [e.id, usedThisMonth(e.id)]));
+      const rows = clocked
+        .filter((c) => monthOf(c.date) === currentMonth && !hasActive(c.empId, c.date))
+        .sort((a, b) => a.empId.localeCompare(b.empId) || a.date.localeCompare(b.date))
+        .map((c) => {
+          const el = eligibleOt(policy, c.dayType, c.extraMin).eligible;
+          if (!el) return '';
+          const after = running.get(c.empId)! + el;
+          const over = after > policy.monthlyCapMin;
+          if (!over) running.set(c.empId, after);
+          return `<tr class="${over ? 'over' : ''}">
+            <td><input type="checkbox" data-team="${c.empId}|${c.date}" ${over ? 'disabled' : ''} aria-label="Select ${esc(emp(c.empId).name)}, ${fmtDate(c.date)}"></td>
+            <td>${esc(emp(c.empId).name)}</td><td>${fmtDate(c.date)}</td><td>${dayLabel(c.dayType)}</td><td>${hhmm(c.extraMin)}</td>
+            <td><b>${hhmm(el)}</b>${over ? '<small>Over monthly cap</small>' : ''}</td></tr>`;
+        })
+        .join('');
+      body = rows
+        ? `<div class="card"><p class="muted small">For people who don't use the app. Rows in pink would cross the ${hhmm(policy.monthlyCapMin)} h monthly cap, so they can't be applied.</p>
+           <div class="tbl"><table><thead><tr><th scope="col"><input type="checkbox" data-act="all" aria-label="Select all"></th><th scope="col">Employee</th><th scope="col">Date</th><th scope="col">Day type</th><th scope="col">Clocked extra</th><th scope="col">Eligible OT</th></tr></thead><tbody>${rows}</tbody></table></div>
+           <div class="actions"><button type="button" class="btn btn-primary" data-act="team-apply"><i class="ti ti-users" aria-hidden="true"></i>Apply and approve selected</button></div></div>`
+        : `<p class="empty card">Every eligible day already has a request.</p>`;
+    }
+
+    p.innerHTML = `
+      <p class="hint"><i class="ti ti-user-check" aria-hidden="true"></i>You're <b>${managerName}</b>, the reviewer. Approve what your team sent, or apply on behalf of people who don't use the app.</p>
+      ${tabs('Manager views', mgrTab, [['review', `To review (${pending.length})`], ['closed', 'Closed'], ['team', 'Apply for team']])}
+      ${body}`;
+  }
+
+  panel('manager').addEventListener('click', (ev) => {
+    const t = (ev.target as HTMLElement).closest<HTMLElement>('[data-tab],[data-act]');
+    if (!t) return;
+    if (t.dataset.tab) { mgrTab = t.dataset.tab as typeof mgrTab; return renderManager(); }
+    const act = t.dataset.act;
+    if (act === 'approve' || act === 'reject') {
+      const r = requests.find((x) => x.id === Number(t.dataset.id))!;
+      r.status = act === 'approve' ? 'approved' : 'rejected';
+      r.remarks = (panel('manager').querySelector(`[data-remarks="${r.id}"]`) as HTMLInputElement).value.trim() || undefined;
+      toast(`${act === 'approve' ? 'Approved' : 'Rejected'} ${hhmm(r.minutes)} h for ${emp(r.empId).name}.`);
+      return renderManager();
+    }
+    if (act === 'all') {
+      const on = (t as HTMLInputElement).checked;
+      panel('manager').querySelectorAll<HTMLInputElement>('input[data-team]:not(:disabled)').forEach((c) => (c.checked = on));
+      return;
+    }
+    if (act === 'team-apply') {
+      const picked = [...panel('manager').querySelectorAll<HTMLInputElement>('input[data-team]:checked')];
+      if (!picked.length) return toast('Select at least one row.', true);
+      for (const c of picked) {
+        const [empId, date] = c.dataset.team!.split('|');
+        const cl = clocked.find((x) => x.empId === empId && x.date === date)!;
+        const minutes = eligibleOt(policy, cl.dayType, cl.extraMin).eligible;
+        requests.push({ id: nextId++, empId, date, minutes, reason: 'Applied by manager', by: 'manager', status: 'approved' });
+      }
+      toast(`Applied and approved ${picked.length} day(s). Next: step 4.`);
+      renderManager();
+    }
+  });
+
+  // ---------- 4. Finalize ----------
+  function line(r: OtRequest) {
+    const d = dayOf(r.empId, r.date);
+    const rate = hourlyRate(policy, emp(r.empId), d);
+    return { d, rate, amount: (r.minutes / 60) * rate };
+  }
+
+  function renderFinalize() {
+    const p = panel('finalize');
+    const open = requests.filter((r) => r.status === 'approved' && !r.final);
+    const paid = requests.filter((r) => r.final?.as === 'considered' && r.final.payMonth === payMonth);
+    const ignored = requests.filter((r) => r.final?.as === 'ignored').length;
+    const typeOf = (r: OtRequest, m: string) => (monthOf(r.date) < m ? 'arrear' : 'regular');
+
+    const openRows = open
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map((r) => {
+        const l = line(r);
+        const type = typeOf(r, payMonth);
+        return `<tr><td><input type="checkbox" data-fin="${r.id}" aria-label="Select ${esc(emp(r.empId).name)}, ${fmtDate(r.date)}"></td>
+          <td>${esc(emp(r.empId).name)}</td><td>${fmtDate(r.date)}</td><td>${dayLabel(l.d)}</td><td>${hhmm(r.minutes)}</td>
+          <td>${rupees(l.rate)}/h</td><td><b>${rupees(l.amount)}</b></td><td><span class="st st-${type}">${type === 'arrear' ? 'Arrear' : 'Regular'}</span></td></tr>`;
+      })
+      .join('');
+
+    const reg = paid.map((r) => ({ r, ...line(r), type: typeOf(r, r.final!.payMonth!) }));
+    const rev = payMonth === currentMonth ? seededReversal : null;
+    const revAmount = rev ? (rev.minutes / 60) * hourlyRate(policy, emp(rev.empId), 'regular') : 0;
+    const sum = (t: string) => reg.filter((x) => x.type === t).reduce((s, x) => s + x.amount, 0);
+    const totalHours = reg.reduce((s, x) => s + x.r.minutes, 0) + (rev?.minutes ?? 0);
+    const totalPay = reg.reduce((s, x) => s + x.amount, 0) + revAmount;
+
+    p.innerHTML = `
+      <p class="hint"><i class="ti ti-receipt" aria-hidden="true"></i>Approval says the hours were worked. Finalization decides which payroll month pays them. Hours from an earlier month become <b>arrears</b>, and hours cut after payout become <b>reversals</b>.</p>
+      <div class="card">
+        <div class="row fin-bar">
+          <label class="field">Payroll month
+            <select id="pay-month">${[currentMonth, '2026-11'].map((m) => `<option value="${m}" ${m === payMonth ? 'selected' : ''}>${monthLabel(m)}</option>`).join('')}</select>
+          </label>
+          <div class="actions">
+            <button type="button" class="btn btn-ghost sm" data-act="ignore">Ignore</button>
+            <button type="button" class="btn btn-primary sm" data-act="consider"><i class="ti ti-check" aria-hidden="true"></i>Consider for payroll</button>
+          </div>
+        </div>
+        ${openRows
+          ? `<div class="tbl"><table><thead><tr><th scope="col"><span class="visually-hidden">Select</span></th><th scope="col">Employee</th><th scope="col">Date</th><th scope="col">Day type</th><th scope="col">OT hours</th><th scope="col">Rate</th><th scope="col">Amount</th><th scope="col">Type</th></tr></thead><tbody>${openRows}</tbody></table></div>`
+          : `<p class="empty">No approved overtime is waiting. ${ignored ? `${ignored} record(s) ignored.` : ''}</p>`}
+      </div>
+
+      <h2 class="reg-title">Overtime register · ${monthLabel(payMonth)}</h2>
+      <div class="stats">
+        <div><span>Total OT hours</span><b>${hhmm(totalHours)} h</b></div>
+        <div><span>Payable</span><b>${rupees(totalPay)}</b></div>
+        <div><span>Arrears</span><b>${rupees(sum('arrear'))}</b></div>
+        <div><span>Reversals</span><b>${rupees(revAmount)}</b></div>
+      </div>
+      <div class="card tbl">
+        <table><thead><tr><th scope="col">Employee</th><th scope="col">OT date</th><th scope="col">Hours</th><th scope="col">Amount</th><th scope="col">Type</th></tr></thead><tbody>
+          ${reg.map((x) => `<tr><td>${esc(emp(x.r.empId).name)}</td><td>${fmtDate(x.r.date)}</td><td>${hhmm(x.r.minutes)}</td><td>${rupees(x.amount)}</td><td><span class="st st-${x.type}">${x.type === 'arrear' ? 'Arrear' : 'Regular'}</span></td></tr>`).join('')}
+          ${rev ? `<tr><td>${esc(emp(rev.empId).name)}</td><td>${fmtDate(rev.date)}</td><td>${hhmm(rev.minutes)}</td><td>${rupees(revAmount)}</td><td><span class="st st-reversal">Reversal</span><small>${esc(rev.note)}</small></td></tr>` : ''}
+          ${!reg.length && !rev ? '<tr><td colspan="5" class="empty">Nothing considered for this month yet.</td></tr>' : ''}
+        </tbody></table>
+      </div>`;
+  }
+
+  panel('finalize').addEventListener('change', (ev) => {
+    const t = ev.target as HTMLElement;
+    if (t.id === 'pay-month') { payMonth = (t as HTMLSelectElement).value; renderFinalize(); }
+  });
+  panel('finalize').addEventListener('click', (ev) => {
+    const t = (ev.target as HTMLElement).closest<HTMLElement>('[data-act]');
+    if (!t) return;
+    const ids = [...panel('finalize').querySelectorAll<HTMLInputElement>('input[data-fin]:checked')].map((c) => Number(c.dataset.fin));
+    if (!ids.length) return toast('Select at least one record.', true);
+    const as = t.dataset.act === 'consider' ? 'considered' : 'ignored';
+    requests.filter((r) => ids.includes(r.id)).forEach((r) => (r.final = { as, payMonth: as === 'considered' ? payMonth : undefined }));
+    toast(as === 'considered' ? `${ids.length} record(s) sent to ${monthLabel(payMonth)} payroll.` : `${ids.length} record(s) ignored.`);
+    renderFinalize();
+  });
+
+  fillForm();
+  renderCalc();
+</script>
+
+<style>
+  .back { margin-top: 1.5rem; }
+  .demo-head { margin-block: 1rem var(--space-m); }
+  .demo-head h1 { font-size: var(--step-3); }
+  .demo-head .lede { max-width: 52ch; }
+</style>
+
+<style is:global>
+  .ot-demo { position: relative; margin-bottom: var(--space-l); font-size: 0.95rem; }
+  .ot-demo .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    background: var(--lav-50);
+  }
+  .ot-demo .steps button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 56px;
+    padding: 0.5rem 0.75rem;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .ot-demo .steps button:hover { background: var(--lav-100); }
+  .ot-demo .steps button[aria-pressed='true'] { background: #fff; box-shadow: 0 2px 10px rgb(43 33 96 / 0.1); }
+  .ot-demo .steps .n {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 50%;
+    background: var(--lav-200);
+    color: var(--violet);
+    font-weight: 700;
+  }
+  .ot-demo .steps [aria-pressed='true'] .n { background: var(--violet); color: #fff; }
+  .ot-demo .steps strong { display: block; font-size: 0.92rem; line-height: 1.2; }
+  .ot-demo .steps small { color: var(--slate); font-size: 0.78rem; }
+
+  .ot-demo .hint {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    background: var(--mustard-50);
+    color: var(--mustard-ink);
+  }
+  .ot-demo .hint i { margin-right: 0.4rem; }
+  .ot-demo .card { padding: 1.25rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .ot-demo .card + .card, .ot-demo .tabs + .card, .ot-demo .stats + .card { margin-top: 1rem; }
+  .ot-demo h2 { font-size: var(--step-1); }
+  .ot-demo .reg-title { margin-top: var(--space-m); }
+
+  .ot-demo .policy-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; align-items: start; }
+  .ot-demo .calc { position: sticky; top: 1rem; background: var(--lav-50); border-color: var(--lav-200); }
+  .ot-demo fieldset { margin: 1.25rem 0 0; padding: 0; border: 0; }
+  .ot-demo legend { margin-bottom: 0.5rem; font-family: var(--font-display); font-weight: 700; color: var(--violet); }
+  .ot-demo .field { display: grid; gap: 0.3rem; font-weight: 600; font-size: 0.85rem; color: var(--slate); }
+  .ot-demo .row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .ot-demo .row .field { flex: 1 1 8rem; }
+  .ot-demo input:not([type='checkbox'], [type='radio'], [type='range']), .ot-demo select, .ot-demo textarea {
+    width: 100%;
+    min-height: 40px;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--lav-300);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-weight: 400;
+  }
+  .ot-demo input:disabled { background: var(--lav-50); }
+  .ot-demo input[type='range'] { width: 100%; accent-color: var(--violet); }
+  .ot-demo input[type='checkbox'], .ot-demo input[type='radio'] { width: 1.1rem; height: 1.1rem; accent-color: var(--violet); }
+  .ot-demo .radios { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-bottom: 0.75rem; }
+  .ot-demo .radios label { display: flex; align-items: center; gap: 0.4rem; }
+  .ot-demo form[data-method='component'] .m-flat, .ot-demo form[data-method='flat'] .m-comp { display: none; }
+
+  .ot-demo .tbl { overflow-x: auto; }
+  .ot-demo table { width: 100%; border-collapse: collapse; }
+  .ot-demo th, .ot-demo td { padding: 0.55rem 0.5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+  .ot-demo thead th { font-size: 0.78rem; font-weight: 600; color: var(--slate); white-space: nowrap; }
+  .ot-demo tbody th { font-weight: 600; white-space: nowrap; }
+  .ot-demo td small { display: block; color: var(--slate); font-size: 0.75rem; }
+  .ot-demo tr.off td { color: var(--slate); }
+  .ot-demo tr.over td { background: #fde8ee; }
+  .ot-demo tr.over small { color: #9b1c3d; }
+
+  .ot-demo .breakdown { margin: 1rem 0 0; padding: 0; list-style: none; }
+  .ot-demo .breakdown li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px dashed var(--lav-300); }
+  .ot-demo .breakdown li.warn b { color: #9b1c3d; }
+  .ot-demo .breakdown li.total { border-bottom-style: solid; font-weight: 700; }
+  .ot-demo .breakdown li.pay { border: 0; margin-top: 0.4rem; padding: 0.6rem 0.75rem; border-radius: 10px; background: var(--violet); color: #fff; }
+
+  .ot-demo .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; margin-block: 1rem; }
+  .ot-demo .stats div { padding: 0.85rem 1rem; border-radius: 14px; background: var(--lav-50); }
+  .ot-demo .stats span { display: block; font-size: 0.8rem; color: var(--slate); }
+  .ot-demo .stats b { font-family: var(--font-display); font-size: 1.35rem; color: var(--violet); }
+
+  .ot-demo .tabs { display: inline-flex; max-width: 100%; overflow-x: auto; gap: 0.25rem; padding: 0.25rem; border-radius: 999px; background: var(--lav-50); }
+  .ot-demo .tabs button { flex: none; white-space: nowrap; min-height: 40px; padding: 0 1rem; border: 0; border-radius: 999px; background: transparent; color: var(--violet); font: inherit; font-weight: 600; cursor: pointer; }
+  .ot-demo .tabs button[aria-pressed='true'] { background: var(--violet); color: #fff; }
+
+  .ot-demo .card > .field, .ot-demo .card > .actions { margin-top: 1rem; }
+  .ot-demo .btn.sm { min-height: 40px; padding: 0 1rem; }
+  .ot-demo .link { padding: 0.25rem; border: 0; background: none; color: var(--violet); font: inherit; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  .ot-demo .empty { margin: 0; color: var(--slate); }
+  .ot-demo .small { font-size: 0.85rem; }
+
+  .ot-demo .queue { display: grid; gap: 0.75rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+  .ot-demo .queue li { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem 1rem; }
+  .ot-demo .queue .who small, .ot-demo .queue .hrs small { display: block; color: var(--slate); font-size: 0.8rem; }
+  .ot-demo .queue .hrs { text-align: right; }
+  .ot-demo .queue .hrs b { font-family: var(--font-display); font-size: 1.2rem; color: var(--violet); }
+  .ot-demo .queue .why { grid-column: 1 / -1; margin: 0; }
+  .ot-demo .queue .decide { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .ot-demo .queue .decide input { flex: 1 1 12rem; }
+
+  .ot-demo .fin-bar { justify-content: space-between; align-items: end; margin-bottom: 0.75rem; }
+  .ot-demo .fin-bar .field { flex: 0 1 14rem; }
+
+  .ot-demo .st { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; background: var(--lav-100); color: var(--violet); }
+  .ot-demo .st-pending { background: var(--mustard-50); color: #5e4204; }
+  .ot-demo .st-approved, .ot-demo .st-regular { background: #e3f4ea; color: #1d5c37; }
+  .ot-demo .st-rejected, .ot-demo .st-reversal { background: #fde8ee; color: #9b1c3d; }
+  .ot-demo .st-withdrawn { background: #eee; color: #555; }
+  .ot-demo .st-arrear { background: var(--mustard-50); color: #5e4204; }
+
+  .ot-demo .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 1.5rem;
+    z-index: 20;
+    max-width: min(90vw, 32rem);
+    margin: 0;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+    background: var(--ink);
+    color: #fff;
+    opacity: 0;
+    transform: translate(-50%, 1rem);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .ot-demo .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  .ot-demo .toast.bad { background: #9b1c3d; }
+
+  @media (max-width: 52rem) {
+    .ot-demo .steps { grid-template-columns: repeat(2, 1fr); }
+    .ot-demo .policy-grid { grid-template-columns: 1fr; }
+    .ot-demo .calc { position: static; }
+  }
+</style>

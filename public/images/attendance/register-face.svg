@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 1040" width="600" height="1040" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<rect width="600" height="1040" fill="#eeeafb"/>
+<circle cx="560" cy="120" r="150" fill="#e4defa" opacity=".7"/>
+<circle cx="40" cy="980" r="120" fill="#fbf1d3"/>
+<text x="300" y="92" font-size="36" font-weight="800" fill="#2b2160" text-anchor="middle" >Register faces</text>
+<text x="300" y="140" font-size="36" font-weight="800" fill="#2b2160" text-anchor="middle" >at the kiosk</text>
+<rect x="100" y="196" width="400" height="900" rx="56" fill="#1e1a33"/>
+<defs><clipPath id="scr"><rect x="0" y="0" width="376" height="880" rx="44"/></clipPath></defs>
+<g transform="translate(112 208)" clip-path="url(#scr)">
+<rect width="376" height="880" fill="#f7f5fe"/>
+<text x="24" y="30" font-size="14" font-weight="600" fill="#1e1a33" text-anchor="start" >9:41</text><rect x="306" y="20" width="18" height="11" rx="2" fill="#1e1a33" opacity=".8"/><rect x="330" y="20" width="24" height="11" rx="3" fill="none" stroke="#1e1a33" stroke-width="1.5"/><rect x="332" y="22" width="16" height="7" rx="1.5" fill="#1e1a33"/>
+<text x="24" y="86" font-size="30" font-weight="400" fill="#2b2160" text-anchor="start" >‹</text><text x="48" y="84" font-size="22" font-weight="800" fill="#1e1a33" text-anchor="start" >Register faces</text>
+<rect x="24" y="108" width="328" height="46" rx="14" fill="#fff" stroke="#cfc6f5"/>
+<circle cx="48" cy="131" r="7" fill="none" stroke="#4a4470" stroke-width="2"/><path d="M53 136 l6 6" stroke="#4a4470" stroke-width="2" stroke-linecap="round"/>
+<text x="68" y="136" font-size="15" font-weight="600" fill="#1e1a33" text-anchor="start" >Ananya Rao · EMP-1042</text>
+<rect x="24" y="172" width="328" height="340" rx="20" fill="#e4defa" stroke="#e4defa"/>
+<g transform="translate(188 330) scale(1.0)">
+  <path d="M-110 190 q0 -86 110 -86 q110 0 110 86 z" fill="#6a5bb8"/>
+  <rect x="-20" y="60" width="40" height="52" rx="12" fill="#b97e5a"/>
+  <ellipse cx="0" cy="0" rx="60" ry="74" fill="#d29b74"/>
+  <path d="M-62 -6 q-6 -84 62 -84 q70 0 64 84 q-8 -40 -40 -50 q-30 22 -86 50 z" fill="#2a1f1a"/>
+  <ellipse cx="-16" cy="2" rx="5" ry="6" fill="#1e1a33"/><ellipse cx="16" cy="2" rx="5" ry="6" fill="#1e1a33"/>
+  <path d="M-4 14 q4 14 10 14" stroke="#a96d4b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M-18 42 q18 14 36 0" stroke="#8a4b34" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</g>
+<ellipse cx="188" cy="326" rx="96" ry="122" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="10 8"/>
+<rect x="36" y="184" width="120" height="28" rx="14" fill="#fff" stroke="#fff"/><text x="96" y="203" font-size="12" font-weight="700" fill="#2e9e6b" text-anchor="middle" >Photo captured</text>
+<circle cx="40" cy="548" r="11" fill="#2e9e6b"/><path d="M35.05 548 l3.52 3.52 l6.6 -6.82" fill="none" stroke="#fff" stroke-width="2.42" stroke-linecap="round" stroke-linejoin="round"/><text x="62" y="553" font-size="15" font-weight="500" fill="#1e1a33" text-anchor="start" >Face fills 60%+ of the frame</text>
+<circle cx="40" cy="584" r="11" fill="#2e9e6b"/><path d="M35.05 584 l3.52 3.52 l6.6 -6.82" fill="none" stroke="#fff" stroke-width="2.42" stroke-linecap="round" stroke-linejoin="round"/><text x="62" y="589" font-size="15" font-weight="500" fill="#1e1a33" text-anchor="start" >Good, even lighting</text>
+<circle cx="40" cy="620" r="11" fill="#2e9e6b"/><path d="M35.05 620 l3.52 3.52 l6.6 -6.82" fill="none" stroke="#fff" stroke-width="2.42" stroke-linecap="round" stroke-linejoin="round"/><text x="62" y="625" font-size="15" font-weight="500" fill="#1e1a33" text-anchor="start" >Not registered to anyone else</text>
+<rect x="24" y="664" width="150" height="48" rx="24.0" fill="#fff" stroke="#cfc6f5"/><text x="99.0" y="694.0" font-size="16" font-weight="700" fill="#2b2160" text-anchor="middle" >Retake</text>
+<rect x="190" y="664" width="162" height="48" rx="24.0" fill="#2b2160" stroke="#2b2160"/><text x="271.0" y="694.0" font-size="16" font-weight="700" fill="#fff" text-anchor="middle" >Save face</text>
+<text x="188" y="752" font-size="12" font-weight="500" fill="#4a4470" text-anchor="middle" >Sample data. Illustrated person.</text>
+
+</g>
+<rect x="250" y="216" width="100" height="22" rx="11" fill="#1e1a33"/>
+</svg>

@@ -45,3 +45,12 @@ export function videoEmbedUrl(pageUrl: string): string | null {
   } catch {}
   return null;
 }
+
+/** Turn a Figma file or prototype share URL into its embed URL. */
+export function figmaEmbedUrl(pageUrl: string): string | null {
+  try {
+    const host = new URL(pageUrl).hostname.replace(/^www\./, '');
+    if (host === 'figma.com') return `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(pageUrl)}`;
+  } catch {}
+  return null;
+}

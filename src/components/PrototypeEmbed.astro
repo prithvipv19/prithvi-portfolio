@@ -1,0 +1,68 @@
+---
+import { figmaEmbedUrl } from '../lib/site';
+
+interface Props {
+  src: string;
+  title: string;
+}
+
+const { src, title } = Astro.props;
+const embed = figmaEmbedUrl(src);
+---
+
+{embed ? (
+  <section class="proto" aria-labelledby="proto-title">
+    <h2 id="proto-title">Try the prototype</h2>
+    <p class="muted">Clickable Figma prototype. All names and numbers are made up.</p>
+    <div class="frame" data-proto>
+      <button type="button" data-src={embed} data-title={title}>
+        <i class="ti ti-hand-click" aria-hidden="true"></i>
+        <span>Load the prototype<span class="visually-hidden">: {title}</span></span>
+      </button>
+    </div>
+  </section>
+) : (
+  <p><a href={src}>Open the prototype</a></p>
+)}
+
+<script>
+  // Load Figma only when someone asks for it.
+  document.querySelectorAll<HTMLElement>('[data-proto] button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = btn.dataset.src!;
+      iframe.title = btn.dataset.title!;
+      iframe.allowFullscreen = true;
+      btn.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+</script>
+
+<style>
+  .proto { margin-block: var(--space-m); }
+  h2 { margin: 0 0 0.25rem; font-size: var(--step-1); }
+  .muted { margin: 0 0 1rem; }
+  .frame {
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--lav-100);
+  }
+  .frame button, .frame :global(iframe) { display: block; width: 100%; height: 100%; border: 0; }
+  .frame button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    background: var(--lav-100);
+    color: var(--violet);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .frame button i { font-size: 2.5rem; }
+  .frame button:hover { background: var(--lav-200); }
+  @media (max-width: 40rem) { .frame { aspect-ratio: 3 / 4; } }
+</style>

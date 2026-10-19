@@ -3,6 +3,8 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
 import Gallery from '../../components/Gallery.astro';
+import FlowDiagram from '../../components/FlowDiagram.astro';
+import PrototypeEmbed from '../../components/PrototypeEmbed.astro';
 import Contact from '../../components/Contact.astro';
 import { formatMonth, getWork, typeLabel, url, type WorkEntry } from '../../lib/site';
 
@@ -12,7 +14,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: WorkEntry };
-const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery } = entry.data;
+const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery, galleryNote, flow, prototype, demo } = entry.data;
 const { Content } = await render(entry);
 
 const linkLabels: Record<keyof typeof links, { label: string; icon: string }> = {
@@ -47,12 +49,24 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
         <div><dt><i class="ti ti-calendar" aria-hidden="true"></i>When</dt><dd><time datetime={date.toISOString()}>{formatMonth(date)}</time></dd></div>
       </dl>
 
+      {flow.length > 0 && <FlowDiagram steps={flow} />}
+
+      {demo && (
+        <a class="try" href={url(demo)}>
+          <i class="ti ti-player-play" aria-hidden="true"></i>
+          <span><strong>Try the interactive demo</strong><small>Set a policy, apply, approve and run payroll, on fictional data.</small></span>
+          <i class="ti ti-arrow-right" aria-hidden="true"></i>
+        </a>
+      )}
+
       {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
-      {gallery.length > 0 && <Gallery images={gallery} />}
+      {gallery.length > 0 && <Gallery images={gallery} note={galleryNote} />}
 
       <div class="prose measure">
         <Content />
       </div>
+
+      {prototype && <PrototypeEmbed src={prototype} title={title} />}
 
       {tags.length > 0 && (
         <ul class="chips tags" aria-label="Topics">{tags.map((t) => <li class="chip chip-outline">{t}</li>)}</ul>
@@ -92,6 +106,23 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
   dd { margin: 0.2rem 0 0; font-weight: 600; color: var(--ink); }
   .impact dd { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--violet); }
   .media { max-width: 56rem; }
+  .try {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-block: var(--space-m);
+    padding: 1.1rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--mustard);
+    color: var(--mustard-ink);
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+  .try:hover { transform: translateY(-2px); color: var(--mustard-ink); }
+  .try > i { font-size: 1.6rem; }
+  .try span { flex: 1; }
+  .try strong { display: block; font-family: var(--font-display); font-size: var(--step-1); }
+  .try small { font-size: var(--step--1); }
   .tags { margin-top: var(--space-m); }
   .links { margin-block: var(--space-m) var(--space-l); }
   .prose { margin-bottom: var(--space-m); }

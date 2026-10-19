@@ -1,0 +1,86 @@
+---
+interface Props {
+  steps: { label: string; note?: string }[];
+  title?: string;
+}
+
+const { steps, title = 'How it works, end to end' } = Astro.props;
+---
+
+<section class="flow" aria-labelledby="flow-title">
+  <h2 id="flow-title">{title}</h2>
+  <ol style={`--n: ${steps.length}`}>
+    {steps.map((step, i) => (
+      <li>
+        <span class="num" aria-hidden="true">{i + 1}</span>
+        <strong>{step.label}</strong>
+        {step.note && <span class="note">{step.note}</span>}
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .flow {
+    margin-block: var(--space-m);
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  h2 { margin: 0 0 1.25rem; font-size: var(--step-1); }
+  ol {
+    display: grid;
+    grid-template-columns: repeat(var(--n), 1fr);
+    gap: 1.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 1rem;
+    border-radius: 14px;
+    background: var(--lav-50);
+  }
+  li:last-child { background: var(--mustard-50); }
+  /* Arrow to the next step */
+  li:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -1.35rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-top: 2px solid var(--lav-500);
+    border-right: 2px solid var(--lav-500);
+    transform: translateY(-50%) rotate(45deg);
+  }
+  .num {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--violet);
+    color: var(--paper);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+  li:last-child .num { background: var(--mustard); color: var(--mustard-ink); }
+  strong { font-family: var(--font-display); color: var(--ink); line-height: 1.2; }
+  .note { font-size: var(--step--1); color: var(--slate); }
+
+  @media (max-width: 60rem) {
+    ol { grid-template-columns: 1fr; gap: 1.5rem; }
+    li:not(:last-child)::after {
+      top: auto;
+      right: auto;
+      bottom: -1.15rem;
+      left: 1.6rem;
+      transform: rotate(135deg);
+    }
+  }
+</style>

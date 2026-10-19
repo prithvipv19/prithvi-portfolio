@@ -32,8 +32,18 @@ const work = defineCollection({
         slides: z.url().optional(),
       })
       .default({}),
+    /** Site path to an interactive demo page, e.g. "work/overtime-module/demo/". */
+    demo: z.string().optional(),
+    /** Figma prototype share URL, shown as a click-to-load embed. */
+    prototype: z.url().optional(),
+    /** Steps of the end-to-end flow, drawn as a diagram under the facts box. */
+    flow: z.array(z.object({ label: z.string(), note: z.string().optional() })).default([]),
     // Images live in public/images/; paths are relative to it, e.g. "checkout-1.png".
-    gallery: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
+    gallery: z
+      .array(z.object({ src: z.string(), alt: z.string(), caption: z.string().optional() }))
+      .default([]),
+    /** One line shown above the gallery, e.g. that screens are recreated. */
+    galleryNote: z.string().optional(),
   }),
 });
 

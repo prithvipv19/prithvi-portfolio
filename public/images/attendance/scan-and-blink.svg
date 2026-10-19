@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 1040" width="600" height="1040" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<rect width="600" height="1040" fill="#eeeafb"/>
+<circle cx="560" cy="120" r="150" fill="#e4defa" opacity=".7"/>
+<circle cx="40" cy="980" r="120" fill="#fbf1d3"/>
+<text x="300" y="92" font-size="36" font-weight="800" fill="#2b2160" text-anchor="middle" >Just look</text>
+<text x="300" y="140" font-size="36" font-weight="800" fill="#2b2160" text-anchor="middle" >and blink</text>
+<rect x="100" y="196" width="400" height="900" rx="56" fill="#1e1a33"/>
+<defs><clipPath id="scr"><rect x="0" y="0" width="376" height="880" rx="44"/></clipPath></defs>
+<g transform="translate(112 208)" clip-path="url(#scr)">
+<rect width="376" height="880" fill="#f7f5fe"/>
+<defs><linearGradient id="cam" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a4470"/><stop offset="1" stop-color="#1e1a33"/></linearGradient></defs>
+<rect width="376" height="880" fill="url(#cam)"/>
+<text x="24" y="30" font-size="14" font-weight="600" fill="#fff" text-anchor="start" >9:41</text><rect x="306" y="20" width="18" height="11" rx="2" fill="#fff" opacity=".8"/><rect x="330" y="20" width="24" height="11" rx="3" fill="none" stroke="#fff" stroke-width="1.5"/><rect x="332" y="22" width="16" height="7" rx="1.5" fill="#fff"/>
+<text x="188" y="82" font-size="14" font-weight="600" fill="#fff" text-anchor="middle" opacity=".8">Main gate · Block A</text>
+<g transform="translate(188 330) scale(1.25)">
+  <path d="M-110 190 q0 -86 110 -86 q110 0 110 86 z" fill="#6a5bb8"/>
+  <rect x="-20" y="60" width="40" height="52" rx="12" fill="#b97e5a"/>
+  <ellipse cx="0" cy="0" rx="60" ry="74" fill="#d29b74"/>
+  <path d="M-62 -6 q-6 -84 62 -84 q70 0 64 84 q-8 -40 -40 -50 q-30 22 -86 50 z" fill="#2a1f1a"/>
+  <path d="M-24 4 q8 5 16 0 M8 4 q8 5 16 0" stroke="#1e1a33" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M-4 14 q4 14 10 14" stroke="#a96d4b" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M-18 42 q18 14 36 0" stroke="#8a4b34" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+</g>
+<g fill="none" stroke="#e5b53a" stroke-width="5" stroke-linecap="round">
+<path d="M84 196 v-34 h34 M258 162 h34 v34 M292 430 v34 h-34 M118 464 h-34 v-34"/></g>
+<g fill="#e5b53a" opacity=".9"><circle cx="160" cy="333" r="3"/><circle cx="216" cy="333" r="3"/><circle cx="188" cy="360" r="3"/><circle cx="166" cy="388" r="3"/><circle cx="210" cy="388" r="3"/><circle cx="140" cy="352" r="3"/><circle cx="236" cy="352" r="3"/></g>
+<rect x="112" y="494" width="152" height="34" rx="17" fill="rgba(0,0,0,.35)" stroke="none"/><text x="188" y="517" font-size="14" font-weight="700" fill="#fff" text-anchor="middle" >Blink detected</text>
+<rect x="0" y="568" width="376" height="320" rx="28" fill="#fff"/>
+<text x="188" y="614" font-size="19" font-weight="800" fill="#1e1a33" text-anchor="middle" >Blink naturally to check in</text>
+<circle cx="48" cy="656" r="11" fill="#2e9e6b"/><path d="M43.05 656 l3.52 3.52 l6.6 -6.82" fill="none" stroke="#fff" stroke-width="2.42" stroke-linecap="round" stroke-linejoin="round"/><text x="70" y="661" font-size="15" font-weight="500" fill="#1e1a33" text-anchor="start" >Face found</text>
+<circle cx="48" cy="692" r="11" fill="#2e9e6b"/><path d="M43.05 692 l3.52 3.52 l6.6 -6.82" fill="none" stroke="#fff" stroke-width="2.42" stroke-linecap="round" stroke-linejoin="round"/><text x="70" y="697" font-size="15" font-weight="500" fill="#1e1a33" text-anchor="start" >Live person (blink)</text>
+<circle cx="48" cy="728" r="11" fill="none" stroke="#6a5bb8" stroke-width="3" stroke-dasharray="40 30"/><text x="70" y="733" font-size="15" font-weight="600" fill="#6a5bb8" text-anchor="start" >Matching with employees…</text>
+<rect x="24" y="766" width="328" height="8" rx="4" fill="#eeeafb"/><rect x="24" y="766" width="230" height="8" rx="4" fill="#6a5bb8"/>
+
+</g>
+<rect x="250" y="216" width="100" height="22" rx="11" fill="#1e1a33"/>
+</svg>

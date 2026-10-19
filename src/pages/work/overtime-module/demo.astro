@@ -1,16 +1,21 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { dayTypes } from '../../../lib/overtime-demo';
+import { defaultPolicy, hhmm } from '../../../lib/overtime-demo';
 import { url } from '../../../lib/site';
 
 const steps = [
-  { id: 'policy', n: 1, label: 'Set the policy', who: 'HR admin' },
-  { id: 'employee', n: 2, label: 'Apply for OT', who: 'Employee' },
-  { id: 'manager', n: 3, label: 'Review & apply for team', who: 'Manager' },
-  { id: 'finalize', n: 4, label: 'Finalize for payroll', who: 'HR admin' },
+  { id: 'employee', n: 1, label: 'Apply for OT', who: 'Employee' },
+  { id: 'manager', n: 2, label: 'Review & apply for team', who: 'Manager' },
+  { id: 'finalize', n: 3, label: 'Finalize for payroll', who: 'HR admin' },
 ];
-const blocks = [1, 5, 10, 15, 30];
-const multipliers = [1, 1.5, 2, 2.5, 3];
+const p = defaultPolicy();
+const rules = [
+  { icon: 'coffee', label: 'Break deducted', value: `${p.breakMin.rest} min on rest days and holidays` },
+  { icon: 'hourglass-low', label: 'Minimum to qualify', value: `${p.minMin.regular} min on regular days, ${p.minMin.rest} min otherwise` },
+  { icon: 'adjustments', label: 'Rounding', value: `Down to ${p.block}-minute blocks` },
+  { icon: 'shield-check', label: 'Caps', value: `${hhmm(p.dailyCapMin)} h a day, ${hhmm(p.monthlyCapMin)} h a month` },
+  { icon: 'currency-rupee', label: 'Pay', value: `Basic ÷ 208 h × ${p.multiplier.regular} (× ${p.multiplier.holiday} on holidays)` },
+];
 ---
 
 <BaseLayout title="Overtime demo" description="Try the overtime flow end to end: policy, employee request, manager approval and payroll finalization, on fictional data.">
@@ -18,7 +23,7 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
     <a class="more back" href={url('work/overtime-module/')}><i class="ti ti-arrow-left" aria-hidden="true"></i> Back to the case study</a>
     <header class="demo-head">
       <h1>Try the overtime flow</h1>
-      <p class="lede">Set the rules, apply for overtime, approve it, and send it to payroll. Each step uses what you did in the last one.</p>
+      <p class="lede">Apply for overtime, approve it, and send it to payroll. Each step uses what you did in the last one.</p>
       <ul class="chips">
         <li class="chip chip-mustard"><i class="ti ti-flask" aria-hidden="true"></i>Fictional data</li>
         <li class="chip chip-lav"><i class="ti ti-refresh" aria-hidden="true"></i>Resets when you reload</li>
@@ -28,99 +33,23 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
     <div class="ot-demo" id="ot-demo">
       <nav class="steps" aria-label="Demo steps">
         {steps.map((s) => (
-          <button type="button" data-view={s.id} aria-pressed={s.id === 'policy' ? 'true' : 'false'}>
+          <button type="button" data-view={s.id} aria-pressed={s.id === 'employee' ? 'true' : 'false'}>
             <span class="n" aria-hidden="true">{s.n}</span>
             <span><strong>{s.label}</strong><small>{s.who}</small></span>
           </button>
         ))}
       </nav>
 
-      <!-- 1. Policy (static form, bound in the script) -->
-      <section class="view" data-panel="policy">
-        <p class="hint"><i class="ti ti-bulb" aria-hidden="true"></i>Change any rule and watch the calculator. The other steps use these rules too.</p>
-        <div class="policy-grid">
-          <form class="card policy-form" id="policy-form" onsubmit="return false">
-            <label class="field">Policy name <input name="name" maxlength="60" /></label>
-
-            <fieldset>
-              <legend>Eligibility, in minutes</legend>
-              <div class="tbl">
-                <table>
-                  <thead><tr><th scope="col">Day type</th><th scope="col">Break deducted</th><th scope="col">Minimum to qualify</th></tr></thead>
-                  <tbody>
-                    {dayTypes.map((d) => (
-                      <tr>
-                        <th scope="row">{d.label}</th>
-                        <td><input type="number" min="0" max="120" step="5" name={`break-${d.id}`} aria-label={`${d.label} break deducted, minutes`} /></td>
-                        <td><input type="number" min="0" max="240" step="5" name={`min-${d.id}`} aria-label={`${d.label} minimum to qualify, minutes`} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend>Rounding and caps</legend>
-              <div class="row">
-                <label class="field">Block time
-                  <select name="block">{blocks.map((b) => <option value={b}>{b} min</option>)}</select>
-                </label>
-                <label class="field">Round to block
-                  <select name="rounding">
-                    <option value="down">Round down</option>
-                    <option value="up">Round up</option>
-                    <option value="normal">Normal round</option>
-                    <option value="none">No rounding</option>
-                  </select>
-                </label>
-                <label class="field">Daily cap (h) <input type="number" min="1" max="12" name="dailyCap" /></label>
-                <label class="field">Monthly cap (h) <input type="number" min="1" max="100" name="monthlyCap" /></label>
-              </div>
-            </fieldset>
-
-            <fieldset>
-              <legend>Payout</legend>
-              <div class="radios">
-                <label><input type="radio" name="method" value="component" /> Basic salary × multiplier</label>
-                <label><input type="radio" name="method" value="flat" /> Flat ₹ per hour</label>
-              </div>
-              <div class="tbl">
-                <table>
-                  <thead><tr><th scope="col">Day type</th><th scope="col" class="m-comp">Multiplier</th><th scope="col" class="m-flat">₹ per hour</th></tr></thead>
-                  <tbody>
-                    {dayTypes.map((d) => (
-                      <tr>
-                        <th scope="row">{d.label}</th>
-                        <td class="m-comp">
-                          <select name={`mult-${d.id}`} aria-label={`${d.label} multiplier`}>{multipliers.map((m) => <option value={m}>{m}×</option>)}</select>
-                        </td>
-                        <td class="m-flat"><input type="number" min="0" step="10" name={`flat-${d.id}`} aria-label={`${d.label} rupees per hour`} /></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </fieldset>
-          </form>
-
-          <aside class="card calc" aria-labelledby="calc-title">
-            <h2 id="calc-title">Try the rules</h2>
-            <div class="row">
-              <label class="field">Employee <select id="calc-emp"></select></label>
-              <label class="field">Day type
-                <select id="calc-day">{dayTypes.map((d) => <option value={d.id}>{d.label}</option>)}</select>
-              </label>
-            </div>
-            <label class="field">Time beyond shift: <output id="calc-out" for="calc-extra"></output>
-              <input type="range" id="calc-extra" min="0" max="480" step="1" value="140" />
-            </label>
-            <ol class="breakdown" id="calc-breakdown" aria-live="polite"></ol>
-          </aside>
-        </div>
+      <section class="card policy" aria-labelledby="policy-title">
+        <h2 id="policy-title"><i class="ti ti-file-certificate" aria-hidden="true"></i>{p.name}</h2>
+        <dl>
+          {rules.map((r) => (
+            <div><dt><i class={`ti ti-${r.icon}`} aria-hidden="true"></i>{r.label}</dt><dd>{r.value}</dd></div>
+          ))}
+        </dl>
       </section>
 
-      <section class="view" data-panel="employee" hidden></section>
+      <section class="view" data-panel="employee"></section>
       <section class="view" data-panel="manager" hidden></section>
       <section class="view" data-panel="finalize" hidden></section>
 
@@ -136,7 +65,7 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
     type DayType, type OtRequest, type Policy,
   } from '../../../lib/overtime-demo';
 
-  let policy: Policy = defaultPolicy();
+  const policy: Policy = defaultPolicy();
   let requests: OtRequest[] = seedRequests();
   let nextId = 100;
   let empTab: 'apply' | 'pending' | 'history' = 'apply';
@@ -180,83 +109,12 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
   root.querySelectorAll<HTMLButtonElement>('[data-view]').forEach((b) => b.addEventListener('click', () => show(b.dataset.view!)));
 
   function render(view: string) {
-    if (view === 'policy') renderCalc();
     if (view === 'employee') renderEmployee();
     if (view === 'manager') renderManager();
     if (view === 'finalize') renderFinalize();
   }
 
-  // ---------- 1. Policy ----------
-  const form = document.getElementById('policy-form') as HTMLFormElement;
-  const f = (name: string) => form.elements.namedItem(name) as HTMLInputElement;
-
-  function fillForm() {
-    f('name').value = policy.name;
-    for (const d of dayTypes) {
-      f(`break-${d.id}`).value = String(policy.breakMin[d.id]);
-      f(`min-${d.id}`).value = String(policy.minMin[d.id]);
-      f(`mult-${d.id}`).value = String(policy.multiplier[d.id]);
-      f(`flat-${d.id}`).value = String(policy.flatRate[d.id]);
-    }
-    f('block').value = String(policy.block);
-    f('rounding').value = policy.rounding;
-    f('dailyCap').value = String(policy.dailyCapMin / 60);
-    f('monthlyCap').value = String(policy.monthlyCapMin / 60);
-    form.querySelectorAll<HTMLInputElement>('[name="method"]').forEach((r) => (r.checked = r.value === policy.method));
-    form.dataset.method = policy.method;
-  }
-
-  const num = (name: string, fallback: number) => {
-    const v = Number(f(name).value);
-    return Number.isFinite(v) && v >= 0 ? v : fallback;
-  };
-
-  form.addEventListener('input', () => {
-    policy.name = f('name').value || 'Untitled policy';
-    for (const d of dayTypes) {
-      policy.breakMin[d.id] = num(`break-${d.id}`, policy.breakMin[d.id]);
-      policy.minMin[d.id] = num(`min-${d.id}`, policy.minMin[d.id]);
-      policy.multiplier[d.id] = num(`mult-${d.id}`, policy.multiplier[d.id]);
-      policy.flatRate[d.id] = num(`flat-${d.id}`, policy.flatRate[d.id]);
-    }
-    policy.block = num('block', policy.block);
-    policy.rounding = f('rounding').value as Policy['rounding'];
-    policy.dailyCapMin = Math.max(60, num('dailyCap', 4) * 60);
-    policy.monthlyCapMin = Math.max(60, num('monthlyCap', 20) * 60);
-    policy.method = (form.querySelector<HTMLInputElement>('[name="method"]:checked')?.value ?? 'component') as Policy['method'];
-    form.dataset.method = policy.method;
-    renderCalc();
-  });
-
-  const calcEmp = document.getElementById('calc-emp') as HTMLSelectElement;
-  const calcDay = document.getElementById('calc-day') as HTMLSelectElement;
-  const calcExtra = document.getElementById('calc-extra') as HTMLInputElement;
-  calcEmp.innerHTML = employees.map((e) => `<option value="${e.id}">${esc(e.name)} · Basic ${rupees(e.basic)}</option>`).join('');
-  [calcEmp, calcDay, calcExtra].forEach((el) => el.addEventListener('input', renderCalc));
-
-  function renderCalc() {
-    const day = calcDay.value as DayType;
-    const extra = Number(calcExtra.value);
-    const e = emp(calcEmp.value);
-    const b = eligibleOt(policy, day, extra);
-    const rate = hourlyRate(policy, e, day);
-    document.getElementById('calc-out')!.textContent = `${hhmm(extra)} h`;
-    const roundLabel = { down: 'rounded down', up: 'rounded up', normal: 'rounded to nearest', none: 'not rounded' }[policy.rounding];
-    const rateNote = policy.method === 'component'
-      ? `${rupees(e.basic)} ÷ 208 h × ${policy.multiplier[day]}`
-      : 'flat rate';
-    document.getElementById('calc-breakdown')!.innerHTML = `
-      <li><span>Time beyond shift</span><b>${hhmm(b.worked)}</b></li>
-      <li><span>Minus break (${policy.breakMin[day]} min)</span><b>${hhmm(b.afterBreak)}</b></li>
-      <li class="${b.belowMin ? 'warn' : ''}"><span>Minimum ${policy.minMin[day]} min</span><b>${b.belowMin ? 'Not met' : 'Met'}</b></li>
-      <li><span>${policy.block}-min blocks, ${roundLabel}</span><b>${hhmm(b.rounded)}</b></li>
-      <li class="${b.capped ? 'warn' : ''}"><span>Daily cap ${hhmm(policy.dailyCapMin)}</span><b>${b.capped ? 'Capped' : 'Within cap'}</b></li>
-      <li class="total"><span>Eligible OT</span><b>${hhmm(b.eligible)} h</b></li>
-      <li><span>Rate (${rateNote})</span><b>${rupees(rate)}/h</b></li>
-      <li class="total pay"><span>Pay for this day</span><b>${rupees((b.eligible / 60) * rate)}</b></li>`;
-  }
-
-  // ---------- 2. Employee ----------
+  // ---------- 1. Employee ----------
   function tabs(name: string, current: string, items: [string, string][]) {
     return `<div class="tabs" role="group" aria-label="${name}">${items
       .map(([id, label]) => `<button type="button" data-tab="${id}" aria-pressed="${id === current}">${label}</button>`)
@@ -339,13 +197,13 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
         return toast(`That's over your monthly cap of ${hhmm(policy.monthlyCapMin)} h. Pick fewer days.`, true);
       }
       items.forEach((i) => requests.push({ id: nextId++, empId: me, by: 'employee', status: 'pending', ...i }));
-      toast(`Sent ${items.length} day(s), ${hhmm(total)} h, to ${managerName}. Next: step 3.`);
+      toast(`Sent ${items.length} day(s), ${hhmm(total)} h, to ${managerName}. Next: step 2.`);
       empTab = 'pending';
       renderEmployee();
     }
   });
 
-  // ---------- 3. Manager ----------
+  // ---------- 2. Manager ----------
   function renderManager() {
     const p = panel('manager');
     const pending = requests.filter((r) => r.status === 'pending');
@@ -369,7 +227,7 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
               </li>`;
             })
             .join('')}</ul>`
-        : `<p class="empty card">The queue is clear. Try <b>Apply for team</b>, or go to step 4.</p>`;
+        : `<p class="empty card">The queue is clear. Try <b>Apply for team</b>, or go to step 3.</p>`;
     } else if (mgrTab === 'closed') {
       body = closed.length
         ? `<div class="card tbl"><table><thead><tr><th scope="col">Employee</th><th scope="col">Date</th><th scope="col">OT hours</th><th scope="col">Applied by</th><th scope="col">Status</th></tr></thead><tbody>${closed
@@ -433,12 +291,12 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
         const minutes = eligibleOt(policy, cl.dayType, cl.extraMin).eligible;
         requests.push({ id: nextId++, empId, date, minutes, reason: 'Applied by manager', by: 'manager', status: 'approved' });
       }
-      toast(`Applied and approved ${picked.length} day(s). Next: step 4.`);
+      toast(`Applied and approved ${picked.length} day(s). Next: step 3.`);
       renderManager();
     }
   });
 
-  // ---------- 4. Finalize ----------
+  // ---------- 3. Finalize ----------
   function line(r: OtRequest) {
     const d = dayOf(r.empId, r.date);
     const rate = hourlyRate(policy, emp(r.empId), d);
@@ -518,8 +376,7 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
     renderFinalize();
   });
 
-  fillForm();
-  renderCalc();
+  renderEmployee();
 </script>
 
 <style>
@@ -533,7 +390,7 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
   .ot-demo { position: relative; margin-bottom: var(--space-l); font-size: 0.95rem; }
   .ot-demo .steps {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     margin-bottom: 1.25rem;
     padding: 0.5rem;
@@ -583,10 +440,6 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
   .ot-demo h2 { font-size: var(--step-1); }
   .ot-demo .reg-title { margin-top: var(--space-m); }
 
-  .ot-demo .policy-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem; align-items: start; }
-  .ot-demo .calc { position: sticky; top: 1rem; background: var(--lav-50); border-color: var(--lav-200); }
-  .ot-demo fieldset { margin: 1.25rem 0 0; padding: 0; border: 0; }
-  .ot-demo legend { margin-bottom: 0.5rem; font-family: var(--font-display); font-weight: 700; color: var(--violet); }
   .ot-demo .field { display: grid; gap: 0.3rem; font-weight: 600; font-size: 0.85rem; color: var(--slate); }
   .ot-demo .row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
   .ot-demo .row .field { flex: 1 1 8rem; }
@@ -602,12 +455,13 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
     font-weight: 400;
   }
   .ot-demo input:disabled { background: var(--lav-50); }
-  .ot-demo input[type='range'] { width: 100%; accent-color: var(--violet); }
-  .ot-demo input[type='checkbox'], .ot-demo input[type='radio'] { width: 1.1rem; height: 1.1rem; accent-color: var(--violet); }
-  .ot-demo .radios { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin-bottom: 0.75rem; }
-  .ot-demo .radios label { display: flex; align-items: center; gap: 0.4rem; }
-  .ot-demo form[data-method='component'] .m-flat, .ot-demo form[data-method='flat'] .m-comp { display: none; }
 
+  .ot-demo input[type='checkbox'] { width: 1.1rem; height: 1.1rem; accent-color: var(--violet); }
+  .ot-demo .policy { margin-bottom: 1.25rem; background: var(--lav-50); border-color: var(--lav-200); }
+  .ot-demo .policy h2 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.75rem; }
+  .ot-demo .policy dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: 0.75rem 1.25rem; margin: 0; }
+  .ot-demo .policy dt { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--lav-500); }
+  .ot-demo .policy dd { margin: 0.15rem 0 0; font-weight: 600; }
   .ot-demo .tbl { overflow-x: auto; }
   .ot-demo table { width: 100%; border-collapse: collapse; }
   .ot-demo th, .ot-demo td { padding: 0.55rem 0.5rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
@@ -618,11 +472,6 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
   .ot-demo tr.over td { background: #fde8ee; }
   .ot-demo tr.over small { color: #9b1c3d; }
 
-  .ot-demo .breakdown { margin: 1rem 0 0; padding: 0; list-style: none; }
-  .ot-demo .breakdown li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px dashed var(--lav-300); }
-  .ot-demo .breakdown li.warn b { color: #9b1c3d; }
-  .ot-demo .breakdown li.total { border-bottom-style: solid; font-weight: 700; }
-  .ot-demo .breakdown li.pay { border: 0; margin-top: 0.4rem; padding: 0.6rem 0.75rem; border-radius: 10px; background: var(--violet); color: #fff; }
 
   .ot-demo .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 0.75rem; margin-block: 1rem; }
   .ot-demo .stats div { padding: 0.85rem 1rem; border-radius: 14px; background: var(--lav-50); }
@@ -678,8 +527,6 @@ const multipliers = [1, 1.5, 2, 2.5, 3];
   .ot-demo .toast.bad { background: #9b1c3d; }
 
   @media (max-width: 52rem) {
-    .ot-demo .steps { grid-template-columns: repeat(2, 1fr); }
-    .ot-demo .policy-grid { grid-template-columns: 1fr; }
-    .ot-demo .calc { position: static; }
+    .ot-demo .steps { grid-template-columns: 1fr; }
   }
 </style>

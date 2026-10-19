@@ -1,0 +1,73 @@
+# PLACEHOLDER CONTENT — replace with the details from your resume.
+# Every page on the site reads from this file.
+
+basics:
+  name: Prithvi
+  headline: Product manager
+  location: Your city, Country
+  email: you@example.com
+  intro: >-
+    I'm a product manager who likes the whole messy loop: talking to customers,
+    working out what's worth building with engineers and designers, shipping it,
+    and finding out whether it worked.
+  now: >-
+    Exploring how AI changes the way product teams run discovery.
+  socials:
+    - label: LinkedIn
+      url: https://www.linkedin.com/in/your-handle
+    - label: GitHub
+      url: https://github.com/your-handle
+
+about:
+  - >-
+    Placeholder bio. Say how you got into product, the kinds of problems you
+    enjoy, and what teams can expect when they work with you.
+  - >-
+    A second paragraph for what you care about outside work, or the questions
+    you're currently chewing on.
+
+experience:
+  - company: Company name
+    role: Senior Product Manager
+    start: 2022
+    end: Present
+    location: City
+    summary: One line about the product, team or customers.
+    highlights:
+      - Led a cross-functional team of 8 to launch a feature that grew weekly active users by 18%.
+      - Ran 40+ customer interviews to reshape the roadmap around the top three pain points.
+      - Introduced a lightweight experiment process; the team now ships 2x more tests per quarter.
+  - company: Previous company
+    role: Product Manager
+    start: 2019
+    end: 2022
+    location: City
+    summary: One line about the product, team or customers.
+    highlights:
+      - Owned the onboarding funnel end to end and cut first-week drop-off by 22%.
+      - Partnered with sales to turn recurring customer asks into a self-serve admin console.
+  - company: Earlier company
+    role: Associate Product Manager
+    start: 2017
+    end: 2019
+    highlights:
+      - Shipped the first mobile release and grew it to 50k monthly users.
+
+education:
+  - school: University name
+    degree: Degree, Major
+    start: 2013
+    end: 2017
+
+skills:
+  - group: Product
+    items: [Discovery, Roadmapping, Prioritization, Experimentation, Product analytics]
+  - group: Tools
+    items: [Figma, Jira, Amplitude, SQL, Notion]
+  - group: Working style
+    items: [Stakeholder management, Writing specs, Running workshops]
+
+certifications:
+  - name: Certification name
+    issuer: Issuer
+    year: 2023

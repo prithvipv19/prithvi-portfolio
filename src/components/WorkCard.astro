@@ -1,0 +1,62 @@
+---
+import { formatMonth, typeLabel, url, type WorkEntry } from '../lib/site';
+
+interface Props {
+  entry: WorkEntry;
+  /** "row" is the wide list used on the home page; "tile" fills a grid cell. */
+  variant?: 'row' | 'tile';
+  headingLevel?: 'h2' | 'h3';
+}
+
+const { entry, variant = 'tile', headingLevel: Heading = 'h3' } = Astro.props;
+const { title, summary, type, impact, date } = entry.data;
+---
+
+<article class:list={['card', variant]}>
+  <div class="meta">
+    <span class="pill">{typeLabel(type)}</span>
+    <time datetime={date.toISOString()} class="muted">{formatMonth(date)}</time>
+  </div>
+  <div class="body">
+    <Heading class="title"><a href={url(`work/${entry.id}/`)}>{title}</a></Heading>
+    <p class="summary">{summary}</p>
+    {impact && <p class="impact">{impact}</p>}
+  </div>
+</article>
+
+<style>
+  .card { position: relative; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-bottom: 0.75rem; font-size: var(--step--1); }
+  .title { margin-bottom: 0.4em; }
+  .title a { color: var(--ink); text-decoration: none; }
+  /* Whole card is clickable, but only the title is announced as a link */
+  .title a::after { content: ''; position: absolute; inset: 0; }
+  .card:hover .title a { text-decoration: underline; text-decoration-thickness: 2px; }
+  .card:has(a:focus-visible) { outline: 3px solid var(--link); outline-offset: 4px; }
+  .title a:focus-visible { outline: none; }
+  .summary { margin: 0; color: var(--slate); }
+  .impact {
+    display: inline-block;
+    margin: 0.75rem 0 0;
+    padding-left: 0.6rem;
+    border-left: 4px solid var(--note);
+    font-weight: 700;
+  }
+
+  .tile {
+    height: 100%;
+    padding: var(--space-m);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .tile .title { font-size: var(--step-1); }
+
+  .row { padding-block: var(--space-m); border-top: 1px solid var(--line); }
+  .row .title { font-size: var(--step-2); }
+  @media (min-width: 48rem) {
+    .row { display: grid; grid-template-columns: 11rem minmax(0, 1fr); gap: 2rem; }
+    .row .meta { flex-direction: column; align-items: flex-start; padding-top: 0.4rem; }
+    .row .summary { max-width: 60ch; }
+  }
+</style>

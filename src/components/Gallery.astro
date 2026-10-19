@@ -1,0 +1,31 @@
+---
+import { url } from '../lib/site';
+
+interface Props {
+  images: { src: string; alt: string }[];
+}
+
+const { images } = Astro.props;
+---
+
+<ul class="gallery">
+  {images.map((img) => (
+    <li>
+      <a href={url(`images/${img.src}`)}>
+        <img src={url(`images/${img.src}`)} alt={img.alt} loading="lazy" />
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-s);
+    margin-block: var(--space-m);
+    padding: 0;
+    list-style: none;
+  }
+  img { width: 100%; border: 1px solid var(--line); border-radius: var(--radius); }
+</style>

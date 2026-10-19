@@ -1,0 +1,86 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VideoEmbed from '../../components/VideoEmbed.astro';
+import Gallery from '../../components/Gallery.astro';
+import { formatMonth, getWork, typeLabel, url, type WorkEntry } from '../../lib/site';
+
+export async function getStaticPaths() {
+  const work = await getWork();
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props as { entry: WorkEntry };
+const { title, summary, type, date, role, impact, tags, links, gallery } = entry.data;
+const { Content } = await render(entry);
+
+const linkLabels: Record<keyof typeof links, string> = {
+  live: type === 'writing' ? 'Read it' : 'Visit the live site',
+  repo: 'See the code',
+  figma: 'Open in Figma',
+  video: 'Watch on the video site',
+  slides: 'View the slides',
+};
+const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
+  .filter((k) => links[k])
+  .map((k) => ({ href: links[k]!, label: linkLabels[k] }));
+---
+
+<BaseLayout title={title} description={summary}>
+  <article class="section">
+    <div class="wrap">
+      <a class="back" href={url('work/')}>All work</a>
+
+      <header class="head">
+        <span class="pill">{typeLabel(type)}</span>
+        <h1>{title}</h1>
+        <p class="lede measure muted">{summary}</p>
+      </header>
+
+      <dl class="facts">
+        {role && <div><dt>Role</dt><dd>{role}</dd></div>}
+        {impact && <div><dt>Impact</dt><dd class="impact">{impact}</dd></div>}
+        <div><dt>When</dt><dd><time datetime={date.toISOString()}>{formatMonth(date)}</time></dd></div>
+        {tags.length > 0 && (
+          <div><dt>Topics</dt><dd><ul class="tags">{tags.map((t) => <li class="pill">{t}</li>)}</ul></dd></div>
+        )}
+      </dl>
+
+      {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
+      {gallery.length > 0 && <Gallery images={gallery} />}
+
+      <div class="prose measure">
+        <Content />
+      </div>
+
+      {linkList.length > 0 && (
+        <div class="actions links">
+          {linkList.map((l, i) => <a class:list={['btn', { 'btn-primary': i === 0 }]} href={l.href}>{l.label}</a>)}
+        </div>
+      )}
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .back { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+  .head { margin-block: var(--space-m); }
+  .head .pill { margin-bottom: 1rem; }
+  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; max-width: 20ch; }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: var(--space-s) var(--space-m);
+    margin-block: var(--space-m) var(--space-l);
+    padding-block: var(--space-m);
+    border-block: 1px solid var(--line);
+  }
+  dt { font-size: var(--step--1); color: var(--slate); }
+  dd { margin: 0.15rem 0 0; font-weight: 700; }
+  .tags { margin: 0.25rem 0 0; }
+  .tags .pill { font-weight: 400; }
+  .impact { border-left: 4px solid var(--note); padding-left: 0.6rem; }
+  .media { max-width: 56rem; }
+  .links { margin-top: var(--space-m); }
+</style>

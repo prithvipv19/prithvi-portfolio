@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Contact from '../components/Contact.astro';
+import { resume } from '../lib/resume';
+
+const { about, skills } = resume;
+---
+
+<BaseLayout title="About" description={about[0]}>
+  <section class="section">
+    <div class="wrap measure">
+      <h1>About me</h1>
+      {about.map((p, i) => <p class:list={{ lede: i === 0 }}>{p}</p>)}
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="focus-title">
+    <div class="wrap measure">
+      <h2 id="focus-title">What I bring to a team</h2>
+      <ul class="tags">
+        {skills.flatMap((s) => s.items).map((item) => <li class="pill">{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  <Contact />
+</BaseLayout>
+
+<style>
+  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
+  .tags .pill { font-size: var(--step-0); padding: 0.3rem 0.9rem; color: var(--ink); background: var(--surface); }
+</style>

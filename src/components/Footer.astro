@@ -1,0 +1,23 @@
+---
+import { resume } from '../lib/resume';
+
+const { name, email, socials } = resume.basics;
+---
+
+<footer class="site-footer">
+  <div class="wrap row">
+    <p class="muted">© {new Date().getFullYear()} {name}</p>
+    <ul>
+      <li><a href={`mailto:${email}`}>Email</a></li>
+      {socials.map((s) => <li><a href={s.url} rel="me">{s.label}</a></li>)}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .site-footer { border-top: 1px solid var(--line); padding-block: var(--space-m); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; }
+  p { margin: 0; }
+  ul { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0; padding: 0; list-style: none; }
+  a { display: inline-flex; align-items: center; min-height: 44px; }
+</style>

@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import { getWork, workTypes } from '../../lib/site';
+
+const work = await getWork();
+const filters = workTypes
+  .map((t) => ({ ...t, count: work.filter((w) => w.data.type === t.id).length }))
+  .filter((t) => t.count > 0);
+---
+
+<BaseLayout title="Work" description="Case studies, code, design, writing and videos.">
+  <section class="section">
+    <div class="wrap">
+      <h1>Work</h1>
+      <p class="lede measure muted">
+        Products I've helped ship, things I've built on the side, and what I've written and said along the way.
+      </p>
+
+      <div class="filters" role="group" aria-label="Filter work by type">
+        <button type="button" data-filter="all" aria-pressed="true">All <span>{work.length}</span></button>
+        {filters.map((f) => (
+          <button type="button" data-filter={f.id} aria-pressed="false">{f.plural} <span>{f.count}</span></button>
+        ))}
+      </div>
+      <p class="visually-hidden" aria-live="polite" data-status></p>
+
+      <ul class="grid">
+        {work.map((entry) => (
+          <li data-type={entry.data.type}>
+            <WorkCard entry={entry} headingLevel="h2" />
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLLIElement>('.grid > li');
+  const status = document.querySelector<HTMLElement>('[data-status]')!;
+
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      let shown = 0;
+      items.forEach((item) => {
+        const match = filter === 'all' || item.dataset.type === filter;
+        item.hidden = !match;
+        if (match) shown++;
+      });
+      status.textContent = `Showing ${shown} ${shown === 1 ? 'item' : 'items'}`;
+    })
+  );
+</script>
+
+<style>
+  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block: var(--space-m); }
+  .filters button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--ink);
+    font: inherit;
+    cursor: pointer;
+  }
+  .filters button span { color: var(--slate); font-size: var(--step--1); }
+  .filters button[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 700; }
+  .filters button[aria-pressed='true'] span { color: inherit; }
+
+  /* 1 column on phones, 2 on tablets, 3 on desktop */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+    gap: var(--space-s);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .grid > li[hidden] { display: none; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+</style>

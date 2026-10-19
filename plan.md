@@ -56,10 +56,10 @@ public/                    # resume.pdf, images/, favicon
 - SEO: page titles and meta tags, Open Graph image, sitemap
 
 ## Build steps
-- [ ] 1. Scaffold the Astro project and initialize git
-- [ ] 2. Define the content schema, layouts and pages (placeholder content)
+- [x] 1. Scaffold the Astro project and initialize git
+- [x] 2. Define the content schema, layouts and pages (placeholder content)
 - [ ] 3. Extract resume content from the PDF/Word file into `resume.yaml`
-- [ ] 4. Seed one sample entry per work type as templates
+- [x] 4. Seed one sample entry per work type as templates
 - [ ] 5. Define the tone of voice and write the hero, about and project copy
 - [ ] 6. Style and polish; check on mobile, tablet and desktop, and run an accessibility check
 - [ ] 7. Set up GitHub Actions deploy to GitHub Pages (+ optional custom domain)
@@ -78,4 +78,7 @@ public/                    # resume.pdf, images/, favicon
 - After pushing, the deploy workflow passes and the live URL loads
 
 ## Open questions / notes
-- 
+- **Design direction:** product-workshop feel. The one bold element is a yellow sticky note in the hero ("Right now…"); everything else stays quiet. Colors: cool off-white paper, deep ink text, teal links, sticky-note yellow accent. Fonts: Bricolage Grotesque (headings) + Atkinson Hyperlegible Next (body, chosen for readability).
+- **Where to edit content:** `src/data/resume.yaml` (resume, bio, "Right now" note) and `src/content/work/*.md` (one file per project; copy a sample to add more). Gallery images go in `public/images/`. Add `public/resume.pdf` and the Download PDF button appears.
+- **Preview locally:** `npm run dev` → http://localhost:4321
+- All copy is placeholder until the resume is in and the tone of voice is set (step 5).

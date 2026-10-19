@@ -45,6 +45,41 @@ gallery:
   - src: attendance/admin-swipes.svg
     alt: Admin web page listing employee swipes filtered to source Kiosk, with times and door names
     caption: Kiosk swipes show up next to every other swipe in the admin portal, ready for attendance processing.
+decisions:
+  - area: Hardware
+    icon: device-mobile
+    chose: Phones and tablets customers already own
+    over: Dedicated face scanners
+    tradeoff: Android only, with a minimum device spec
+  - area: Liveness
+    icon: eye
+    chose: A natural blink check
+    over: Depth or IR sensors
+    tradeoff: Weaker against video replays
+  - area: Enrollment
+    icon: user-plus
+    chose: Bulk photo sync plus register at the kiosk
+    over: Bulk photo sync only
+    tradeoff: Registering at the kiosk is slower
+  - area: Identity
+    icon: id-badge-2
+    chose: One face, one employee
+    over: Allowing duplicate faces
+    tradeoff: Twins need a stricter match threshold
+  - area: Integration
+    icon: plug-connected
+    chose: Send a normal swipe to attendance
+    over: A separate kiosk attendance flow
+    tradeoff: The kiosk applies no rules of its own
+  - area: In and Out
+    icon: door-enter
+    chose: One device for both, or one per door
+    over: Always two devices
+    tradeoff: One device infers first In, last Out
+next:
+  - Passive anti-spoofing
+  - Offline capture
+  - Central kiosk management
 ---
 
 ## The problem
@@ -55,23 +90,7 @@ When COVID-19 hit, companies stopped using shared fingerprint scanners, and atte
 
 Took Facial Attendance from 0 to 1: an AI-based face-recognition check-in built into the HRMS.
 
-## Key decisions
-
-- **Phones and tablets customers already own, not new hardware.** Customers could start the same day, with no device to buy, ship or maintain. The cost: Android only, and camera quality varies, so we published a minimum spec (Android 10, 4 GB RAM, 5 MP camera).
-- **A blink check for liveness, not depth sensors.** A natural blink stops someone holding up a photo, and it works on any ordinary camera. It's weaker against a video replay, which is the main thing I'd strengthen next.
-- **Two ways to enroll.** Large companies can bulk-sync existing profile photos. Smaller ones, and new joiners, register at the kiosk itself, which gives better matches but takes longer. Both use the same photo rules: the face fills at least 60% of the frame, in good light.
-- **One face, one employee.** The same face can't be registered for two people, which blocks proxy enrollment. Edge cases have their own path: a stricter match threshold for twins, and delete-then-register for people who rejoin.
-- **A kiosk swipe is just a swipe.** The kiosk only records time, direction and door, and the existing attendance engine applies shift rules, regularization and payroll. Nothing downstream had to change, and companies could mix kiosks with other swipe methods.
-- **One device or two.** A single device set to both counts the first swipe of the day as In and the last as Out. Sites that need exact In and Out records put one device at each door.
-- **The kiosk screen is locked.** Opening the kiosk needs the device's own PIN, pattern or biometric, so nobody else can change its settings.
-
 ## Outcome
 
 - Restored 40% of the biometric swipes that had been lost.
 - Grew to 1,000+ customers.
-
-## What I'd do next
-
-- Passive anti-spoofing that also stops video replays, not just photos.
-- Offline capture that syncs swipes when the network comes back.
-- One place to manage all kiosks, with each device's health and settings.

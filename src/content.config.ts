@@ -44,6 +44,20 @@ const work = defineCollection({
       .default([]),
     /** One line shown above the gallery, e.g. that screens are recreated. */
     galleryNote: z.string().optional(),
+    /** Key decisions, drawn as chose/over/cost forks after the write-up. */
+    decisions: z
+      .array(
+        z.object({
+          area: z.string(),
+          icon: z.string().optional(),
+          chose: z.string(),
+          over: z.string(),
+          tradeoff: z.string(),
+        }),
+      )
+      .default([]),
+    /** Short follow-ups shown under the decisions. */
+    next: z.array(z.string()).default([]),
   }),
 });
 

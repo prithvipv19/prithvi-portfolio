@@ -1,0 +1,164 @@
+---
+interface Props {
+  decisions: { area: string; icon?: string; chose: string; over: string; tradeoff: string }[];
+  next?: string[];
+  title?: string;
+}
+
+const { decisions, next = [], title = 'Key decisions' } = Astro.props;
+---
+
+<section class="dmap" aria-labelledby="dmap-title">
+  <h2 id="dmap-title">{title}</h2>
+  <p class="legend muted">
+    <span><i class="ti ti-circle-check-filled ok" aria-hidden="true"></i>Chose</span>
+    <span><i class="ti ti-circle-x x" aria-hidden="true"></i>Over</span>
+    <span><i class="ti ti-scale cost" aria-hidden="true"></i>What it cost</span>
+  </p>
+  <ol>
+    {decisions.map((d) => (
+      <li>
+        <h3><span class="icon" aria-hidden="true"><i class={`ti ti-${d.icon ?? 'git-fork'}`}></i></span>{d.area}</h3>
+        <div class="fork">
+          <p class="opt chose"><i class="ti ti-circle-check-filled" aria-hidden="true"></i><span class="visually-hidden">Chose: </span>{d.chose}</p>
+          <p class="opt over"><i class="ti ti-circle-x" aria-hidden="true"></i><span class="visually-hidden">Over: </span><s>{d.over}</s></p>
+        </div>
+        <p class="tradeoff"><i class="ti ti-scale" aria-hidden="true"></i><span class="visually-hidden">What it cost: </span>{d.tradeoff}</p>
+      </li>
+    ))}
+  </ol>
+  {next.length > 0 && (
+    <div class="next">
+      <strong><i class="ti ti-arrow-big-right-lines" aria-hidden="true"></i>What I'd do next</strong>
+      <ul>{next.map((n) => <li>{n}</li>)}</ul>
+    </div>
+  )}
+</section>
+
+<style>
+  .dmap {
+    margin-block: var(--space-m) var(--space-l);
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  h2 { margin: 0; font-size: var(--step-2); }
+  .legend { display: flex; flex-wrap: wrap; gap: 1.25rem; margin: 0.5rem 0 1.25rem; font-size: var(--step--1); }
+  .legend span { display: inline-flex; align-items: center; gap: 0.35rem; }
+  .ok { color: #2e9e6b; }
+  .x { color: var(--lav-500); }
+  .cost { color: var(--ochre); }
+
+  ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 19rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  ol > li {
+    display: flex;
+    flex-direction: column;
+    padding: 1.1rem 1.15rem;
+    border-radius: 16px;
+    background: var(--lav-50);
+  }
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.9rem;
+    font-size: var(--step-0);
+  }
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 10px;
+    background: var(--violet);
+    color: #fff;
+    font-size: 1.1rem;
+  }
+
+  /* The fork: a stem from the topic down to two branches. */
+  .fork {
+    position: relative;
+    display: grid;
+    gap: 0.5rem;
+    margin-left: 0.95rem;
+    padding-left: 1.25rem;
+    margin-bottom: 0.9rem;
+    border-left: 2px solid var(--lav-300);
+  }
+  .opt {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    font-size: var(--step--1);
+    line-height: 1.35;
+  }
+  .opt::before {
+    content: '';
+    position: absolute;
+    left: -1.25rem;
+    top: 50%;
+    width: 1.25rem;
+    border-top: 2px solid var(--lav-300);
+  }
+  /* Hide the stem below the last branch so the fork ends there. */
+  .opt:last-child::after {
+    content: '';
+    position: absolute;
+    left: calc(-1.25rem - 3px);
+    top: calc(50% + 2px);
+    bottom: -2px;
+    width: 4px;
+    background: var(--lav-50);
+  }
+  .opt i { margin-top: 0.1rem; font-size: 1rem; }
+  .chose { background: #fff; border: 1.5px solid #2e9e6b; color: var(--ink); font-weight: 600; }
+  .chose i { color: #2e9e6b; }
+  .over { border: 1.5px dashed var(--lav-300); color: var(--slate); }
+  .over i { color: var(--lav-500); }
+  .over s { text-decoration-color: var(--lav-300); }
+
+  .tradeoff {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin: auto 0 0;
+    padding: 0.5rem 0.7rem;
+    border-radius: 10px;
+    background: var(--mustard-50);
+    color: var(--mustard-ink);
+    font-size: var(--step--1);
+    line-height: 1.35;
+  }
+  .tradeoff i { margin-top: 0.1rem; color: var(--ochre); font-size: 1rem; }
+
+  .next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--lav-300);
+  }
+  .next strong { display: inline-flex; align-items: center; gap: 0.35rem; color: var(--violet); }
+  .next ul { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0; list-style: none; }
+  .next li {
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--lav-300);
+    border-radius: 999px;
+    font-size: var(--step--1);
+    color: var(--slate);
+  }
+</style>

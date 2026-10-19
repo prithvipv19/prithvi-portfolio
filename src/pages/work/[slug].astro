@@ -5,6 +5,7 @@ import VideoEmbed from '../../components/VideoEmbed.astro';
 import Gallery from '../../components/Gallery.astro';
 import FlowDiagram from '../../components/FlowDiagram.astro';
 import PrototypeEmbed from '../../components/PrototypeEmbed.astro';
+import DecisionMap from '../../components/DecisionMap.astro';
 import Contact from '../../components/Contact.astro';
 import { formatMonth, getWork, typeLabel, url, type WorkEntry } from '../../lib/site';
 
@@ -14,7 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: WorkEntry };
-const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery, galleryNote, flow, prototype, demo } = entry.data;
+const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery, galleryNote, flow, prototype, demo, decisions, next } = entry.data;
 const { Content } = await render(entry);
 
 const linkLabels: Record<keyof typeof links, { label: string; icon: string }> = {
@@ -65,6 +66,8 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
       <div class="prose measure">
         <Content />
       </div>
+
+      {decisions.length > 0 && <DecisionMap decisions={decisions} next={next} />}
 
       {prototype && <PrototypeEmbed src={prototype} title={title} />}
 

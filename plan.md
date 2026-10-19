@@ -61,14 +61,14 @@ public/                    # resume.pdf, images/, favicon
 - [ ] 3. Extract resume content from the PDF/Word file into `resume.yaml`
 - [x] 4. Seed one sample entry per work type as templates
 - [ ] 5. Define the tone of voice and write the hero, about and project copy
-- [ ] 6. Style and polish; check on mobile, tablet and desktop, and run an accessibility check
+- [x] 6. Style and polish; check on mobile, tablet and desktop, and run an accessibility check
 - [ ] 7. Set up GitHub Actions deploy to GitHub Pages (+ optional custom domain)
 
 ## Inputs needed
-- [ ] Resume file (path: _TBD_)
+- [x] Resume file (docs/, git-ignored)
 - [ ] List of projects to feature, with links, images and video URLs
 - [ ] GitHub username / repo name, or a custom domain
-- [ ] Headshot (optional)
+- [x] Headshot (public/images/headshot.jpg)
 - [ ] Accent color preference (optional)
 
 ## Verification
@@ -78,7 +78,7 @@ public/                    # resume.pdf, images/, favicon
 - After pushing, the deploy workflow passes and the live URL loads
 
 ## Open questions / notes
-- **Design direction:** typography-led and calm; the large hero headline carries the personality. (The "Right now" sticky note was removed at Prithvi's request.) Colors: cool off-white paper, deep ink text, teal links, sticky-note yellow accent. Fonts: Bricolage Grotesque (headings) + Atkinson Hyperlegible Next (body, chosen for readability).
-- **Where to edit content:** `src/data/resume.yaml` (experience, skills, education, certifications, intro, bio) and `src/content/work/*.md` (one file per project; copy a sample to add more). Gallery images go in `public/images/`. Add `public/resume.pdf` and the Download PDF button appears.
+- **Design direction (Oct 2026 revamp):** light mode in lavender, mustard and white, with deep violet for weight. Hero = headshot in an arch over a mustard sun, focus-area chips, highlighted LinkedIn and email buttons. Proof strip ($6M ARR, 20+ devs and QA led, 6 launches, 20,000+ customers). Four work tiles. Career timeline: years along the bottom, one bar per company with its logo inside, thicker and deeper bars for longer stays, domain shown as a hover tooltip. Fonts: Bricolage Grotesque (headings) + Figtree (body). Icons: Tabler.
+- **Where to edit content:** `src/data/resume.yaml` (experience, skills, education, certifications, intro, bio) and `src/content/work/*.md` (one file per project; copy a sample to add more). Gallery images go in `public/images/`; company logos in `public/logos/`. Hero stats, focus areas and timeline details (logo, domain, highlight) live in `resume.yaml`. Add `public/resume.pdf` and the Download PDF button appears.
 - **Preview locally:** `npm run dev` → http://localhost:4321
 - All copy is placeholder until the resume is in and the tone of voice is set (step 5).

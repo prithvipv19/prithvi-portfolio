@@ -13,10 +13,10 @@ export const workTypes: { id: WorkType; label: string; plural: string }[] = [
 
 export const typeLabel = (type: WorkType) => workTypes.find((t) => t.id === type)!.label;
 
-/** Published work, newest first. */
+/** Published work in display order (the `order` field), then newest first. */
 export async function getWork() {
   const entries = await getCollection('work', ({ data }) => !data.draft);
-  return entries.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+  return entries.sort((a, b) => a.data.order - b.data.order || b.data.date.getTime() - a.data.date.getTime());
 }
 
 /** Prefix a path with the site's base URL (needed when hosted on a GitHub Pages repo subpath). */

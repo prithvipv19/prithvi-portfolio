@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import WorkCard from '../../components/WorkCard.astro';
+import WorkTile from '../../components/WorkTile.astro';
+import Contact from '../../components/Contact.astro';
 import { getWork, workTypes } from '../../lib/site';
 
 const work = await getWork();
@@ -9,38 +10,36 @@ const filters = workTypes
   .filter((t) => t.count > 0);
 ---
 
-<BaseLayout title="Work" description="Case studies, code, design, writing and videos.">
-  <section class="section">
-    <div class="wrap">
+<BaseLayout title="Work" description="Products I've helped build and ship, with the outcomes.">
+  <div class="wrap">
+    <header class="page-head">
       <h1>Work</h1>
-      <p class="lede measure muted">
-        Products I've helped ship, things I've built on the side, and what I've written and said along the way.
-      </p>
+      <p class="lede">Products I've helped build and ship, and what changed because of them.</p>
+    </header>
 
+    {filters.length > 1 && (
       <div class="filters" role="group" aria-label="Filter work by type">
         <button type="button" data-filter="all" aria-pressed="true">All <span>{work.length}</span></button>
         {filters.map((f) => (
           <button type="button" data-filter={f.id} aria-pressed="false">{f.plural} <span>{f.count}</span></button>
         ))}
       </div>
-      <p class="visually-hidden" aria-live="polite" data-status></p>
+    )}
+    <p class="visually-hidden" aria-live="polite" data-status></p>
 
-      <ul class="grid">
-        {work.map((entry) => (
-          <li data-type={entry.data.type}>
-            <WorkCard entry={entry} headingLevel="h2" />
-          </li>
-        ))}
-      </ul>
-    </div>
-  </section>
+    <ul class="grid">
+      {work.map((entry) => (
+        <li data-type={entry.data.type}><WorkTile entry={entry} headingLevel="h2" /></li>
+      ))}
+    </ul>
+  </div>
+  <Contact />
 </BaseLayout>
 
 <script>
   const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
   const items = document.querySelectorAll<HTMLLIElement>('.grid > li');
   const status = document.querySelector<HTMLElement>('[data-status]')!;
-
   buttons.forEach((btn) =>
     btn.addEventListener('click', () => {
       const filter = btn.dataset.filter;
@@ -51,40 +50,40 @@ const filters = workTypes
         item.hidden = !match;
         if (match) shown++;
       });
-      status.textContent = `Showing ${shown} ${shown === 1 ? 'item' : 'items'}`;
+      status.textContent = `Showing ${shown} ${shown === 1 ? 'project' : 'projects'}`;
     })
   );
 </script>
 
 <style>
-  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
-  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-block: var(--space-m); }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
   .filters button {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
     min-height: 44px;
-    padding: 0.4rem 1rem;
-    border: 1px solid var(--line);
+    padding: 0 1rem;
+    border: 1px solid var(--lav-300);
     border-radius: 999px;
-    background: var(--surface);
-    color: var(--ink);
+    background: #fff;
+    color: var(--violet);
     font: inherit;
+    font-weight: 500;
     cursor: pointer;
   }
-  .filters button span { color: var(--slate); font-size: var(--step--1); }
-  .filters button[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); font-weight: 700; }
-  .filters button[aria-pressed='true'] span { color: inherit; }
-
-  /* 1 column on phones, 2 on tablets, 3 on desktop */
+  .filters span { font-size: var(--step--1); color: var(--lav-500); }
+  .filters button[aria-pressed='true'] { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .filters button[aria-pressed='true'] span { color: var(--lav-300); }
+  /* 1 column on small phones, 2 on phones and tablets, up to 4 on desktop */
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
-    gap: var(--space-s);
-    margin: 0;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 1.1rem;
+    margin: 0 0 var(--space-l);
     padding: 0;
     list-style: none;
   }
   .grid > li[hidden] { display: none; }
-  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (max-width: 40rem) { .grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; } }
+  @media (max-width: 22rem) { .grid { grid-template-columns: 1fr; } }
 </style>

@@ -2,24 +2,45 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Contact from '../components/Contact.astro';
 import { resume } from '../lib/resume';
+import { url } from '../lib/site';
 
-const { about, skills } = resume;
+const { about, skills, basics } = resume;
+const skillIcons: Record<string, string> = {
+  Domains: 'world',
+  'Product strategy': 'bulb',
+  'Delivery & growth': 'rocket',
+  'AI & tools': 'sparkles',
+};
 ---
 
 <BaseLayout title="About" description={about[0]}>
-  <section class="section">
-    <div class="wrap measure">
-      <h1>About me</h1>
-      {about.map((p, i) => <p class:list={{ lede: i === 0 }}>{p}</p>)}
-    </div>
-  </section>
+  <div class="wrap">
+    <section class="intro">
+      <div class="text">
+        <span class="chip chip-lav"><i class="ti ti-user" aria-hidden="true"></i>About me</span>
+        <h1>Builder at heart, product manager by trade.</h1>
+        {about.map((p, i) => <p class:list={{ lede: i === 0 }}>{p}</p>)}
+      </div>
+      {basics.photo && (
+        <div class="photo" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="portrait"><img src={url(basics.photo)} alt="" width="640" height="800" /></div>
+        </div>
+      )}
+    </section>
+  </div>
 
-  <section class="section" aria-labelledby="focus-title">
-    <div class="wrap measure">
-      <h2 id="focus-title">What I bring to a team</h2>
-      <ul class="tags">
-        {skills.flatMap((s) => s.items).map((item) => <li class="pill">{item}</li>)}
-      </ul>
+  <section class="section tint" aria-labelledby="bring-title">
+    <div class="wrap">
+      <h2 id="bring-title" class="reveal">What I bring to a team</h2>
+      <div class="groups">
+        {skills.map((s) => (
+          <div class="group reveal">
+            <h3><i class={`ti ti-${skillIcons[s.group] ?? 'point'}`} aria-hidden="true"></i>{s.group}</h3>
+            <ul class="chips">{s.items.map((item) => <li class="chip chip-outline">{item}</li>)}</ul>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
@@ -27,6 +48,31 @@ const { about, skills } = resume;
 </BaseLayout>
 
 <style>
-  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
-  .tags .pill { font-size: var(--step-0); padding: 0.3rem 0.9rem; color: var(--ink); background: var(--surface); }
+  .intro { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--space-l); align-items: center; padding-block: var(--space-l); }
+  h1 { margin: 1rem 0 1.25rem; font-size: var(--step-3); max-width: 18ch; }
+  .text p { max-width: 60ch; }
+  .text .lede { color: var(--violet); }
+
+  .photo { position: relative; aspect-ratio: 4 / 5; max-width: 360px; justify-self: center; width: 100%; }
+  .sun { position: absolute; inset: 8% 4% auto auto; width: 78%; aspect-ratio: 1; border-radius: 50%; background: var(--mustard); }
+  .portrait {
+    position: absolute;
+    inset: 14% 10% 0 6%;
+    overflow: hidden;
+    border: 6px solid #fff;
+    border-radius: 999px 999px 18px 18px;
+    background: var(--lav-200);
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+
+  .groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+  .group { padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .group h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
+  .group h3 i { color: var(--ochre); }
+
+  @media (max-width: 52rem) {
+    .intro { grid-template-columns: 1fr; gap: 1.5rem; }
+    .photo { order: -1; max-width: 240px; }
+    .groups { grid-template-columns: 1fr; }
+  }
 </style>

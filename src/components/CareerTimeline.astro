@@ -1,0 +1,274 @@
+---
+import { careerStops, tenure } from '../lib/resume';
+import { url } from '../lib/site';
+
+const stops = careerStops();
+const first = Math.min(...stops.map((s) => s.start));
+const last = Math.max(...stops.map((s) => s.end));
+const start = Math.floor(first) - 0.25;
+const end = last + 0.1;
+const pct = (y: number) => ((y - start) / (end - start)) * 100;
+const ticks: number[] = [];
+for (let y = Math.ceil(first / 2) * 2; y <= last; y += 2) ticks.push(y);
+const current = stops.findIndex((s) => s.kind === 'now');
+const selected = current >= 0 ? current : stops.length - 1;
+// Thicker and "deeper" bars for longer stays
+const height = (y: number) => Math.round(34 + y * 9);
+const depth = (y: number) => Math.round(2 + y * 1.6);
+---
+
+<div class="career">
+  <div class="rows">
+    {stops.slice().reverse().map((s) => {
+      const i = stops.indexOf(s);
+      const years = s.end - s.start;
+      return (
+        <button
+          class:list={['row', { on: i === selected }]}
+          type="button"
+          data-index={i}
+          data-left={pct(s.start)}
+          data-width={pct(s.end) - pct(s.start)}
+          style={`height:${height(years)}px;--d:${depth(years)}px`}
+          aria-controls={`career-detail-${i}`}
+          aria-pressed={i === selected ? 'true' : 'false'}
+        >
+          <span class:list={['bar', s.kind]}>
+            {s.logo ? (
+              <span class:list={['plate', { large: s.logoLarge }]}><img src={url(s.logo)} alt={`${s.fullName} logo`} /></span>
+            ) : (
+              <span class="plate icon"><i class={`ti ti-${s.icon}`} aria-hidden="true"></i></span>
+            )}
+          </span>
+          <span class="tip" role="tooltip"><i class={`ti ti-${s.icon}`} aria-hidden="true"></i>{s.domain}</span>
+          <span class="label"><b>{s.name}</b><span class="yrs">{tenure(years)}</span></span>
+        </button>
+      );
+    })}
+  </div>
+  <div class="axis" aria-hidden="true">
+    {ticks.map((y) => <span class="tick" style={`left:${pct(y)}%`}>{y}</span>)}
+  </div>
+
+  {stops.map((s, i) => (
+    <div class="detail" id={`career-detail-${i}`} hidden={i !== selected} aria-live="polite">
+      <div class="logo">
+        {s.logo ? <img src={url(s.logo)} alt={`${s.fullName} logo`} /> : <i class={`ti ti-${s.icon}`} aria-hidden="true"></i>}
+      </div>
+      <div>
+        <h3>{s.role}</h3>
+        <p class="co">{s.fullName}, {s.from}–{s.to}</p>
+        <span class="chip chip-mustard"><i class={`ti ti-${s.icon}`} aria-hidden="true"></i>{s.domain}</span>
+        <p class="hl">{s.highlight}</p>
+      </div>
+      <div class="ten">
+        <b>{tenure(s.end - s.start).replace('yrs', 'years').replace('mo', 'months')}</b>
+        <span>{s.kind === 'now' ? 'and counting' : s.kind === 'study' ? 'of study' : 'tenure'}</span>
+      </div>
+    </div>
+  ))}
+
+  <ul class="legend" aria-hidden="true">
+    <li><i class="past"></i>Past roles</li>
+    <li><i class="now"></i>Current role</li>
+    <li><i class="study"></i>Study</li>
+    <li>Thicker, deeper bars mean longer stays</li>
+  </ul>
+</div>
+
+<script>
+  // Bars are placed in pixels so each one is wide enough for its logo,
+  // and the name sits on whichever side has room.
+  document.querySelectorAll<HTMLElement>('.career').forEach((career) => {
+    const rows = career.querySelector<HTMLElement>('.rows')!;
+    const items = [...career.querySelectorAll<HTMLButtonElement>('.row')];
+    const details = [...career.querySelectorAll<HTMLElement>('.detail')];
+
+    const layout = () => {
+      const W = rows.clientWidth;
+      const minW = W < 560 ? 58 : 92;
+      items.forEach((row) => {
+        const bar = row.querySelector<HTMLElement>('.bar')!;
+        const label = row.querySelector<HTMLElement>('.label')!;
+        const tip = row.querySelector<HTMLElement>('.tip')!;
+        const d = parseFloat(getComputedStyle(row).getPropertyValue('--d')) || 0;
+        const w = Math.max(minW, (W * Number(row.dataset.width)) / 100);
+        const left = Math.min((W * Number(row.dataset.left)) / 100, W - w - d);
+        bar.style.left = `${left}px`;
+        bar.style.width = `${w}px`;
+        const tw = tip.offsetWidth, cx = left + w / 2;
+        const tx = Math.min(Math.max(cx, tw / 2), W - tw / 2);
+        tip.style.left = `${tx}px`;
+        tip.style.setProperty('--arrow', `${cx - tx}px`);
+        label.style.left = label.style.right = '';
+        const gap = d + 14;
+        if (left + w + gap + label.offsetWidth <= W) label.style.left = `${left + w + gap}px`;
+        else label.style.right = `${W - left + 14}px`;
+      });
+    };
+
+    const select = (i: number) => {
+      items.forEach((row) => {
+        const on = Number(row.dataset.index) === i;
+        row.classList.toggle('on', on);
+        row.setAttribute('aria-pressed', String(on));
+      });
+      details.forEach((d, k) => (d.hidden = k !== i));
+    };
+
+    items.forEach((row) => {
+      const i = Number(row.dataset.index);
+      row.addEventListener('mouseenter', () => select(i));
+      row.addEventListener('focus', () => select(i));
+      row.addEventListener('click', () => select(i));
+    });
+
+    layout();
+    addEventListener('resize', layout);
+    document.fonts?.ready.then(layout);
+  });
+</script>
+
+<style>
+  .rows { position: relative; padding-top: 44px; }
+  .row {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+  .row:focus-visible { outline: none; }
+  .bar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    padding: 7px;
+    border-radius: 12px;
+    transition: transform 0.25s;
+  }
+  .bar::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 12px;
+    background: var(--side);
+    transform: translate(var(--d), var(--d));
+  }
+  .bar.past { background: var(--violet); --side: var(--violet-deep); }
+  .bar.now { background: var(--mustard); --side: var(--ochre); }
+  .bar.study { background: var(--lav-300); --side: #b3a7ec; }
+  .row:hover .bar, .row.on .bar, .row:focus-visible .bar { transform: translate(-3px, -3px); }
+  .row:focus-visible .bar { outline: 3px solid var(--ochre); outline-offset: 3px; }
+
+  .plate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    max-height: 36px;
+    max-width: 100%;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: #fff;
+  }
+  .plate img { display: block; height: 20px; width: auto; max-width: 100%; object-fit: contain; }
+  .plate.large { max-height: 44px; padding: 4px 10px; }
+  .plate.large img { height: 30px; }
+  .plate.icon { background: transparent; padding: 0; color: var(--violet); font-size: 1.4rem; }
+
+  .label { position: absolute; top: 50%; transform: translateY(-50%); display: flex; align-items: center; gap: 10px; white-space: nowrap; }
+  .label b { font-size: 0.95rem; font-weight: 600; color: var(--ink); }
+  .yrs {
+    padding: 2px 9px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: #fff;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--lav-500);
+  }
+
+  .tip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    background: var(--violet);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 6px);
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: calc(50% + var(--arrow, 0px));
+    margin-left: -6px;
+    border: 6px solid transparent;
+    border-top-color: var(--violet);
+  }
+  .tip i { color: var(--mustard); font-size: 1rem; }
+  .row:hover .tip, .row:focus-visible .tip { opacity: 1; transform: translate(-50%, 0); }
+
+  .axis { position: relative; height: 30px; margin-top: 6px; border-top: 2px solid var(--lav-300); }
+  .tick { position: absolute; top: 0; padding-top: 8px; transform: translateX(-50%); font-size: 0.75rem; color: var(--lav-500); }
+  .tick::before { content: ''; position: absolute; top: -2px; left: 50%; width: 2px; height: 8px; background: var(--lav-300); }
+
+  .detail {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    align-items: center;
+    gap: 1.4rem;
+    margin-top: 1.4rem;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+  }
+  .detail[hidden] { display: none; }
+  .logo { display: flex; align-items: center; justify-content: center; height: 68px; padding: 10px; border-radius: 14px; background: var(--lav-50); color: var(--violet); font-size: 1.8rem; }
+  .logo img { height: 36px; width: auto; max-width: 100%; object-fit: contain; }
+  .detail h3 { margin: 0; font-size: 1.35rem; }
+  .co { margin: 0.15rem 0 0.6rem; font-size: 0.9rem; color: var(--slate); }
+  .hl { margin: 0.6rem 0 0; color: var(--violet); }
+  .ten { text-align: right; }
+  .ten b { display: block; font-family: var(--font-display); font-size: 2.1rem; font-weight: 800; line-height: 1; color: var(--violet); }
+  .ten span { font-size: 0.8rem; color: var(--lav-500); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin: 0.9rem 0 0; padding: 0; list-style: none; font-size: 0.8125rem; color: var(--slate); }
+  .legend i { display: inline-block; width: 12px; height: 12px; margin-right: 6px; border-radius: 4px; vertical-align: -1px; }
+  .legend .past { background: var(--violet); }
+  .legend .now { background: var(--mustard); }
+  .legend .study { background: var(--lav-300); }
+
+  @media (max-width: 40rem) {
+    .plate img { height: 15px; }
+    .plate { padding: 4px 6px; }
+    .plate.large img { height: 22px; }
+    .label { gap: 6px; }
+    .label b { font-size: 0.8125rem; }
+    .yrs { font-size: 0.6875rem; padding: 1px 7px; }
+    .detail { grid-template-columns: 72px 1fr; padding: 1rem; gap: 1rem; }
+    .logo { height: 56px; }
+    .ten { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 0.5rem; text-align: left; }
+  }
+</style>

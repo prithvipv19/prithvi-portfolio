@@ -12,7 +12,15 @@ const work = defineCollection({
     type: z.enum(['case-study', 'code', 'design', 'writing', 'video']),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
+    /** Position among featured work on the home page (lowest first). */
+    order: z.number().default(99),
     draft: z.boolean().default(false),
+    /** Short label shown on the tile, e.g. "AI agents". */
+    kind: z.string().optional(),
+    /** Tabler icon name for the tile artwork, e.g. "robot". */
+    icon: z.string().default('bulb'),
+    tone: z.enum(['lavender', 'mustard']).default('lavender'),
+    company: z.string().optional(),
     role: z.string().optional(),
     impact: z.string().optional(),
     links: z

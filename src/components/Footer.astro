@@ -6,18 +6,21 @@ const { name, email, socials } = resume.basics;
 
 <footer class="site-footer">
   <div class="wrap row">
-    <p class="muted">© {new Date().getFullYear()} {name}</p>
+    <p>© {new Date().getFullYear()} {name}</p>
     <ul>
-      <li><a href={`mailto:${email}`}>Email</a></li>
-      {socials.map((s) => <li><a href={s.url} rel="me">{s.label}</a></li>)}
+      <li><a href={`mailto:${email}`}><i class="ti ti-mail" aria-hidden="true"></i>Email</a></li>
+      {socials.map((s) => (
+        <li><a href={s.url} rel="me"><i class={`ti ti-brand-${s.label.toLowerCase()}`} aria-hidden="true"></i>{s.label}</a></li>
+      ))}
     </ul>
   </div>
 </footer>
 
 <style>
-  .site-footer { border-top: 1px solid var(--line); padding-block: var(--space-m); }
-  .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1.5rem; }
+  .site-footer { background: var(--violet-deep); color: var(--lav-300); font-size: var(--step--1); }
+  .row { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.25rem 1.5rem; padding-block: 1rem; }
   p { margin: 0; }
-  ul { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0; padding: 0; list-style: none; }
-  a { display: inline-flex; align-items: center; min-height: 44px; }
+  ul { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 0; padding: 0; list-style: none; }
+  a { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; color: #fff; text-decoration: none; }
+  a:hover { color: var(--mustard); }
 </style>

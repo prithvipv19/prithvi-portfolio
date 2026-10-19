@@ -10,9 +10,29 @@ basics:
   intro: >-
     I've spent 10+ years taking products from 0 to 1 across supply chain, HR and
     data platforms. Lately I build AI agents that take real work off people's plates.
+  # Home page hero
+  tagline: I turn ideas into products people love to use. Lately, that means AI agents.
+  years: 10+ years
+  status: Building AI agents at o9
+  photo: images/headshot.jpg
+  photoAlt: Prithvi smiling, wearing a navy blazer
   socials:
     - label: LinkedIn
       url: https://www.linkedin.com/in/prithvipv/
+  focus:
+    - { label: Supply chain, icon: truck-delivery }
+    - { label: HRMS, icon: users-group }
+    - { label: Data and analytics platforms, icon: chart-arcs }
+    - { label: GenAI and AI agents, icon: sparkles }
+    - { label: Enterprise SaaS, icon: building-skyscraper }
+    - { label: 0 to 1, icon: rocket }
+  # Proof strip under the hero; numbers count up on load
+  stats:
+    - { value: 6, prefix: "$", suffix: M, label: ARR managed, icon: currency-dollar }
+    - { value: 20, suffix: "+", label: Devs and QA led, icon: users-group }
+    - { value: 6, label: 0-to-1 launches, icon: rocket }
+    - { value: 20000, suffix: "+", label: customers impacted, icon: users }
+  aboutLine: Ex-test engineer, so I always ask "what if it breaks?"
 
 about:
   - >-
@@ -33,6 +53,12 @@ about:
 experience:
   - company: o9 Solutions Inc.
     role: R&D Product Manager 2
+    short: o9 Solutions
+    logo: logos/o9.png
+    logoLarge: true
+    domain: Supply chain and data analytics platform
+    icon: chart-arcs
+    highlight: 70+ platform features, 35+ AI agents, $6M ARR
     start: Mar 2024
     end: Present
     location: Bengaluru
@@ -46,6 +72,11 @@ experience:
 
   - company: Zycus
     role: Senior Product Manager
+    short: Zycus
+    logo: logos/zycus.png
+    domain: Supply chain (procurement)
+    icon: truck-delivery
+    highlight: GenAI invoice extraction, 15–20% more accurate
     start: Nov 2022
     end: Feb 2024
     location: Bengaluru
@@ -58,6 +89,12 @@ experience:
 
   - company: Greytip Software Ltd
     role: Product Manager L3
+    short: Greytip
+    logo: logos/greythr.svg
+    logoLarge: true
+    domain: HRMS
+    icon: users-group
+    highlight: 6 HR modules from 0 to 1, up to 1,000+ customers
     start: May 2019
     end: Jul 2022
     location: Bengaluru
@@ -71,6 +108,11 @@ experience:
 
   - company: Survaider
     role: Product Manager
+    short: Survaider
+    logo: logos/survaider.png
+    domain: Customer experience
+    icon: message-star
+    highlight: AI task creator that turns customer reviews into action
     start: Nov 2018
     end: May 2019
     summary: Customer experience management (CXM) platform.
@@ -80,6 +122,11 @@ experience:
 
   - company: People Tech Group
     role: Associate Product Manager
+    short: People Tech Group
+    logo: logos/peopletech.png
+    domain: Judiciary SaaS
+    icon: gavel
+    highlight: Jury Management System with 1.5x revenue potential
     start: May 2017
     end: Nov 2018
     location: Bellevue, USA
@@ -91,6 +138,11 @@ experience:
 
   - company: Tech Mahindra
     role: Software Test Engineer
+    short: Tech Mahindra
+    logo: logos/techmahindra.svg
+    domain: Telecom
+    icon: antenna
+    highlight: 500+ test cases, 2 performance awards
     start: Dec 2013
     end: Jul 2015
     location: Bengaluru
@@ -101,8 +153,10 @@ experience:
 education:
   - school: Indiana University of Pennsylvania, USA
     degree: MBA, Information Systems
-    start: 2015
-    end: 2017
+    start: Jul 2015
+    end: May 2017
+    # Shown on the career timeline to cover the gap between jobs
+    timeline: { short: "MBA, IUP", icon: school, highlight: Where I moved from engineering into product }
   - school: Visvesvaraya Technological University
     degree: Bachelor of Engineering, Telecommunications
     start: 2009

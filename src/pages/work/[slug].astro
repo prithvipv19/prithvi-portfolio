@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
 import Gallery from '../../components/Gallery.astro';
+import Contact from '../../components/Contact.astro';
 import { formatMonth, getWork, typeLabel, url, type WorkEntry } from '../../lib/site';
 
 export async function getStaticPaths() {
@@ -11,39 +12,39 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: WorkEntry };
-const { title, summary, type, date, role, impact, tags, links, gallery } = entry.data;
+const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery } = entry.data;
 const { Content } = await render(entry);
 
-const linkLabels: Record<keyof typeof links, string> = {
-  live: type === 'writing' ? 'Read it' : 'Visit the live site',
-  repo: 'See the code',
-  figma: 'Open in Figma',
-  video: 'Watch on the video site',
-  slides: 'View the slides',
+const linkLabels: Record<keyof typeof links, { label: string; icon: string }> = {
+  live: { label: type === 'writing' ? 'Read it' : 'Visit the live site', icon: 'external-link' },
+  repo: { label: 'See the code', icon: 'brand-github' },
+  figma: { label: 'Open in Figma', icon: 'brand-figma' },
+  video: { label: 'Watch the video', icon: 'player-play' },
+  slides: { label: 'View the slides', icon: 'presentation' },
 };
 const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
   .filter((k) => links[k])
-  .map((k) => ({ href: links[k]!, label: linkLabels[k] }));
+  .map((k) => ({ href: links[k]!, ...linkLabels[k] }));
 ---
 
 <BaseLayout title={title} description={summary}>
-  <article class="section">
+  <article>
     <div class="wrap">
-      <a class="back" href={url('work/')}>All work</a>
-
+      <a class="more back" href={url('work/')}><i class="ti ti-arrow-left" aria-hidden="true"></i> All work</a>
       <header class="head">
-        <span class="pill">{typeLabel(type)}</span>
-        <h1>{title}</h1>
-        <p class="lede measure muted">{summary}</p>
+        <div class:list={['art', tone]} aria-hidden="true"><i class={`ti ti-${icon}`}></i></div>
+        <div>
+          <span class="chip chip-lav">{kind ?? typeLabel(type)}</span>
+          <h1>{title}</h1>
+          <p class="lede">{summary}</p>
+        </div>
       </header>
 
       <dl class="facts">
-        {role && <div><dt>Role</dt><dd>{role}</dd></div>}
-        {impact && <div><dt>Impact</dt><dd class="impact">{impact}</dd></div>}
-        <div><dt>When</dt><dd><time datetime={date.toISOString()}>{formatMonth(date)}</time></dd></div>
-        {tags.length > 0 && (
-          <div><dt>Topics</dt><dd><ul class="tags">{tags.map((t) => <li class="pill">{t}</li>)}</ul></dd></div>
-        )}
+        {impact && <div class="impact"><dt><i class="ti ti-trending-up" aria-hidden="true"></i>Impact</dt><dd>{impact}</dd></div>}
+        {company && <div><dt><i class="ti ti-building" aria-hidden="true"></i>Company</dt><dd>{company}</dd></div>}
+        {role && <div><dt><i class="ti ti-user" aria-hidden="true"></i>Role</dt><dd>{role}</dd></div>}
+        <div><dt><i class="ti ti-calendar" aria-hidden="true"></i>When</dt><dd><time datetime={date.toISOString()}>{formatMonth(date)}</time></dd></div>
       </dl>
 
       {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
@@ -53,34 +54,51 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
         <Content />
       </div>
 
+      {tags.length > 0 && (
+        <ul class="chips tags" aria-label="Topics">{tags.map((t) => <li class="chip chip-outline">{t}</li>)}</ul>
+      )}
+
       {linkList.length > 0 && (
         <div class="actions links">
-          {linkList.map((l, i) => <a class:list={['btn', { 'btn-primary': i === 0 }]} href={l.href}>{l.label}</a>)}
+          {linkList.map((l, i) => (
+            <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-ghost']} href={l.href}><i class={`ti ti-${l.icon}`} aria-hidden="true"></i>{l.label}</a>
+          ))}
         </div>
       )}
     </div>
   </article>
+  <Contact />
 </BaseLayout>
 
 <style>
-  .back { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
-  .head { margin-block: var(--space-m); }
-  .head .pill { margin-bottom: 1rem; }
-  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; max-width: 20ch; }
+  .back { margin-top: 1.5rem; }
+  .head { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 2rem; margin-block: 1.5rem 2rem; }
+  .art { display: flex; align-items: center; justify-content: center; width: 160px; height: 160px; border-radius: 32px; font-size: 4.5rem; }
+  .art.lavender { background: var(--lav-100); color: var(--violet); }
+  .art.mustard { background: var(--mustard-50); color: #7a5506; }
+  h1 { margin: 0.75rem 0 0.4rem; font-size: var(--step-3); max-width: 22ch; }
+  .lede { max-width: 48ch; margin: 0; }
 
   .facts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
-    gap: var(--space-s) var(--space-m);
-    margin-block: var(--space-m) var(--space-l);
-    padding-block: var(--space-m);
-    border-block: 1px solid var(--line);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: 1rem;
+    margin: 0 0 var(--space-m);
+    padding: 1.25rem 1.5rem;
+    border-radius: var(--radius);
+    background: var(--lav-50);
   }
-  dt { font-size: var(--step--1); color: var(--slate); }
-  dd { margin: 0.15rem 0 0; font-weight: 700; }
-  .tags { margin: 0.25rem 0 0; }
-  .tags .pill { font-weight: 400; }
-  .impact { border-left: 4px solid var(--note); padding-left: 0.6rem; }
+  dt { display: flex; align-items: center; gap: 0.35rem; font-size: var(--step--1); color: var(--lav-500); }
+  dd { margin: 0.2rem 0 0; font-weight: 600; color: var(--ink); }
+  .impact dd { font-family: var(--font-display); font-size: 1.35rem; font-weight: 800; color: var(--violet); }
   .media { max-width: 56rem; }
-  .links { margin-top: var(--space-m); }
+  .tags { margin-top: var(--space-m); }
+  .links { margin-block: var(--space-m) var(--space-l); }
+  .prose { margin-bottom: var(--space-m); }
+  article { padding-bottom: var(--space-l); }
+
+  @media (max-width: 40rem) {
+    .head { grid-template-columns: 1fr; gap: 1rem; }
+    .art { width: 88px; height: 88px; border-radius: 22px; font-size: 2.5rem; }
+  }
 </style>

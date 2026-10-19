@@ -1,0 +1,56 @@
+---
+import { resume } from '../lib/resume';
+
+const { stats } = resume.basics;
+const format = (s: (typeof stats)[number]) => `${s.prefix ?? ''}${s.value.toLocaleString('en-US')}${s.suffix ?? ''}`;
+---
+
+<section class="proof" aria-label="Highlights">
+  <div class="wrap grid">
+    {stats.map((s) => (
+      <div class="stat">
+        <i class={`ti ti-${s.icon}`} aria-hidden="true"></i>
+        <div>
+          <b data-count={s.value} data-pre={s.prefix ?? ''} data-suf={s.suffix ?? ''}>{format(s)}</b>
+          <span>{s.label}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  // Count numbers up once they scroll into view; the final value is already in the HTML
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const run = (el: HTMLElement) => {
+      const to = Number(el.dataset.count), pre = el.dataset.pre ?? '', suf = el.dataset.suf ?? '';
+      let t0: number | undefined;
+      const step = (t: number) => {
+        t0 ??= t;
+        const p = Math.min((t - t0) / 1400, 1);
+        el.textContent = pre + Math.round(to * (1 - Math.pow(1 - p, 3))).toLocaleString('en-US') + suf;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    const io = new IntersectionObserver((entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          run(e.target as HTMLElement);
+          io.unobserve(e.target);
+        }
+      })
+    );
+    document.querySelectorAll<HTMLElement>('[data-count]').forEach((el) => io.observe(el));
+  }
+</script>
+
+<style>
+  .proof { background: var(--lav-50); border-block: 1px solid var(--line); }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding-block: 1.5rem; }
+  .stat { display: flex; align-items: center; gap: 0.75rem; }
+  .stat > i { font-size: 1.7rem; color: var(--ochre); }
+  b { display: block; font-family: var(--font-display); font-size: 1.65rem; font-weight: 800; line-height: 1; color: var(--violet); font-variant-numeric: tabular-nums; }
+  span { font-size: var(--step--1); color: var(--slate); }
+  @media (max-width: 52rem) { .grid { grid-template-columns: repeat(2, 1fr); gap: 1.25rem; } }
+</style>

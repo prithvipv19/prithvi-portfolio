@@ -1,57 +1,173 @@
 ---
+import { existsSync } from 'node:fs';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WorkCard from '../components/WorkCard.astro';
+import Stats from '../components/Stats.astro';
+import WorkTile from '../components/WorkTile.astro';
+import CareerTimeline from '../components/CareerTimeline.astro';
 import Contact from '../components/Contact.astro';
 import { resume } from '../lib/resume';
 import { getWork, url } from '../lib/site';
 
-const { name, shortName = name, headline, intro } = resume.basics;
-const featured = (await getWork()).filter((w) => w.data.featured).slice(0, 4);
+const { name, shortName = name, headline, location, years, tagline, status, photo, photoAlt, email, socials, focus, aboutLine } = resume.basics;
+const featured = (await getWork())
+  .filter((w) => w.data.featured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+const hasPdf = existsSync('public/resume.pdf');
+const linkedin = socials.find((s) => /linkedin/i.test(s.label));
+const city = location?.split(',')[0];
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <div class="wrap">
-      <p class="hello">Hi, I'm {shortName}, a {headline.toLowerCase()}.</p>
-      <h1>I find the problems worth solving, then help teams ship the fix.</h1>
-      <p class="lede measure muted">{intro}</p>
-      <div class="actions">
-        <a class="btn btn-primary" href={url('work/')}>See my work</a>
-        <a class="btn" href={url('experience/')}>See my experience</a>
+  <div class="wrap">
+    <section class="hero">
+      <div class="hero-text">
+        <p class="tag">
+          <span class="chip chip-lav"><i class="ti ti-briefcase" aria-hidden="true"></i>{headline}</span>
+          <span class="meta">{years}{city && `, ${city}`}</span>
+        </p>
+        <h1>Hi, I'm {shortName}.</h1>
+        <p class="line">{tagline}</p>
+        <ul class="chips focus" aria-label="Focus areas">
+          {focus.map((f) => <li class="chip chip-outline"><i class={`ti ti-${f.icon}`} aria-hidden="true"></i>{f.label}</li>)}
+        </ul>
+        <div class="actions">
+          <a class="btn btn-primary" href={url('work/')}>See my work <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+          {hasPdf && <a class="btn btn-ghost" href={url('resume.pdf')} download><i class="ti ti-download" aria-hidden="true"></i>Resume</a>}
+          {linkedin && (
+            <a class="social social-linkedin" href={linkedin.url} rel="me" aria-label="LinkedIn">
+              <i class="ti ti-brand-linkedin" aria-hidden="true"></i><span class="tip">LinkedIn</span>
+            </a>
+          )}
+          <a class="social social-email" href={`mailto:${email}`} aria-label="Email">
+            <i class="ti ti-mail" aria-hidden="true"></i><span class="tip">Email</span>
+          </a>
+        </div>
       </div>
+      {photo && (
+        <div class="photo">
+          <div class="sun" aria-hidden="true"></div>
+          <div class="portrait"><img src={url(photo)} alt={photoAlt ?? name} width="640" height="800" fetchpriority="high" /></div>
+          {status && <p class="status"><span class="dot" aria-hidden="true"></span>{status}</p>}
+        </div>
+      )}
+    </section>
+  </div>
+
+  <Stats />
+
+  <section class="section" aria-labelledby="work-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <h2 id="work-title">Selected work</h2>
+        <a class="more" href={url('work/')}>All projects <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      </div>
+      <ul class="tiles reveal">
+        {featured.map((entry) => <li><WorkTile entry={entry} /></li>)}
+      </ul>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="featured-title">
+  <section class="section tint" aria-labelledby="career-title">
     <div class="wrap">
-      <div class="section-head">
-        <h2 id="featured-title">Selected work</h2>
-        <a href={url('work/')}>All work</a>
+      <div class="sec-head reveal">
+        <h2 id="career-title">Where I've been</h2>
+        <a class="more" href={url('experience/')}>Full experience <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
       </div>
-      <div class="rows">
-        {featured.map((entry) => <WorkCard entry={entry} variant="row" />)}
-      </div>
+      <div class="reveal"><CareerTimeline /></div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="about-title">
-    <div class="wrap measure">
-      <h2 id="about-title">A bit about me</h2>
-      <p class="lede">{resume.about[0]}</p>
-      <a href={url('about/')}>More about me</a>
+  {aboutLine && (
+    <div class="wrap">
+      <div class="about reveal">
+        <p><i class="ti ti-bug" aria-hidden="true"></i> {aboutLine}</p>
+        <a class="more" href={url('about/')}>More about me <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+      </div>
     </div>
-  </section>
+  )}
 
   <Contact />
 </BaseLayout>
 
 <style>
-  .hero { padding-block: var(--space-xl) var(--space-l); }
-  .hello { font-weight: 700; margin-bottom: 0.75rem; }
-  h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; max-width: 16ch; }
-  .lede { margin-bottom: var(--space-m); }
+  .hero { display: grid; grid-template-columns: 1.15fr 1fr; min-height: 540px; }
+  .hero-text { display: flex; flex-direction: column; justify-content: center; padding-block: 3rem 4rem; }
+  .tag { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-bottom: 1.25rem; }
+  .tag .chip { font-weight: 600; }
+  .meta { font-size: var(--step--1); color: var(--lav-500); }
+  h1 { margin: 0; }
+  .line { max-width: 28ch; margin: 1.1rem 0 1.1rem; font-size: var(--step-1); line-height: 1.45; color: var(--violet); }
+  .focus { max-width: 34rem; margin-bottom: 1.9rem; }
 
-  .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.5rem 1rem; }
-  .section-head a { font-weight: 700; }
-  .rows { border-bottom: 1px solid var(--line); }
+  .photo {
+    position: relative;
+    overflow: hidden;
+    margin-right: calc(-1 * var(--gutter));
+    border-radius: 0 0 0 48px;
+    background: var(--lav-200);
+  }
+  .sun { position: absolute; top: 50%; left: 50%; width: 360px; height: 360px; border-radius: 50%; background: var(--mustard); transform: translate(-55%, -52%); }
+  .portrait {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 290px;
+    height: 370px;
+    overflow: hidden;
+    border: 6px solid #fff;
+    border-radius: 145px 145px 18px 18px;
+    background: #ddd;
+    transform: translate(-45%, -44%);
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+  .status {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: #fff;
+    font-size: var(--step--1);
+    font-weight: 500;
+    color: var(--violet);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #1d9e75; animation: pulse 2s infinite; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgb(29 158 117 / 0.5); }
+    70% { box-shadow: 0 0 0 8px rgb(29 158 117 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(29 158 117 / 0); }
+  }
+
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; margin: 0; padding: 0; list-style: none; }
+
+  .about {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 2.75rem;
+  }
+  .about p { margin: 0; font-family: var(--font-display); font-size: var(--step-1); font-weight: 600; letter-spacing: -0.01em; color: var(--violet); }
+  .about p i { color: var(--ochre); }
+
+  @media (max-width: 60rem) {
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+    .hero { grid-template-columns: 1fr 0.9fr; }
+    .sun { width: 280px; height: 280px; }
+    .portrait { width: 220px; height: 290px; }
+  }
+  @media (max-width: 40rem) {
+    .hero { grid-template-columns: 1fr; min-height: 0; }
+    .photo { order: -1; height: 340px; margin: 0 calc(-1 * var(--gutter)); border-radius: 0 0 32px 32px; }
+    .sun { width: 250px; height: 250px; }
+    .portrait { width: 190px; height: 240px; }
+    .hero-text { padding-block: 2rem 2.5rem; }
+    .tiles { gap: 0.75rem; }
+  }
 </style>

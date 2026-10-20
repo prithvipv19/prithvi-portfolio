@@ -60,6 +60,8 @@ const work = defineCollection({
         }),
       )
       .default([]),
+    /** Key decisions drawn as one image (paths relative to public/images/), shown full width in place of the forks. */
+    decisionsImage: z.object({ src: z.string(), alt: z.string() }).optional(),
     /** Short follow-ups shown under the decisions. */
     next: z.array(z.string()).default([]),
   }),

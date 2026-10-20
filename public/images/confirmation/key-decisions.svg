@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 830" width="1200" height="830" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#2b2160"/></marker></defs>
+<rect width="1200" height="830" fill="#ffffff"/>
+<text x="40" y="46" font-size="26" font-weight="800" fill="#2b2160">Key decisions, where they sit in the flow</text>
+<text x="40" y="74" font-size="15" fill="#4a4470">Each card: what teams did before, what I chose instead, and what that choice cost.</text>
+<path d="M138.0 118H1066.0" stroke="#cfc6f5" stroke-width="3"/>
+<rect x="68.0" y="98" width="140" height="40" rx="20" fill="#2b2160"/>
+<circle cx="90.0" cy="118" r="12" fill="#e5b53a"/><text x="90.0" y="123" font-size="13" font-weight="800" fill="#3d2a02" text-anchor="middle">1</text>
+<text x="148.0" y="124" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Policy</text>
+<path d="M138.0 138V168" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="31.0" y="168" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="47.0" y="198" font-size="15.5" font-weight="800" fill="#2b2160">Starting the review</text>
+<text x="47.0" y="224" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="47.0" y="244" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="47.0" dy="0">HR chases dates in a</tspan><tspan x="47.0" dy="18">spreadsheet</tspan></text>
+<path d="M57.0 272V292" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="43.0" y="300" width="190" height="62" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="57.0" y="326" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="57.0" dy="0">Auto-start 15 days</tspan><tspan x="57.0" dy="19">before the due date</tspan></text>
+<rect x="43.0" y="390" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="55.0" y="409" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="55.0" y="427" font-size="12.5" fill="#3d2a02"><tspan x="55.0" dy="0">Probation days must be</tspan><tspan x="55.0" dy="16">right in every profile</tspan></text>
+<path d="M138.0 464V480" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="31.0" y="480" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="47.0" y="510" font-size="15.5" font-weight="800" fill="#2b2160">Extensions</text>
+<text x="47.0" y="536" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="47.0" y="556" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="47.0" dy="0">Extend as often as anyone</tspan><tspan x="47.0" dy="18">likes</tspan></text>
+<path d="M57.0 584V604" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="43.0" y="612" width="190" height="62" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="57.0" y="638" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="57.0" dy="0">Reason required, at</tspan><tspan x="57.0" dy="19">most 2 extensions</tspan></text>
+<rect x="43.0" y="702" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="55.0" y="721" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="55.0" y="739" font-size="12.5" fill="#3d2a02"><tspan x="55.0" dy="0">Rare cases need an admin</tspan><tspan x="55.0" dy="16">override</tspan></text>
+<rect x="300.0" y="98" width="140" height="40" rx="20" fill="#2b2160"/>
+<circle cx="322.0" cy="118" r="12" fill="#e5b53a"/><text x="322.0" y="123" font-size="13" font-weight="800" fill="#3d2a02" text-anchor="middle">2</text>
+<text x="380.0" y="124" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Track</text>
+<path d="M370.0 138V168" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="263.0" y="168" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="279.0" y="198" font-size="15.5" font-weight="800" fill="#2b2160">Visibility</text>
+<text x="279.0" y="224" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="279.0" y="244" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="279.0" dy="0">Reports built in a query</tspan><tspan x="279.0" dy="18">tool</tspan></text>
+<path d="M289.0 272V292" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="275.0" y="300" width="190" height="81" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="289.0" y="326" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="289.0" dy="0">A board with due,</tspan><tspan x="289.0" dy="19">overdue and</tspan><tspan x="289.0" dy="19">extension counts</tspan></text>
+<rect x="275.0" y="390" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="287.0" y="409" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="287.0" y="427" font-size="12.5" fill="#3d2a02"><tspan x="287.0" dy="0">Fixed metrics, not ad hoc</tspan><tspan x="287.0" dy="16">analysis</tspan></text>
+<rect x="532.0" y="98" width="140" height="40" rx="20" fill="#2b2160"/>
+<circle cx="554.0" cy="118" r="12" fill="#e5b53a"/><text x="554.0" y="123" font-size="13" font-weight="800" fill="#3d2a02" text-anchor="middle">3</text>
+<text x="612.0" y="124" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Review</text>
+<path d="M602.0 138V168" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="495.0" y="168" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="511.0" y="198" font-size="15.5" font-weight="800" fill="#2b2160">Evaluation</text>
+<text x="511.0" y="224" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="511.0" y="244" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="511.0" dy="0">Free-text feedback only</tspan></text>
+<path d="M521.0 254V274" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="507.0" y="282" width="190" height="62" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="521.0" y="308" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="521.0" dy="0">One rating form per</tspan><tspan x="521.0" dy="19">policy</tspan></text>
+<rect x="507.0" y="390" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="519.0" y="409" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="519.0" y="427" font-size="12.5" fill="#3d2a02"><tspan x="519.0" dy="0">Less room for role-</tspan><tspan x="519.0" dy="16">specific questions</tspan></text>
+<path d="M602.0 464V480" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="495.0" y="480" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="511.0" y="510" font-size="15.5" font-weight="800" fill="#2b2160">Feedback</text>
+<text x="511.0" y="536" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="511.0" y="556" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="511.0" dy="0">One comment box everyone</tspan><tspan x="511.0" dy="18">sees</tspan></text>
+<path d="M521.0 584V604" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="507.0" y="612" width="190" height="81" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="521.0" y="638" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="521.0" dy="0">Feedback for the</tspan><tspan x="521.0" dy="19">employee, remarks</tspan><tspan x="521.0" dy="19">kept private</tspan></text>
+<rect x="507.0" y="702" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="519.0" y="721" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="519.0" y="739" font-size="12.5" fill="#3d2a02"><tspan x="519.0" dy="0">Managers write two notes,</tspan><tspan x="519.0" dy="16">not one</tspan></text>
+<rect x="764.0" y="98" width="140" height="40" rx="20" fill="#2b2160"/>
+<circle cx="786.0" cy="118" r="12" fill="#e5b53a"/><text x="786.0" y="123" font-size="13" font-weight="800" fill="#3d2a02" text-anchor="middle">4</text>
+<text x="844.0" y="124" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Decide</text>
+<path d="M834.0 138V168" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="727.0" y="168" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="743.0" y="198" font-size="15.5" font-weight="800" fill="#2b2160">Outcomes</text>
+<text x="743.0" y="224" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="743.0" y="244" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="743.0" dy="0">Confirm, extend, or an</tspan><tspan x="743.0" dy="18">unclear reject</tspan></text>
+<path d="M753.0 272V292" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="739.0" y="300" width="190" height="62" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="753.0" y="326" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="753.0" dy="0">Confirm, extend or</tspan><tspan x="753.0" dy="19">do not confirm</tspan></text>
+<rect x="739.0" y="390" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="751.0" y="409" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="751.0" y="427" font-size="12.5" fill="#3d2a02"><tspan x="751.0" dy="0">Do not confirm needs an</tspan><tspan x="751.0" dy="16">exit flow</tspan></text>
+<path d="M834.0 464V480" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="727.0" y="480" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="743.0" y="510" font-size="15.5" font-weight="800" fill="#2b2160">Stuck reviews</text>
+<text x="743.0" y="536" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="743.0" y="556" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="743.0" dy="0">Wait on the manager&#x27;s</tspan><tspan x="743.0" dy="18">inbox</tspan></text>
+<path d="M753.0 584V604" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="739.0" y="612" width="190" height="62" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="753.0" y="638" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="753.0" dy="0">Auto-forward to HR</tspan><tspan x="753.0" dy="19">head after 3 days</tspan></text>
+<rect x="739.0" y="702" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="751.0" y="721" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="751.0" y="739" font-size="12.5" fill="#3d2a02"><tspan x="751.0" dy="0">May decide without the</tspan><tspan x="751.0" dy="16">manager&#x27;s input</tspan></text>
+<rect x="996.0" y="98" width="140" height="40" rx="20" fill="#2b2160"/>
+<circle cx="1018.0" cy="118" r="12" fill="#e5b53a"/><text x="1018.0" y="123" font-size="13" font-weight="800" fill="#3d2a02" text-anchor="middle">5</text>
+<text x="1076.0" y="124" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Automate</text>
+<path d="M1066.0 138V168" stroke="#cfc6f5" stroke-width="2" stroke-dasharray="4 4"/>
+<rect x="959.0" y="168" width="214" height="296" rx="16" fill="#f7f5fe" stroke="#e4defa" stroke-width="1.5"/>
+<text x="975.0" y="198" font-size="15.5" font-weight="800" fill="#2b2160">After the decision</text>
+<text x="975.0" y="224" font-size="11.5" font-weight="700" fill="#4a4470" letter-spacing="0.06em">INSTEAD OF</text>
+<text x="975.0" y="244" font-size="13.5" fill="#4a4470" text-decoration="line-through"><tspan x="975.0" dy="0">Five separate tasks for HR</tspan></text>
+<path d="M985.0 254V274" stroke="#2b2160" stroke-width="2" marker-end="url(#ah)"/>
+<rect x="971.0" y="282" width="190" height="100" rx="12" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+<text x="985.0" y="308" font-size="14.5" fill="#1e1a33" font-weight="700"><tspan x="985.0" dy="0">Status, notice,</tspan><tspan x="985.0" dy="19">letter, leave and</tspan><tspan x="985.0" dy="19">tasks update on</tspan><tspan x="985.0" dy="19">their own</tspan></text>
+<rect x="971.0" y="390" width="190" height="62" rx="12" fill="#fbf1d3"/>
+<text x="983.0" y="409" font-size="11.5" font-weight="700" fill="#5e4204" letter-spacing="0.06em">COST</text>
+<text x="983.0" y="427" font-size="12.5" fill="#3d2a02"><tspan x="983.0" dy="0">Every downstream rule</tspan><tspan x="983.0" dy="16">mapped up front</tspan></text>
+<text x="40" y="810" font-size="12.5" fill="#4a4470">Fictional example data. The flow diagram above shows who acts at each stage.</text>
+</svg>

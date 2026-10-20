@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+<defs>
+  <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#2b2160"/></marker>
+  <marker id="ahm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#a8790f"/></marker>
+  <marker id="ahs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" fill="#8a83ad"/></marker>
+</defs>
+<rect width="1200" height="720" fill="#ffffff"/>
+
+<!-- Title -->
+<text x="40" y="46" font-size="26" font-weight="800" fill="#2b2160">Employee Confirmation, end to end</text>
+<text x="40" y="74" font-size="15" fill="#4a4470">Who does what, from the policy to the signed letter. Example: Meera Iyer, 120-day probation.</text>
+
+<!-- Lanes -->
+<g>
+  <rect x="24" y="96" width="1152" height="116" rx="16" fill="#f7f5fe"/>
+  <rect x="24" y="212" width="1152" height="116" fill="#ffffff"/>
+  <rect x="24" y="328" width="1152" height="116" fill="#f7f5fe"/>
+  <rect x="24" y="444" width="1152" height="116" fill="#ffffff"/>
+  <rect x="24" y="560" width="1152" height="116" rx="16" fill="#f7f5fe"/>
+  <rect x="24" y="96" width="1152" height="580" rx="16" fill="none" stroke="#e4defa" stroke-width="1.5"/>
+  <path d="M24 212H1176M24 328H1176M24 444H1176M24 560H1176" stroke="#e4defa" stroke-width="1.5"/>
+  <path d="M156 96V676" stroke="#e4defa" stroke-width="1.5"/>
+  <g font-size="15" font-weight="700" fill="#2b2160">
+    <text x="44" y="150">HR admin</text>
+    <text x="44" y="266">System</text>
+    <text x="44" y="382">Manager</text>
+    <text x="44" y="498">HR head</text>
+    <text x="44" y="614">Employee</text>
+  </g>
+  <g font-size="12.5" fill="#4a4470">
+    <text x="44" y="169">Priya</text>
+    <text x="44" y="285">Automatic</text>
+    <text x="44" y="401">Divya · Level 1</text>
+    <text x="44" y="517">Rahul · Level 2</text>
+    <text x="44" y="633">Meera</text>
+  </g>
+</g>
+
+<!-- Arrows -->
+<g fill="none" stroke="#2b2160" stroke-width="2.2" stroke-linejoin="round">
+  <path d="M347 154H430V226" marker-end="url(#ah)"/>
+  <path d="M537 270H620V342" marker-end="url(#ah)"/>
+  <path d="M727 386H800V450" marker-end="url(#ah)"/>
+  <path d="M862 502H880V270H899" marker-end="url(#ah)"/>
+  <path d="M1010 304V574" marker-end="url(#ah)"/>
+</g>
+<path d="M738 502H430V308" fill="none" stroke="#a8790f" stroke-width="2.2" stroke-dasharray="7 5" stroke-linejoin="round" marker-end="url(#ahm)"/>
+<path d="M800 548V574" fill="none" stroke="#8a83ad" stroke-width="2.2" marker-end="url(#ahs)"/>
+
+<!-- Arrow labels -->
+<g font-size="13" font-weight="700">
+  <rect x="810" y="368" width="62" height="24" rx="12" fill="#e3f4ea"/>
+  <text x="841" y="385" text-anchor="middle" fill="#1d5c37">Confirm</text>
+  <rect x="478" y="477" width="214" height="24" rx="12" fill="#fbf1d3"/>
+  <text x="585" y="494" text-anchor="middle" fill="#5e4204">Extend · new date + reason, max 2</text>
+  <rect x="1024" y="420" width="128" height="24" rx="12" fill="#eeeafb"/>
+  <text x="1088" y="437" text-anchor="middle" fill="#2b2160">Notify + publish</text>
+</g>
+<text x="764" y="377" font-size="12.5" fill="#4a4470" text-anchor="middle">Submit</text>
+
+<!-- Nodes -->
+<g>
+  <!-- A Set policy -->
+  <rect x="133" y="120" width="214" height="68" rx="14" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+  <text x="240" y="147" font-size="16" font-weight="700" fill="#1e1a33" text-anchor="middle">Set the policy</text>
+  <text x="240" y="167" font-size="12.5" fill="#4a4470" text-anchor="middle">Days by category, reviewers, form</text>
+
+  <!-- B Start review -->
+  <rect x="323" y="236" width="214" height="68" rx="14" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+  <text x="430" y="263" font-size="16" font-weight="700" fill="#1e1a33" text-anchor="middle">Start the review</text>
+  <text x="430" y="283" font-size="12.5" fill="#4a4470" text-anchor="middle">15 days before the due date</text>
+
+  <!-- C Rate & recommend -->
+  <rect x="513" y="352" width="214" height="68" rx="14" fill="#ffffff" stroke="#2b2160" stroke-width="2"/>
+  <text x="620" y="379" font-size="16" font-weight="700" fill="#1e1a33" text-anchor="middle">Rate and recommend</text>
+  <text x="620" y="399" font-size="12.5" fill="#4a4470" text-anchor="middle">Auto-forwards after 3 days</text>
+
+  <!-- D Decide -->
+  <path d="M800 456L862 502L800 548L738 502Z" fill="#2b2160"/>
+  <text x="800" y="507" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">Decide</text>
+
+  <!-- E Apply outcome -->
+  <rect x="903" y="236" width="214" height="68" rx="14" fill="#e3f4ea" stroke="#1d5c37" stroke-width="2"/>
+  <text x="1010" y="263" font-size="16" font-weight="700" fill="#1d5c37" text-anchor="middle">Do the paperwork</text>
+  <text x="1010" y="283" font-size="12.5" fill="#1d5c37" text-anchor="middle">Status, notice, letter, leave, tasks</text>
+
+  <!-- F Exit process -->
+  <rect x="673" y="584" width="214" height="68" rx="14" fill="#ffffff" stroke="#8a83ad" stroke-width="2" stroke-dasharray="6 5"/>
+  <text x="780" y="611" font-size="15" font-weight="700" fill="#4a4470" text-anchor="middle">Do not confirm</text>
+  <text x="780" y="631" font-size="12.5" fill="#4a4470" text-anchor="middle">Hands off to the exit process</text>
+
+  <!-- G Outcome -->
+  <rect x="903" y="584" width="214" height="68" rx="14" fill="#fbf1d3" stroke="#a8790f" stroke-width="2"/>
+  <text x="1010" y="611" font-size="16" font-weight="700" fill="#3d2a02" text-anchor="middle">See the outcome</text>
+  <text x="1010" y="631" font-size="12.5" fill="#3d2a02" text-anchor="middle">Read feedback, acknowledge letter</text>
+</g>
+
+<!-- Footer -->
+<text x="40" y="704" font-size="12.5" fill="#4a4470">Dashed amber: extension loops back and restarts the review on the new due date. Dashed grey: next phase.</text>
+</svg>

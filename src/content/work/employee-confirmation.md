@@ -8,6 +8,7 @@ icon: user-check
 tone: mustard
 featured: true
 order: 6
+flowLink: true
 tags: [HRMS, Workflows, Employee lifecycle, 0 to 1]
 gallery:
   - src: confirmation/flow.svg

@@ -7,100 +7,144 @@ interface Props {
 }
 
 const { entry, headingLevel: Heading = 'h3' } = Astro.props;
-const { title, type, kind, icon, tone, impact, demo, video } = entry.data;
+const { title, type, kind, icon, tone, impact, demo, video, flowLink } = entry.data;
 const href = url(`work/${entry.id}/`);
+
+// Extras show as icon buttons with a tooltip; "View" is the one shared CTA.
+const extras = [
+  demo && { href: url(demo), icon: 'player-play', label: 'Try the demo', accent: true },
+  video && { href: `${href}#video`, icon: 'video', label: 'Watch the video', accent: false },
+  flowLink && { href: `${href}#flow`, icon: 'route', label: 'See the flow', accent: false },
+].filter(Boolean) as { href: string; icon: string; label: string; accent: boolean }[];
 ---
 
-{demo || video ? (
-  <article class="tile has-ctas">
-    <div class:list={['art', tone]} aria-hidden="true">
-      <i class={`ti ti-${icon}`}></i>
+<article class="tile">
+  <div class:list={['art', tone]} aria-hidden="true">
+    <i class={`ti ti-${icon}`}></i>
+  </div>
+  <div class="txt">
+    <span class="kind">{kind ?? typeLabel(type)}</span>
+    <Heading class="title">{title}</Heading>
+    {impact && <span class="impact">{impact}</span>}
+    <div class="foot">
+      <a class="details" href={href}>
+        View<span class="visually-hidden">: {title}</span>
+        <i class="ti ti-arrow-right" aria-hidden="true"></i>
+      </a>
+      {extras.length > 0 && (
+        <ul class="extras">
+          {extras.map((x) => (
+            <li>
+              <a class:list={['extra', { accent: x.accent }]} href={x.href} aria-label={`${x.label}: ${title}`}>
+                <i class={`ti ti-${x.icon}`} aria-hidden="true"></i>
+                <span class="tip" aria-hidden="true">{x.label}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
-    <div class="txt">
-      <span class="kind">{kind ?? typeLabel(type)}</span>
-      <Heading class="title">{title}</Heading>
-      {impact && <span class="impact">{impact}</span>}
-      <div class="ctas">
-        {demo && <a class="cta cta-try" href={url(demo)}><i class="ti ti-player-play" aria-hidden="true"></i>Try me<span class="visually-hidden">: {title} demo</span></a>}
-        {video && <a class="cta" href={`${href}#video`}><i class="ti ti-video" aria-hidden="true"></i>Watch video<span class="visually-hidden">: {title}</span></a>}
-        {demo && <a class="cta" href={href}><i class="ti ti-route" aria-hidden="true"></i>Show the flow<span class="visually-hidden">: {title}</span></a>}
-      </div>
-    </div>
-  </article>
-) : (
-  <a class="tile" href={href}>
-    <div class:list={['art', tone]}>
-      <i class={`ti ti-${icon}`} aria-hidden="true"></i>
-      <span class="go" aria-hidden="true"><i class="ti ti-arrow-up-right"></i></span>
-    </div>
-    <div class="txt">
-      <span class="kind">{kind ?? typeLabel(type)}</span>
-      <Heading class="title">{title}</Heading>
-      {impact && <span class="impact">{impact}</span>}
-    </div>
-  </a>
-)}
+  </div>
+</article>
 
 <style>
-  .has-ctas .txt { display: flex; flex-direction: column; flex: 1; }
-  .ctas { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: auto; padding-top: 0.9rem; }
-  .cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    min-height: 40px;
-    padding: 0 0.9rem;
-    border: 1.5px solid var(--violet);
-    border-radius: 999px;
-    color: var(--violet);
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-  .cta:hover { background: var(--lav-100); color: var(--violet); }
-  .cta-try { border-color: var(--mustard); background: var(--mustard); color: var(--mustard-ink); }
-  .cta-try:hover { background: #f0c455; color: var(--mustard-ink); }
   .tile {
+    position: relative;
+    min-width: 0;
     display: flex;
     flex-direction: column;
     height: 100%;
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    overflow: hidden;
     background: #fff;
-    color: inherit;
-    text-decoration: none;
     transition: transform 0.25s, border-color 0.25s;
   }
   .tile:hover { transform: translateY(-6px); border-color: var(--lav-500); }
-  .art { position: relative; display: flex; align-items: center; justify-content: center; height: 150px; font-size: 3.25rem; }
-  .art.lavender { background: var(--lav-100); color: var(--violet); }
-  .art.mustard { background: var(--mustard-50); color: #7a5506; }
-  .go {
-    position: absolute;
-    top: 14px;
-    right: 14px;
+  .tile:has(.details:focus-visible) { outline: 3px solid var(--ochre); outline-offset: 3px; }
+  .art {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #fff;
-    color: var(--violet);
-    font-size: 1.1rem;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.25s, transform 0.25s;
+    height: 150px;
+    border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+    font-size: 3.25rem;
   }
-  .tile:hover .go, .tile:focus-visible .go { opacity: 1; transform: scale(1); }
-  .txt { padding: 1rem 1.15rem 1.25rem; }
+  .art.lavender { background: var(--lav-100); color: var(--violet); }
+  .art.mustard { background: var(--mustard-50); color: #7a5506; }
+  .txt { display: flex; flex: 1; flex-direction: column; padding: 1rem 1.15rem 1.15rem; }
   .kind { font-size: var(--step--1); font-weight: 600; color: var(--lav-500); }
   .title { margin: 0.2rem 0 0.35rem; font-size: 1.25rem; line-height: 1.15; }
   .impact { font-size: 0.9375rem; color: var(--slate); }
+
+  /* Footer: one shared CTA plus optional icon buttons */
+  .foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; margin-top: auto; padding-top: 1rem; }
+  .details {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 40px;
+    padding: 0 1rem;
+    border-radius: 999px;
+    background: var(--violet);
+    color: #fff;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  /* The whole card opens the details page; icon buttons sit above this layer */
+  .details::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .details:focus-visible { outline: none; }
+  .details i { transition: transform 0.2s; }
+  .tile:hover .details { background: var(--violet-deep); color: #fff; }
+  .tile:hover .details i { transform: translateX(3px); }
+
+  .extras { position: relative; z-index: 1; display: flex; gap: 0.4rem; margin: 0; padding: 0; list-style: none; }
+  .extra {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1.5px solid var(--lav-300);
+    border-radius: 50%;
+    background: #fff;
+    color: var(--violet);
+    font-size: 1.15rem;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+  .extra:hover { border-color: var(--violet); background: var(--lav-100); color: var(--violet); transform: translateY(-2px); }
+  .extra.accent { border-color: var(--mustard); background: var(--mustard); color: var(--mustard-ink); }
+  .extra.accent:hover { background: #f0c455; color: var(--mustard-ink); }
+  .tip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    padding: 4px 9px;
+    border-radius: 6px;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .tip::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--ink); }
+  .extra:hover .tip, .extra:focus-visible .tip { opacity: 1; transform: translate(-50%, 0); }
+  /* Keep the last tooltip inside the card edge */
+  .extras li:last-child .tip { left: auto; right: -4px; transform: translate(0, 4px); }
+  .extras li:last-child .tip::after { left: auto; right: 15px; }
+  .extras li:last-child .extra:hover .tip, .extras li:last-child .extra:focus-visible .tip { transform: translate(0, 0); }
+
   @media (max-width: 40rem) {
     .art { height: 110px; font-size: 2.5rem; }
     .title { font-size: 1.05rem; }
+    .details { padding: 0 0.8rem; font-size: 0.8125rem; }
+    .extra { width: 38px; height: 38px; }
   }
 </style>

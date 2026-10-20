@@ -11,6 +11,7 @@ order: 0
 company: Greytip (greytHR)
 role: Product Manager L3
 impact: 1,000+ enterprises
+flowLink: true
 tags: [HRMS, Payroll, Workflows, 0 to 1]
 demo: work/overtime-module/demo/
 video:

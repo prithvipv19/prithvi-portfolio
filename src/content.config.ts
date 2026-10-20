@@ -40,6 +40,8 @@ const work = defineCollection({
       .optional(),
     /** Figma prototype share URL, shown as a click-to-load embed. */
     prototype: z.url().optional(),
+    /** Show a flow icon on the work tile that jumps to the flow on the case study page. */
+    flowLink: z.boolean().default(false),
     /** Steps of the end-to-end flow, drawn as a diagram under the facts box. */
     flow: z.array(z.object({ label: z.string(), note: z.string().optional() })).default([]),
     // Images live in public/images/; paths are relative to it, e.g. "checkout-1.png".

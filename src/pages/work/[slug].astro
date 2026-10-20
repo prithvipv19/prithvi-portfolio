@@ -51,7 +51,7 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
         <div><dt><i class="ti ti-calendar" aria-hidden="true"></i>When</dt><dd><time datetime={date.toISOString()}>{formatMonth(date)}</time></dd></div>
       </dl>
 
-      {flow.length > 0 && <FlowDiagram steps={flow} />}
+      {flow.length > 0 && <div id="flow" class="anchor"><FlowDiagram steps={flow} /></div>}
 
       {demo && (
         <a class="try" href={url(demo)}>
@@ -63,7 +63,11 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
 
       {video && <div class="media" id="video"><LocalVideo {...video} title={title} /></div>}
       {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
-      {gallery.length > 0 && <Gallery images={gallery} note={galleryNote} />}
+      {gallery.length > 0 && (
+        <div id={flow.length === 0 && entry.data.flowLink ? 'flow' : undefined} class="anchor">
+          <Gallery images={gallery} note={galleryNote} />
+        </div>
+      )}
 
       <div class="prose measure">
         <Content />
@@ -157,4 +161,5 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
     .head { grid-template-columns: 1fr; gap: 1rem; }
     .art { width: 88px; height: 88px; border-radius: 22px; font-size: 2.5rem; }
   }
+  .anchor { scroll-margin-top: 1.5rem; }
 </style>

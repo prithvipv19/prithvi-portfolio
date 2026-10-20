@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
+import LocalVideo from '../../components/LocalVideo.astro';
 import Gallery from '../../components/Gallery.astro';
 import FlowDiagram from '../../components/FlowDiagram.astro';
 import PrototypeEmbed from '../../components/PrototypeEmbed.astro';
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props as { entry: WorkEntry };
-const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery, galleryNote, flow, prototype, demo, decisions, next } = entry.data;
+const { title, summary, type, kind, icon, tone, date, company, role, impact, tags, links, gallery, galleryNote, flow, prototype, demo, video, decisions, next } = entry.data;
 const { Content } = await render(entry);
 
 const linkLabels: Record<keyof typeof links, { label: string; icon: string }> = {
@@ -60,6 +61,7 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
         </a>
       )}
 
+      {video && <div class="media"><LocalVideo {...video} title={title} /></div>}
       {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
       {gallery.length > 0 && <Gallery images={gallery} note={galleryNote} />}
 

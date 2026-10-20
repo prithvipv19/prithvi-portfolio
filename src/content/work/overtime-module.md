@@ -13,6 +13,11 @@ role: Product Manager L3
 impact: 100+ enterprises
 tags: [HRMS, Payroll, Workflows, 0 to 1]
 demo: work/overtime-module/demo/
+video:
+  src: videos/overtime-demo.mp4
+  captions: videos/overtime-demo.vtt
+  poster: images/overtime/demo-poster.jpg
+  label: Watch the 90-second walkthrough
 flow:
   - label: Set the policy
     note: Eligibility, caps, rounding and pay rates by day type or shift

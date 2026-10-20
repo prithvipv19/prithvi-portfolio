@@ -34,6 +34,10 @@ const work = defineCollection({
       .default({}),
     /** Site path to an interactive demo page, e.g. "work/overtime-module/demo/". */
     demo: z.string().optional(),
+    /** Self-hosted walkthrough video; paths are relative to public/, e.g. "videos/x.mp4". */
+    video: z
+      .object({ src: z.string(), captions: z.string().optional(), poster: z.string().optional(), label: z.string().optional() })
+      .optional(),
     /** Figma prototype share URL, shown as a click-to-load embed. */
     prototype: z.url().optional(),
     /** Steps of the end-to-end flow, drawn as a diagram under the facts box. */

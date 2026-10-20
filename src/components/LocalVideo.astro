@@ -1,0 +1,93 @@
+---
+import { url } from '../lib/site';
+
+interface Props {
+  src: string;
+  title: string;
+  captions?: string;
+  poster?: string;
+  label?: string;
+}
+
+const { src, title, captions, poster, label = 'Watch the walkthrough' } = Astro.props;
+---
+
+<figure class="local-video">
+  <div class="frame" data-local-video>
+    <video controls preload="none" playsinline poster={poster && url(poster)} aria-label={`${title}: walkthrough video`}>
+      <source src={url(src)} type="video/mp4" />
+      {captions && <track kind="captions" src={url(captions)} srclang="en" label="English" default />}
+      <a href={url(src)}>Download the video</a>
+    </video>
+    <button type="button" class="play" aria-label={`Play video: ${title}`}>
+      <span class="disc" aria-hidden="true"></span>
+      <span class="txt">{label}</span>
+    </button>
+  </div>
+  <figcaption>Narrated walkthrough with captions. All names and numbers are made up.</figcaption>
+</figure>
+
+<script>
+  // Poster with a big play button; the native controls take over once it starts.
+  document.querySelectorAll<HTMLElement>('[data-local-video]').forEach((frame) => {
+    const video = frame.querySelector('video')!;
+    const btn = frame.querySelector<HTMLButtonElement>('.play')!;
+    btn.addEventListener('click', () => {
+      btn.hidden = true;
+      video.play();
+      video.focus();
+    });
+    video.addEventListener('play', () => (btn.hidden = true));
+  });
+</script>
+
+<style>
+  .local-video { margin: var(--space-m) 0; }
+  .frame {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--ink);
+  }
+  video { display: block; width: 100%; height: 100%; object-fit: contain; background: var(--ink); }
+  .play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    border: 0;
+    background: rgb(30 26 51 / 0.35);
+    color: #fff;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .play[hidden] { display: none; }
+  .play:hover .disc { transform: scale(1.06); }
+  .disc {
+    position: relative;
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background: var(--mustard);
+    transition: transform 0.2s;
+  }
+  .disc::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0.8rem 0 0.8rem 1.35rem;
+    border-color: transparent transparent transparent var(--mustard-ink);
+    transform: translateX(0.2rem);
+  }
+  .txt { padding: 0.3rem 0.8rem; border-radius: 999px; background: rgb(30 26 51 / 0.6); }
+  figcaption { margin-top: 0.5rem; font-size: var(--step--1); color: var(--slate); }
+</style>

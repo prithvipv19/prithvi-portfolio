@@ -20,7 +20,7 @@ const { title, summary, type, kind, icon, tone, date, company, role, impact, tag
 const { Content } = await render(entry);
 
 const linkLabels: Record<keyof typeof links, { label: string; icon: string }> = {
-  live: { label: type === 'writing' ? 'Read it' : 'Visit the live site', icon: 'external-link' },
+  live: { label: type === 'writing' ? 'Read it' : entry.data.category === 'personal' ? 'Open the app' : 'Visit the live site', icon: 'external-link' },
   repo: { label: 'See the code', icon: 'brand-github' },
   figma: { label: 'Open in Figma', icon: 'brand-figma' },
   video: { label: 'Watch the video', icon: 'player-play' },
@@ -34,7 +34,7 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
 <BaseLayout title={title} description={summary}>
   <article>
     <div class="wrap">
-      <a class="more back" href={url('work/')}><i class="ti ti-arrow-left" aria-hidden="true"></i> All work</a>
+      <a class="more back" href={url(entry.data.category === 'personal' ? 'work/personal/' : 'work/')}><i class="ti ti-arrow-left" aria-hidden="true"></i> {entry.data.category === 'personal' ? 'All personal projects' : 'All career projects'}</a>
       <header class="head">
         <div class:list={['art', tone]} aria-hidden="true"><i class={`ti ti-${icon}`}></i></div>
         <div>
@@ -97,7 +97,7 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
       {linkList.length > 0 && (
         <div class="actions links">
           {linkList.map((l, i) => (
-            <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-ghost']} href={l.href}><i class={`ti ti-${l.icon}`} aria-hidden="true"></i>{l.label}</a>
+            <a class:list={['btn', i === 0 ? 'btn-primary' : 'btn-ghost']} href={l.href} target="_blank" rel="noopener"><i class={`ti ti-${l.icon}`} aria-hidden="true"></i>{l.label}<span class="visually-hidden"> (opens in a new tab)</span></a>
           ))}
         </div>
       )}

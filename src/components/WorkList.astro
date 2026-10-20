@@ -1,0 +1,142 @@
+---
+import WorkTile from './WorkTile.astro';
+import { getWork, url, workCategories, workTypes, type WorkCategory } from '../lib/site';
+
+interface Props {
+  category: WorkCategory;
+}
+
+const { category } = Astro.props;
+const work = await getWork(category);
+const counts = Object.fromEntries(
+  await Promise.all(workCategories.map(async (c) => [c.id, (await getWork(c.id)).length] as const))
+);
+const current = workCategories.find((c) => c.id === category)!;
+const filters = workTypes
+  .map((t) => ({ ...t, count: work.filter((w) => w.data.type === t.id).length }))
+  .filter((t) => t.count > 0);
+---
+
+<div class="wrap">
+  <header class="page-head">
+    <h1>Work</h1>
+    <p class="lede">{current.blurb}</p>
+  </header>
+
+  <nav class="subtabs" aria-label="Work sections">
+    {workCategories.map((c) => (
+      <a href={url(c.path)} aria-current={c.id === category ? 'page' : undefined}>
+        <i class={`ti ti-${c.icon}`} aria-hidden="true"></i>{c.label}<span>{counts[c.id]}</span>
+      </a>
+    ))}
+  </nav>
+
+  {filters.length > 1 && (
+    <div class="filters" role="group" aria-label="Filter by type">
+      <button type="button" data-filter="all" aria-pressed="true">All <span>{work.length}</span></button>
+      {filters.map((f) => (
+        <button type="button" data-filter={f.id} aria-pressed="false">{f.plural} <span>{f.count}</span></button>
+      ))}
+    </div>
+  )}
+  <p class="visually-hidden" aria-live="polite" data-status></p>
+
+  {work.length > 0 ? (
+    <ul class="grid">
+      {work.map((entry) => (
+        <li data-type={entry.data.type}><WorkTile entry={entry} headingLevel="h2" /></li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">More coming soon.</p>
+  )}
+</div>
+
+<script>
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const items = document.querySelectorAll<HTMLLIElement>('.grid > li');
+  const status = document.querySelector<HTMLElement>('[data-status]');
+  buttons.forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+      let shown = 0;
+      items.forEach((item) => {
+        const match = filter === 'all' || item.dataset.type === filter;
+        item.hidden = !match;
+        if (match) shown++;
+      });
+      if (status) status.textContent = `Showing ${shown} ${shown === 1 ? 'project' : 'projects'}`;
+    })
+  );
+</script>
+
+<style>
+  /* Sub-tabs: Career projects | Personal projects */
+  .subtabs {
+    display: flex;
+    gap: 0.4rem;
+    width: fit-content;
+    max-width: 100%;
+    margin-bottom: 1.25rem;
+    padding: 0.35rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--lav-50);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .subtabs a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--violet);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+  .subtabs a i { color: var(--ochre); }
+  .subtabs a span { padding: 0 7px; border-radius: 999px; background: var(--lav-100); font-size: 0.75rem; }
+  .subtabs a:hover { background: #fff; }
+  .subtabs a[aria-current] { background: var(--violet); color: #fff; }
+  .subtabs a[aria-current] i { color: var(--mustard); }
+  .subtabs a[aria-current] span { background: rgb(255 255 255 / 0.18); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+  .filters button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid var(--lav-300);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--violet);
+    font: inherit;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .filters span { font-size: var(--step--1); color: var(--lav-500); }
+  .filters button[aria-pressed='true'] { background: var(--lav-100); border-color: var(--violet); }
+  /* 1 column on small phones, 2 on phones and tablets, up to 4 on desktop */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: 1.1rem;
+    margin: 0 0 var(--space-l);
+    padding: 0;
+    list-style: none;
+  }
+  .grid > li[hidden] { display: none; }
+  .empty { margin-bottom: var(--space-l); color: var(--slate); }
+  @media (max-width: 40rem) {
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+    .subtabs a { padding: 0 0.85rem; }
+  }
+  @media (max-width: 22rem) { .grid { grid-template-columns: 1fr; } }
+</style>

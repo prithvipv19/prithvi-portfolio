@@ -13,9 +13,16 @@ export const workTypes: { id: WorkType; label: string; plural: string }[] = [
 
 export const typeLabel = (type: WorkType) => workTypes.find((t) => t.id === type)!.label;
 
-/** Published work in display order (the `order` field), then newest first. */
-export async function getWork() {
-  const entries = await getCollection('work', ({ data }) => !data.draft);
+export type WorkCategory = WorkEntry['data']['category'];
+
+export const workCategories: { id: WorkCategory; label: string; path: string; icon: string; blurb: string }[] = [
+  { id: 'career', label: 'Career projects', path: 'work/', icon: 'briefcase', blurb: "Products I've helped build and ship at work, and what changed because of them." },
+  { id: 'personal', label: 'Personal projects', path: 'work/personal/', icon: 'flask', blurb: 'Things I build on my own time, end to end, to stay hands-on.' },
+];
+
+/** Published work in display order (the `order` field), then newest first; optionally one category only. */
+export async function getWork(category?: WorkCategory) {
+  const entries = await getCollection('work', ({ data }) => !data.draft && (!category || data.category === category));
   return entries.sort((a, b) => a.data.order - b.data.order || b.data.date.getTime() - a.data.date.getTime());
 }
 

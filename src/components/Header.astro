@@ -1,17 +1,22 @@
 ---
 import { resume } from '../lib/resume';
-import { url } from '../lib/site';
+import { url, workCategories } from '../lib/site';
 
-const links = [
+type NavLink = { href: string; label: string; exact?: boolean; sub?: { href: string; label: string; icon: string }[] };
+const links: NavLink[] = [
   { href: url(), label: 'Home', exact: true },
-  { href: url('work/'), label: 'Work' },
+  {
+    href: url('work/'),
+    label: 'Work',
+    sub: workCategories.map((c) => ({ href: url(c.path), label: c.label, icon: c.icon })),
+  },
   { href: url('experience/'), label: 'Experience' },
   { href: url('about/'), label: 'About' },
 ];
 const path = Astro.url.pathname;
 // Home only matches itself; the other tabs also match their sub-pages
-const isCurrent = (l: (typeof links)[number]) =>
-  l.exact ? path.replace(/\/$/, '') === l.href.replace(/\/$/, '') : path.startsWith(l.href);
+const same = (a: string, b: string) => a.replace(/\/$/, '') === b.replace(/\/$/, '');
+const isCurrent = (l: NavLink) => (l.exact ? same(path, l.href) : path.startsWith(l.href));
 ---
 
 <header class="site-header">
@@ -23,8 +28,21 @@ const isCurrent = (l: (typeof links)[number]) =>
     <nav id="site-nav" aria-label="Main">
       <ul>
         {links.map((l) => (
-          <li>
-            <a href={l.href} aria-current={isCurrent(l) ? 'page' : undefined}>{l.label}</a>
+          <li class:list={{ 'has-sub': l.sub }}>
+            <a href={l.href} aria-current={isCurrent(l) ? 'page' : undefined}>
+              {l.label}{l.sub && <i class="ti ti-chevron-down caret" aria-hidden="true"></i>}
+            </a>
+            {l.sub && (
+              <ul class="sub">
+                {l.sub.map((s) => (
+                  <li>
+                    <a href={s.href} aria-current={same(path, s.href) ? 'page' : undefined}>
+                      <i class={`ti ti-${s.icon}`} aria-hidden="true"></i>{s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
         <li><a class="cta" href={`mailto:${resume.basics.email}`}>Get in touch</a></li>
@@ -83,6 +101,36 @@ const isCurrent = (l: (typeof links)[number]) =>
   }
   nav a:not(.cta):hover::after,
   nav a[aria-current='page']::after { transform: scaleX(1); }
+  .caret { margin-left: 0.2rem; font-size: 0.9rem; transition: transform 0.2s; }
+
+  /* Work dropdown: opens on hover and on keyboard focus */
+  .has-sub { position: relative; }
+  .sub {
+    position: absolute;
+    top: 100%;
+    left: -0.75rem;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-width: 13rem;
+    padding: 0.4rem;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 12px 28px -12px rgb(43 33 96 / 0.25);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+  }
+  .has-sub:hover .sub, .has-sub:focus-within .sub { opacity: 1; visibility: visible; transform: none; }
+  .has-sub:hover .caret, .has-sub:focus-within .caret { transform: rotate(180deg); }
+  .sub a { gap: 0.55rem; width: 100%; padding: 0 0.75rem; border-radius: 10px; white-space: nowrap; }
+  .sub a i { color: var(--ochre); }
+  .sub a::after { display: none; }
+  .sub a:hover, .sub a[aria-current='page'] { background: var(--lav-100); }
+
   .cta { border: 1.5px solid var(--violet); border-radius: 999px; padding: 0 1rem; }
   .cta:hover { background: var(--lav-100); }
   .menu-toggle { display: none; }
@@ -107,6 +155,11 @@ const isCurrent = (l: (typeof links)[number]) =>
     :global(.js) nav ul { flex-direction: column; align-items: stretch; gap: 0; }
     :global(.js) nav a { width: 100%; border-bottom: 1px solid var(--line); }
     :global(.js) nav a::after { display: none; }
+    :global(.js) .caret { display: none; }
+    :global(.js) .sub { position: static; min-width: 0; padding: 0 0 0 1rem; border: 0; box-shadow: none; opacity: 1; visibility: visible; transform: none; }
+    :global(.js) .sub a { padding: 0; border-radius: 0; font-size: 0.95rem; }
+    :global(.js) .sub a:hover, :global(.js) .sub a[aria-current='page'] { background: none; }
+    :global(.js) .sub a[aria-current='page'] { font-weight: 700; }
     :global(.js) .cta { justify-content: center; margin-top: 0.75rem; border-bottom: 1.5px solid var(--violet); }
   }
 </style>

@@ -11,6 +11,8 @@ const work = defineCollection({
     date: z.coerce.date(),
     type: z.enum(['case-study', 'code', 'design', 'writing', 'video']),
     tags: z.array(z.string()).default([]),
+    /** Which Work sub-tab it appears under: career projects (default) or personal projects. */
+    category: z.enum(['career', 'personal']).default('career'),
     featured: z.boolean().default(false),
     /** Position among featured work on the home page (lowest first). */
     order: z.number().default(99),

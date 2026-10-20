@@ -9,7 +9,7 @@ import { resume } from '../lib/resume';
 import { getWork, url } from '../lib/site';
 
 const { name, shortName = name, headline, location, years, tagline, status, photo, photoAlt, email, socials, focus, aboutLine } = resume.basics;
-const featured = (await getWork())
+const featured = (await getWork('career'))
   .filter((w) => w.data.featured)
   .sort((a, b) => a.data.order - b.data.order)
   .slice(0, 4);

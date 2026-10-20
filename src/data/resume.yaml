@@ -157,8 +157,12 @@ education:
     end: May 2017
     # Shown on the career timeline to cover the gap between jobs
     timeline: { short: "MBA, IUP", icon: school, highlight: Where I moved from engineering into product }
+    image: images/education/iup.jpg
+    imageAlt: The brick and stone entrance arch of Indiana University of Pennsylvania under autumn trees
   - school: Visvesvaraya Technological University
     degree: Bachelor of Engineering, Telecommunications
+    image: images/education/vtu.jpg
+    imageAlt: The white domed main building of Visvesvaraya Technological University, Belagavi
     start: 2009
     end: 2013
 

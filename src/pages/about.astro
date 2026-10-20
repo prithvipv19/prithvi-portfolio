@@ -46,11 +46,18 @@ const studies = education
           <li class="degree reveal">
             <span class="step" aria-hidden="true">{e.years}</span>
             <div class="card">
-              <span class="icon" aria-hidden="true"><i class={`ti ti-${e.icon}`}></i></span>
-              <div>
-                <h3>{e.degree}</h3>
-                <p class="school">{e.school}</p>
-                {e.note && <p class="note"><i class="ti ti-sparkles" aria-hidden="true"></i>{e.note}</p>}
+              {e.image && (
+                <div class="pic">
+                  <img src={url(e.image)} alt={e.imageAlt ?? e.school} loading="lazy" />
+                </div>
+              )}
+              <div class="body">
+                <span class="icon" aria-hidden="true"><i class={`ti ti-${e.icon}`}></i></span>
+                <div>
+                  <h3>{e.degree}</h3>
+                  <p class="school">{e.school}</p>
+                  {e.note && <p class="note"><i class="ti ti-sparkles" aria-hidden="true"></i>{e.note}</p>}
+                </div>
               </div>
             </div>
             {i < studies.length - 1 && <span class="arrow" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>}
@@ -97,7 +104,12 @@ const studies = education
   .path { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; margin: 0; padding: 0; list-style: none; }
   .degree { position: relative; display: flex; flex-direction: column; gap: 0.6rem; }
   .step { align-self: flex-start; padding: 3px 12px; border-radius: 999px; background: var(--violet); color: #fff; font-size: var(--step--1); font-weight: 600; font-variant-numeric: tabular-nums; }
-  .card { flex: 1; display: flex; gap: 1rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .card { flex: 1; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; transition: transform 0.25s, border-color 0.25s; }
+  .card:hover { transform: translateY(-4px); border-color: var(--lav-500); }
+  .pic { aspect-ratio: 16 / 9; overflow: hidden; background: var(--lav-100); }
+  .pic img { width: 100%; height: 100%; object-fit: cover; object-position: center 70%; transition: transform 0.6s; }
+  .card:hover .pic img { transform: scale(1.04); }
+  .body { display: flex; gap: 1rem; padding: 1.4rem 1.5rem 1.5rem; }
   .icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 16px; background: var(--lav-100); color: var(--violet); font-size: 1.6rem; }
   .card h3 { margin: 0 0 0.25rem; font-size: 1.25rem; }
   .school { margin: 0; color: var(--slate); }

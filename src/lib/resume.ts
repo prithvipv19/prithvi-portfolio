@@ -42,6 +42,9 @@ export interface Resume {
     start?: string | number;
     end: string | number;
     timeline?: { short: string; icon: string; highlight: string };
+    /** Campus photo, relative to public/. */
+    image?: string;
+    imageAlt?: string;
   }[];
   skills: { group: string; items: string[] }[];
   certifications: { name: string; issuer: string; year: string | number }[];

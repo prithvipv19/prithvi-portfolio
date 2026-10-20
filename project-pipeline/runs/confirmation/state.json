@@ -3,10 +3,28 @@
   "created": "2026-10-20",
   "current_stage": 3,
   "stages": {
-    "1-research": { "status": "passed", "attempts": 1, "note": "Written by the orchestrator from the greytHR teardown done in this session" },
-    "2-spec": { "status": "passed", "attempts": 1, "note": "Hero flow only, condensed from the feature spec agreed in this session" },
-    "3-mockup": { "status": "in_progress", "attempts": 1 },
-    "4-script": { "status": "pending", "attempts": 0 },
-    "5-video": { "status": "pending", "attempts": 0 }
+    "1-research": {
+      "status": "passed",
+      "attempts": 1,
+      "note": "Written by the orchestrator from the greytHR teardown done in this session"
+    },
+    "2-spec": {
+      "status": "passed",
+      "attempts": 1,
+      "note": "Hero flow only, condensed from the feature spec agreed in this session"
+    },
+    "3-mockup": {
+      "status": "passed",
+      "attempts": 1,
+      "note": "Awaiting user look sign-off"
+    },
+    "4-script": {
+      "status": "pending",
+      "attempts": 0
+    },
+    "5-video": {
+      "status": "pending",
+      "attempts": 0
+    }
   }
 }

@@ -5,6 +5,7 @@ import Stats from '../components/Stats.astro';
 import WorkTile from '../components/WorkTile.astro';
 import CareerTimeline from '../components/CareerTimeline.astro';
 import Contact from '../components/Contact.astro';
+import TwinChat from '../components/TwinChat.astro';
 import { resume } from '../lib/resume';
 import { getWork, url } from '../lib/site';
 
@@ -68,7 +69,18 @@ const city = location?.split(',')[0];
     </div>
   </section>
 
-  <section class="section tint" aria-labelledby="career-title">
+  <section class="section tint" aria-labelledby="twin-title">
+    <div class="wrap twin-sec">
+      <div class="twin-copy reveal">
+        <span class="chip chip-mustard"><i class="ti ti-sparkles" aria-hidden="true"></i>AI digital twin</span>
+        <h2 id="twin-title">Ask me anything about my work</h2>
+        <p class="muted">This twin knows my resume, case studies and interview answers, and nothing else. If it hasn't been covered, it'll tell you instead of making something up.</p>
+      </div>
+      <div class="reveal"><TwinChat variant="inline" /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="career-title">
     <div class="wrap">
       <div class="sec-head reveal">
         <h2 id="career-title">Where I've been</h2>
@@ -91,6 +103,9 @@ const city = location?.split(',')[0];
 </BaseLayout>
 
 <style>
+  .twin-sec { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(1.5rem, 4vw, 3.5rem); align-items: center; }
+  .twin-copy h2 { margin-top: 0.75rem; }
+  @media (max-width: 860px) { .twin-sec { grid-template-columns: 1fr; } }
   .hero { display: grid; grid-template-columns: 1.15fr 1fr; min-height: 540px; }
   .hero-text { display: flex; flex-direction: column; justify-content: center; padding-block: 3rem 4rem; }
   .tag { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin-bottom: 1.25rem; }

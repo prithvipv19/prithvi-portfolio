@@ -1,0 +1,22 @@
+# Cloudflare Worker config for the digital twin. Deploy with `npm run deploy` in twin/.
+name = "prithvi-twin"
+main = "worker.js"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Answer engine: "gemini" (Google AI Studio free tier) or "claude" (Anthropic, paid).
+PROVIDER = "gemini"
+MODEL = "gemini-flash-latest"
+# Sites allowed to call the twin. Add your GitHub Pages origin (and custom domain, if any).
+ALLOWED_ORIGINS = "https://prithvipv19.github.io,http://localhost:4321,http://localhost:4360"
+
+# Questions the twin couldn't answer. Create with: npx wrangler kv namespace create UNANSWERED
+[[kv_namespaces]]
+binding = "UNANSWERED"
+id = "b7ab0843fad44c7faf2ba5787035a09c"
+
+# Secrets (never in this file):
+#   npx wrangler secret put GEMINI_API_KEY      (free key from aistudio.google.com)
+#   npx wrangler secret put ANTHROPIC_API_KEY   (only if PROVIDER = "claude")
+#   npx wrangler secret put ADMIN_TOKEN       (any long random string; used by `npm run unanswered`)

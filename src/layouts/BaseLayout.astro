@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import TwinChat from '../components/TwinChat.astro';
 import { resume } from '../lib/resume';
 import { url } from '../lib/site';
 
@@ -13,6 +14,8 @@ interface Props {
 const { name, headline, intro } = resume.basics;
 const { title, description = intro } = Astro.props;
 const pageTitle = title ? `${title} | ${name}` : `${name}, ${headline}`;
+// The home page has the twin inline; every other page gets the floating bubble.
+const isHome = Astro.url.pathname.replace(/\/$/, '') === url().replace(/\/$/, '');
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
 const ogImage = Astro.site && resume.basics.photo ? new URL(url(resume.basics.photo), Astro.site).href : undefined;
 ---
@@ -48,6 +51,7 @@ const ogImage = Astro.site && resume.basics.photo ? new URL(url(resume.basics.ph
       <slot />
     </main>
     <Footer />
+    {!isHome && <TwinChat variant="bubble" />}
     <script>
       // Fade sections in as they scroll into view
       const io = new IntersectionObserver(

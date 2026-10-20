@@ -25,3 +25,9 @@ pnpm-debug.log*
 
 # source documents (the public copy lives at public/resume.pdf)
 docs/
+
+# digital twin: generated knowledge and local logs
+twin/knowledge.json
+twin/node_modules/
+twin/.wrangler/
+twin/*.local.*

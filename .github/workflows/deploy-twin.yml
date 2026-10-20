@@ -1,0 +1,32 @@
+# Redeploys the digital twin's Cloudflare Worker when what it knows changes
+# (resume, case studies, qa.md) or its code changes.
+# One-time: add repo secret CLOUDFLARE_API_TOKEN (Cloudflare dashboard → My Profile →
+# API Tokens → "Edit Cloudflare Workers" template).
+name: Deploy twin
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - twin/**
+      - src/data/**
+      - src/content/work/**
+      - scripts/build-knowledge.mjs
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm ci
+        working-directory: twin
+      - run: npm run deploy
+        working-directory: twin
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

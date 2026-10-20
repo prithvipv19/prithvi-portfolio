@@ -1,0 +1,303 @@
+---
+// "Ask my AI twin": a chat grounded only in the resume, case studies and verified Q&A.
+// `inline` sits in the home page; `bubble` floats in the corner on every other page.
+// Both share one conversation per tab (sessionStorage), answered by /api/chat.
+import { resume } from '../lib/resume';
+import { url } from '../lib/site';
+
+interface Props {
+  variant?: 'inline' | 'bubble';
+}
+
+const { variant = 'inline' } = Astro.props;
+const { shortName = resume.basics.name, photo } = resume.basics;
+const starters = [
+  'What AI agents have you built?',
+  'Tell me about a 0-to-1 product you launched',
+  'How did you measure the impact of your AI work?',
+  'What did you do at Zycus?',
+];
+const id = `twin-${variant}`;
+---
+
+<div class:list={['twin', `twin-${variant}`]} data-twin data-endpoint={import.meta.env.PUBLIC_TWIN_ENDPOINT ?? '/api/chat'} data-base={url()}>
+  {variant === 'bubble' && (
+    <button class="launcher" type="button" aria-expanded="false" aria-controls={id} data-open>
+      <i class="ti ti-message-chatbot" aria-hidden="true"></i><span>Ask my AI twin</span>
+    </button>
+  )}
+  <section class="panel" id={id} aria-label={`Chat with ${shortName}'s AI twin`} hidden={variant === 'bubble'}>
+    <header class="top">
+      {photo && <img class="avatar" src={url(photo)} alt="" width="40" height="40" loading="lazy" />}
+      <div>
+        <p class="name">{shortName}'s AI twin</p>
+        <p class="note"><i class="ti ti-shield-check" aria-hidden="true"></i>Answers only from my resume and case studies</p>
+      </div>
+      <button class="icon reset" type="button" aria-label="Start a new chat" title="New chat" data-reset hidden><i class="ti ti-refresh" aria-hidden="true"></i></button>
+      {variant === 'bubble' && <button class="icon" type="button" aria-label="Close chat" data-close><i class="ti ti-x" aria-hidden="true"></i></button>}
+    </header>
+
+    <div class="log" role="log" aria-live="polite" data-log>
+      <div class="msg bot intro">
+        <p>Hi, I'm an AI version of {shortName}. Ask me about my projects, roles and results. If something isn't in my portfolio, I'll say so rather than guess.</p>
+      </div>
+    </div>
+
+    <ul class="starters" aria-label="Suggested questions" data-starters>
+      {starters.map((q) => <li><button type="button" class="chip chip-outline" data-q={q}>{q}</button></li>)}
+    </ul>
+
+    <form class="ask" data-form>
+      <label class="visually-hidden" for={`${id}-input`}>Your question</label>
+      <textarea id={`${id}-input`} rows="1" maxlength="500" placeholder="Ask about my work…" required data-input></textarea>
+      <button class="send" type="submit" aria-label="Send"><i class="ti ti-arrow-up" aria-hidden="true"></i></button>
+    </form>
+  </section>
+</div>
+
+<script>
+  type Msg = { role: 'user' | 'assistant'; content: string };
+  const KEY = 'twin-chat';
+
+  const load = (): Msg[] => {
+    try { return JSON.parse(sessionStorage.getItem(KEY) ?? '[]'); } catch { return []; }
+  };
+  const save = (msgs: Msg[]) => {
+    try { sessionStorage.setItem(KEY, JSON.stringify(msgs.slice(-20))); } catch {}
+  };
+
+  /** Minimal, safe Markdown: paragraphs, "- " lists, **bold**, and links to this site, email or LinkedIn. */
+  function render(md: string, base: string): DocumentFragment {
+    const frag = document.createDocumentFragment();
+    const inline = (text: string, into: HTMLElement) => {
+      const re = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)\s]+)\)/g;
+      let last = 0;
+      for (const m of text.matchAll(re)) {
+        into.append(text.slice(last, m.index));
+        if (m[1]) {
+          const b = document.createElement('strong');
+          b.textContent = m[1];
+          into.append(b);
+        } else {
+          const href = m[3];
+          const ok = href.startsWith('/') || href.startsWith('mailto:') || href.startsWith('https://www.linkedin.com/');
+          if (ok) {
+            const a = document.createElement('a');
+            a.href = href.startsWith('/') ? base.replace(/\/$/, '') + href : href;
+            a.textContent = m[2];
+            into.append(a);
+          } else into.append(m[2]);
+        }
+        last = m.index! + m[0].length;
+      }
+      into.append(text.slice(last));
+    };
+    for (const block of md.trim().split(/\n{2,}/)) {
+      const lines = block.split('\n');
+      if (lines.every((l) => /^\s*[-*] /.test(l))) {
+        const ul = document.createElement('ul');
+        for (const l of lines) {
+          const li = document.createElement('li');
+          inline(l.replace(/^\s*[-*] /, ''), li);
+          ul.append(li);
+        }
+        frag.append(ul);
+      } else {
+        const p = document.createElement('p');
+        lines.forEach((l, i) => {
+          if (i) p.append(document.createElement('br'));
+          inline(l.replace(/^\s*[-*] /, '• '), p);
+        });
+        frag.append(p);
+      }
+    }
+    return frag;
+  }
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-twin]')) {
+    const endpoint = root.dataset.endpoint!;
+    const base = root.dataset.base!;
+    const panel = root.querySelector<HTMLElement>('.panel')!;
+    const log = root.querySelector<HTMLElement>('[data-log]')!;
+    const form = root.querySelector<HTMLFormElement>('[data-form]')!;
+    const input = root.querySelector<HTMLTextAreaElement>('[data-input]')!;
+    const starters = root.querySelector<HTMLElement>('[data-starters]')!;
+    const resetBtn = root.querySelector<HTMLButtonElement>('[data-reset]')!;
+    const launcher = root.querySelector<HTMLButtonElement>('[data-open]');
+    let msgs = load();
+    let busy = false;
+
+    const bubble = (role: Msg['role'], text = '') => {
+      const el = document.createElement('div');
+      el.className = `msg ${role === 'user' ? 'me' : 'bot'}`;
+      if (role === 'user') el.textContent = text;
+      else el.append(render(text, base));
+      log.append(el);
+      log.scrollTop = log.scrollHeight;
+      return el;
+    };
+    const syncChrome = () => {
+      starters.hidden = msgs.length > 0;
+      resetBtn.hidden = msgs.length === 0;
+    };
+    msgs.forEach((m) => bubble(m.role, m.content));
+    syncChrome();
+
+    async function ask(question: string) {
+      if (busy || !question.trim()) return;
+      busy = true;
+      form.classList.add('busy');
+      msgs.push({ role: 'user', content: question.trim() });
+      bubble('user', question.trim());
+      syncChrome();
+      const el = bubble('assistant');
+      el.classList.add('typing');
+      let answer = '';
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: msgs, page: location.pathname }),
+        });
+        if (!res.ok || !res.body) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error ?? 'Sorry, I couldn’t answer just now. Please try again.');
+        }
+        const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+        let buf = '';
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += value;
+          const events = buf.split('\n\n');
+          buf = events.pop()!;
+          for (const ev of events) {
+            const data = JSON.parse(ev.replace(/^data: /, ''));
+            if (data.error) throw new Error(data.error);
+            if (data.reset) answer = '';
+            if (data.t) answer += data.t;
+            el.classList.remove('typing');
+            el.replaceChildren(render(answer, base));
+            log.scrollTop = log.scrollHeight;
+          }
+        }
+        msgs.push({ role: 'assistant', content: answer });
+        save(msgs);
+      } catch (e) {
+        msgs.pop();
+        el.classList.remove('typing');
+        el.classList.add('error');
+        el.textContent = (e as Error).message;
+      } finally {
+        busy = false;
+        form.classList.remove('busy');
+        input.focus();
+      }
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const q = input.value;
+      input.value = '';
+      input.style.height = '';
+      ask(q);
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        form.requestSubmit();
+      }
+    });
+    input.addEventListener('input', () => {
+      input.style.height = '';
+      input.style.height = `${Math.min(input.scrollHeight, 120)}px`;
+    });
+    starters.addEventListener('click', (e) => {
+      const q = (e.target as HTMLElement).closest<HTMLElement>('[data-q]')?.dataset.q;
+      if (q) ask(q);
+    });
+    resetBtn.addEventListener('click', () => {
+      msgs = [];
+      save(msgs);
+      log.querySelectorAll('.msg:not(.intro)').forEach((n) => n.remove());
+      syncChrome();
+      input.focus();
+    });
+
+    if (launcher) {
+      const setOpen = (open: boolean) => {
+        panel.hidden = !open;
+        launcher.hidden = open;
+        launcher.setAttribute('aria-expanded', String(open));
+        if (open) {
+          log.scrollTop = log.scrollHeight;
+          input.focus();
+        } else launcher.focus();
+      };
+      launcher.addEventListener('click', () => setOpen(true));
+      root.querySelector('[data-close]')!.addEventListener('click', () => setOpen(false));
+      panel.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+    }
+  }
+</script>
+
+<style>
+  .panel {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 20px 50px -24px rgb(43 33 96 / 0.35);
+    overflow: hidden;
+  }
+  .panel[hidden] { display: none; }
+  .twin-inline .panel { height: min(560px, 75vh); }
+
+  .top { display: flex; align-items: center; gap: 0.75rem; padding: 0.85rem 1rem; background: var(--violet); color: #fff; }
+  .top > div { flex: 1; min-width: 0; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--mustard); }
+  .name { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: var(--step-0); line-height: 1.2; }
+  .note { display: flex; align-items: center; gap: 0.3rem; margin: 0.1rem 0 0; font-size: var(--step--1); color: var(--lav-300); }
+  .icon { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 50%; background: transparent; color: #fff; font-size: 1.25rem; cursor: pointer; }
+  .icon:hover { background: rgb(255 255 255 / 0.12); }
+  .icon[hidden] { display: none; }
+
+  .log { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; background: var(--lav-50); }
+  /* Messages are added by the script, so they need :global() to get styles. */
+  .log :global(.msg) { max-width: 88%; padding: 0.65rem 0.9rem; border-radius: 16px; line-height: 1.5; font-size: var(--step-0); }
+  .log :global(.msg p), .log :global(.msg ul) { margin: 0 0 0.5em; }
+  .log :global(.msg p:last-child), .log :global(.msg ul:last-child) { margin-bottom: 0; }
+  .log :global(.msg ul) { padding-left: 1.2em; }
+  .log :global(.bot) { align-self: flex-start; background: #fff; border: 1px solid var(--line); border-bottom-left-radius: 4px; color: var(--ink); }
+  .log :global(.me) { align-self: flex-end; background: var(--violet); color: #fff; border-bottom-right-radius: 4px; white-space: pre-wrap; }
+  .log :global(.error) { border-color: #e7b4b4; background: #fdf2f2; color: #8a1f1f; }
+  .log :global(.typing)::after { content: '•••'; letter-spacing: 0.2em; color: var(--lav-500); animation: blink 1.2s infinite; }
+  @keyframes blink { 50% { opacity: 0.3; } }
+
+  .starters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0; padding: 0.75rem 1rem 0; list-style: none; background: var(--lav-50); }
+  .starters[hidden] { display: none; }
+  .starters .chip { cursor: pointer; font: inherit; font-size: var(--step--1); text-align: left; min-height: 36px; }
+  .starters .chip:hover { background: var(--lav-100); }
+
+  .ask { display: flex; align-items: end; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--lav-50); border-top: 1px solid var(--line); }
+  .ask textarea { flex: 1; resize: none; min-height: 44px; max-height: 120px; padding: 0.6rem 0.9rem; border: 1px solid var(--lav-300); border-radius: 14px; font: inherit; color: var(--ink); background: #fff; }
+  .ask textarea:focus { outline: 2px solid var(--ochre); outline-offset: 1px; }
+  .send { flex: none; display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--violet); color: #fff; font-size: 1.2rem; cursor: pointer; }
+  .send:hover { background: var(--violet-deep); }
+  .busy .send { opacity: 0.5; pointer-events: none; }
+
+  /* Floating bubble */
+  .twin-bubble { position: fixed; right: 1rem; bottom: 1rem; z-index: 40; }
+  .launcher { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 52px; padding: 0 1.2rem 0 1rem; border: 0; border-radius: 999px; background: var(--violet); color: #fff; font: inherit; font-weight: 600; box-shadow: 0 12px 30px -12px rgb(43 33 96 / 0.6); cursor: pointer; transition: transform 0.2s; }
+  .launcher:hover { transform: translateY(-2px); background: var(--violet-deep); }
+  .launcher i { font-size: 1.4rem; color: var(--mustard); }
+  .launcher[hidden] { display: none; }
+  .twin-bubble .panel { width: min(400px, calc(100vw - 2rem)); height: min(600px, calc(100vh - 2rem)); }
+  @media (max-width: 480px) {
+    .twin-bubble { right: 0.75rem; bottom: 0.75rem; }
+    .launcher span { display: none; }
+    .launcher { width: 56px; padding: 0; justify-content: center; }
+    .twin-bubble .panel { position: fixed; inset: 0; width: auto; height: auto; border-radius: 0; }
+  }
+</style>

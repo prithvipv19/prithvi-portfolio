@@ -7,6 +7,9 @@ import { GoogleGenAI, ApiError } from '@google/genai';
 import knowledge from '../knowledge.json' with { type: 'json' };
 
 const DEFAULT_MODELS = { gemini: 'gemini-flash-latest', claude: 'claude-opus-5-5' };
+// Free-tier Gemini models get overloaded at busy times (503); try this one before giving up.
+const GEMINI_BACKUP = 'gemini-flash-lite-latest';
+const ANSWER_TIMEOUT_MS = 45_000;
 const MAX_QUESTION = 500;
 const MAX_TURNS = 8;
 const RATE = { windowMs: 10 * 60_000, max: 20 };
@@ -55,7 +58,7 @@ function cleanMessages(raw) {
 }
 
 /** Streams the model's answer text into onText; returns 'refused' if the model declined. */
-function createGenerator(provider, apiKey, model) {
+function createGenerator(provider, apiKey, model, backupModel) {
   if (provider === 'claude') {
     const client = new Anthropic({ apiKey });
     return async (messages, onText) => {
@@ -76,32 +79,52 @@ function createGenerator(provider, apiKey, model) {
   }
 
   const ai = new GoogleGenAI({ apiKey });
+  const models = [...new Set([model, backupModel || GEMINI_BACKUP])];
   return async (messages, onText) => {
-    const stream = await ai.models.generateContentStream({
-      model,
-      contents: messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] })),
-      config: { systemInstruction: SYSTEM, temperature: 0.2, maxOutputTokens: 2048 },
-    });
-    let blocked = false;
-    for await (const chunk of stream) {
-      if (chunk.promptFeedback?.blockReason || chunk.candidates?.[0]?.finishReason === 'SAFETY') blocked = true;
-      if (chunk.text) onText(chunk.text);
+    const contents = messages.map((m) => ({ role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] }));
+    for (const [i, name] of models.entries()) {
+      let started = false;
+      try {
+        const stream = await ai.models.generateContentStream({
+          model: name,
+          contents,
+          config: { systemInstruction: SYSTEM, temperature: 0.2, maxOutputTokens: 2048, abortSignal: AbortSignal.timeout(ANSWER_TIMEOUT_MS) },
+        });
+        let blocked = false;
+        for await (const chunk of stream) {
+          if (chunk.promptFeedback?.blockReason || chunk.candidates?.[0]?.finishReason === 'SAFETY') blocked = true;
+          if (chunk.text) {
+            started = true;
+            onText(chunk.text);
+          }
+        }
+        return blocked ? 'refused' : null;
+      } catch (err) {
+        // Only switch models if the visitor hasn't seen any of this answer yet.
+        const overloaded = err instanceof ApiError && (err.status === 429 || err.status >= 500);
+        if (started || !overloaded || i === models.length - 1) throw err;
+        console.warn(`twin: ${name} unavailable (${err.status}), trying ${models[i + 1]}`);
+      }
     }
-    return blocked ? 'refused' : null;
   };
 }
 
-/** True when the provider says we're over its rate or free-tier quota. */
-const isQuotaError = (err) => (err instanceof ApiError && err.status === 429) || err instanceof Anthropic.RateLimitError;
+/** True when the provider is busy: over its free-tier quota, overloaded, or too slow to answer. */
+const isBusyError = (err) =>
+  (err instanceof ApiError && (err.status === 429 || err.status >= 500)) ||
+  err instanceof Anthropic.RateLimitError ||
+  err instanceof Anthropic.InternalServerError ||
+  err?.name === 'TimeoutError' ||
+  err?.name === 'AbortError';
 
 const json = (status, body, headers) => new Response(JSON.stringify(body), { status, headers: { ...headers, 'Content-Type': 'application/json' } });
 
 /**
- * @param {{ provider?: 'gemini' | 'claude', model?: string, apiKey?: string, logUnanswered: (entry: object) => Promise<void>, mock?: boolean, rateLimit?: boolean }} opts
+ * @param {{ provider?: 'gemini' | 'claude', model?: string, backupModel?: string, apiKey?: string, logUnanswered: (entry: object) => Promise<void>, mock?: boolean, rateLimit?: boolean }} opts
  * @returns {(request: Request, ctx: { ip: string, headers?: Record<string, string>, waitUntil?: (p: Promise<unknown>) => void }) => Promise<Response>}
  */
-export function createChatHandler({ provider = 'gemini', apiKey, model, logUnanswered, mock = false, rateLimit = true }) {
-  const generate = mock ? mockReply : createGenerator(provider, apiKey, model || DEFAULT_MODELS[provider]);
+export function createChatHandler({ provider = 'gemini', apiKey, model, backupModel, logUnanswered, mock = false, rateLimit = true }) {
+  const generate = mock ? mockReply : createGenerator(provider, apiKey, model || DEFAULT_MODELS[provider], backupModel);
 
   return async function handle(request, { ip, headers = {}, waitUntil = () => {} }) {
     if (request.method !== 'POST') return new Response(null, { status: 405, headers });
@@ -149,7 +172,7 @@ export function createChatHandler({ provider = 'gemini', apiKey, model, logUnans
           send({ done: true, kind });
         } catch (err) {
           console.error('twin error', err);
-          if (isQuotaError(err)) send({ error: `I'm getting a lot of questions right now. Please try again in a minute, or email me at ${knowledge.email}.` });
+          if (isBusyError(err)) send({ error: `I'm getting a lot of questions right now. Please try again in a minute, or email me at ${knowledge.email}.` });
           else send({ error: `Sorry, I couldn't answer just now. Please try again, or email me at ${knowledge.email}.` });
         }
         controller.close();

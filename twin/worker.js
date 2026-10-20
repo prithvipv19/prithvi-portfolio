@@ -23,6 +23,7 @@ export default {
       chat ??= createChatHandler({
         provider,
         model: env.MODEL,
+        backupModel: env.BACKUP_MODEL,
         apiKey: provider === 'claude' ? env.ANTHROPIC_API_KEY : env.GEMINI_API_KEY,
         logUnanswered: (entry) => env.UNANSWERED.put(`q:${entry.at}:${crypto.randomUUID().slice(0, 8)}`, JSON.stringify(entry)),
       });

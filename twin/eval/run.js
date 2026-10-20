@@ -12,10 +12,11 @@ const cases = JSON.parse(readFileSync(new URL('./cases.json', import.meta.url), 
 let passed = 0;
 
 for (const c of cases) {
-  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ messages: [{ role: 'user', content: c.q }], page: 'eval' }) });
+  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: origin }, body: JSON.stringify({ messages: [{ role: 'user', content: c.q }], page: 'eval' }), signal: AbortSignal.timeout(60_000) });
   let text = '';
   let kind = null;
-  for (const line of (await res.text()).split('\n')) {
+  const raw = await res.text().catch((e) => `data: ${JSON.stringify({ error: e.message })}`);
+  for (const line of raw.split('\n')) {
     if (!line.startsWith('data: ')) continue;
     const d = JSON.parse(line.slice(6));
     if (d.reset) text = '';

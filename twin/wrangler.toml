@@ -8,6 +8,8 @@ compatibility_flags = ["nodejs_compat"]
 # Answer engine: "gemini" (Google AI Studio free tier) or "claude" (Anthropic, paid).
 PROVIDER = "gemini"
 MODEL = "gemini-flash-latest"
+# Used when MODEL is overloaded (Google returns 503 at busy times on the free tier).
+BACKUP_MODEL = "gemini-flash-lite-latest"
 # Sites allowed to call the twin. Add your GitHub Pages origin (and custom domain, if any).
 ALLOWED_ORIGINS = "https://prithvipv19.github.io,http://localhost:4321,http://localhost:4360"
 

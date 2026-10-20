@@ -1,0 +1,32 @@
+{
+  "project": "overtime",
+  "created": "2026-10-19",
+  "current_stage": 5,
+  "stages": {
+    "1-research": {
+      "status": "passed",
+      "attempts": 1,
+      "note": "Written by the orchestrator from research already done in this session"
+    },
+    "2-spec": {
+      "status": "approved",
+      "attempts": 1,
+      "approved_by_user": true,
+      "note": "User asked to reuse the existing spec and go straight to mockup/script/video"
+    },
+    "3-mockup": {
+      "status": "approved",
+      "attempts": 1,
+      "approved_by_user": true
+    },
+    "4-script": {
+      "status": "passed",
+      "attempts": 1
+    },
+    "5-video": {
+      "status": "passed",
+      "attempts": 1
+    }
+  },
+  "status": "complete"
+}

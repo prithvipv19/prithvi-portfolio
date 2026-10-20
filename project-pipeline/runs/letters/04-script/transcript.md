@@ -1,0 +1,8 @@
+| Scene | Time | Screen | On screen | Narration | Transition in |
+|---|---|---|---|---|---|
+| SC-01 | 0:00.0–0:06.2 | SCR-template (default) | Reusable template with merge fields; actions on action-acknowledge, use-template-btn, use-template-btn | "One reusable template. Merge fields, a number series, and what the employee must do." | fade |
+| SC-02 | 0:06.2–0:12.4 | SCR-generate (default) | Bulk generation by filter; actions on approval-signatory, signatory-select, employee-filter, matched-count, preview-letters-btn, preview-letters-btn | "Generate in bulk. Pick the approval, the signatory, and filter employees. Twenty four matched." | cut |
+| SC-03 | 0:12.4–0:18.6 | SCR-preview (default) | Preview with real data; actions on letter-counter, next-letter-btn, send-approval-btn, send-approval-btn | "Preview each letter with that employee's real data merged in. Then send for approval." | cut |
+| SC-04 | 0:18.6–0:24.8 | SCR-sign-inbox (default) | Approve and sign in the inbox; actions on approve-sign-btn, approve-sign-btn, approve-sign-btn | "The signatory approves and signs from their inbox. One click signs the whole batch." | cut |
+| SC-05 | 0:24.8–0:30.8 | SCR-release (default) | Release with delivery options; actions on toggle-portal, toggle-email, toggle-password, toggle-acknowledge, release-btn, release-btn | "Release to the portal, by email as a password-protected PDF, and require acknowledgement." | cut |
+| SC-06 | 0:30.8–0:36.3 | SCR-employee-letters (default) | Employee acknowledges; actions on acknowledge-btn, acknowledge-btn | "Employees acknowledge in their documents. Signed, delivered, acknowledged, in minutes." | cut |

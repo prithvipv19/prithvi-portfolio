@@ -1,0 +1,60 @@
+{
+  "viewport": { "width": 1440, "height": 900 },
+  "entry": "index.html",
+  "notes": [
+    "Flow mockup only: each screen has a single 'default' state. Deep link: index.html#<SCR-id>?state=default. Every screen resets to its default when shown.",
+    "Approve & sign (F1.S4) draws the signature (900 ms CSS animation, stamp pops at 500 ms) and moves to SCR-release after a fixed 1400 ms delay.",
+    "Acknowledge (F1.S6) stays on SCR-employee-letters; the status pill [data-el='acknowledge-btn'] turns to 'Acknowledged' and the banner turns green.",
+    "Next letter (F1.S3) pages the preview from Asha Rao (1 of 24) to Arjun Pillai (2 of 24)."
+  ],
+  "screens": [
+    {
+      "id": "SCR-template", "url": "index.html#SCR-template", "states": ["default"],
+      "elements": [
+        { "id": "action-acknowledge", "selector": "[data-el='action-acknowledge']", "label": "Employee must: Acknowledge (selected)", "step": "F1.S1" },
+        { "id": "use-template-btn", "selector": "[data-el='use-template-btn']", "label": "Use template button", "step": "F1.S1" }
+      ]
+    },
+    {
+      "id": "SCR-generate", "url": "index.html#SCR-generate", "states": ["default"],
+      "elements": [
+        { "id": "approval-signatory", "selector": "[data-el='approval-signatory']", "label": "Approval type: Signatory approval", "step": "F1.S2" },
+        { "id": "signatory-select", "selector": "[data-el='signatory-select']", "label": "Signatory: Rahul Mehta", "step": "F1.S2" },
+        { "id": "employee-filter", "selector": "[data-el='employee-filter']", "label": "Employee filter chip: Engineering · Bengaluru", "step": "F1.S2" },
+        { "id": "matched-count", "selector": "[data-el='matched-count']", "label": "24 employees matched (highlight only)", "step": "F1.S2" },
+        { "id": "preview-letters-btn", "selector": "[data-el='preview-letters-btn']", "label": "Preview 24 letters button", "step": "F1.S2" }
+      ]
+    },
+    {
+      "id": "SCR-preview", "url": "index.html#SCR-preview", "states": ["default"],
+      "elements": [
+        { "id": "letter-counter", "selector": "[data-el='letter-counter']", "label": "Letter 1 of 24 counter (highlight only)", "step": "F1.S3" },
+        { "id": "next-letter-btn", "selector": "[data-el='next-letter-btn']", "label": "Next letter arrow", "step": "F1.S3" },
+        { "id": "send-approval-btn", "selector": "[data-el='send-approval-btn']", "label": "Send for approval button", "step": "F1.S3" }
+      ]
+    },
+    {
+      "id": "SCR-sign-inbox", "url": "index.html#SCR-sign-inbox", "states": ["default"],
+      "elements": [
+        { "id": "approve-sign-btn", "selector": "[data-el='approve-sign-btn']", "label": "Approve & sign button", "step": "F1.S4" }
+      ]
+    },
+    {
+      "id": "SCR-release", "url": "index.html#SCR-release", "states": ["default"],
+      "elements": [
+        { "id": "toggle-portal", "selector": "[data-el='toggle-portal']", "label": "Publish to employee portal toggle (on)", "step": "F1.S5" },
+        { "id": "toggle-email", "selector": "[data-el='toggle-email']", "label": "Email as PDF toggle (on)", "step": "F1.S5" },
+        { "id": "toggle-password", "selector": "[data-el='toggle-password']", "label": "Password-protect PDF toggle (on)", "step": "F1.S5" },
+        { "id": "toggle-acknowledge", "selector": "[data-el='toggle-acknowledge']", "label": "Require acknowledgement toggle (on)", "step": "F1.S5" },
+        { "id": "release-btn", "selector": "[data-el='release-btn']", "label": "Release 24 letters button", "step": "F1.S5" }
+      ]
+    },
+    {
+      "id": "SCR-employee-letters", "url": "index.html#SCR-employee-letters", "states": ["default"],
+      "elements": [
+        { "id": "acknowledge-btn", "selector": "[data-el='acknowledge-btn']", "label": "Acknowledge button", "step": "F1.S6" },
+        { "id": "download-btn", "selector": "[data-el='download-btn']", "label": "Download PDF button (visual only)", "step": "F1.S6" }
+      ]
+    }
+  ]
+}

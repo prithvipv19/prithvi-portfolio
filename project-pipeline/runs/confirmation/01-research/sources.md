@@ -1,0 +1,11 @@
+# Sources
+- https://greythr.freshdesk.com/support/solutions/folders/1060000150793 — Employee Confirmation Module folder (20 articles)
+- https://greythr.freshdesk.com/support/solutions/articles/1060000056135 — reviewer levels, auto-forward, extension cap, initiate-days-before
+- https://greythr.freshdesk.com/support/solutions/articles/1060000050486 — manager confirm: feedback vs. remarks
+- https://greythr.freshdesk.com/support/solutions/articles/1060000050643 — manager extend with reason
+- https://greythr.freshdesk.com/support/solutions/articles/1060000050432 — admin can't confirm once a workflow is running
+- https://greythr.freshdesk.com/support/solutions/articles/1060000065114 — probation by employee category (lookup table)
+- https://greythr.freshdesk.com/support/solutions/articles/1060000049696 — module disabled by default
+- https://admin-help.greythr.com/admin/answers/dj0sschjspe9fzc9uirf9g/ — confirmation letters generated separately
+- https://www.greythr.com/blog/employee-confirmation-workflow/ — launch blog
+- https://community.greythr.com/t/extend-the-probationary-period/3726 — extension clause and letter practice

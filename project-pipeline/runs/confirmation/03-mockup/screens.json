@@ -1,0 +1,30 @@
+{
+  "viewport": { "width": 1440, "height": 900 },
+  "entry": "index.html",
+  "notes": [
+    "Flow mockup only: each screen has a single 'default' state. Deep link: index.html#<SCR-id>?state=default. Every screen resets to its default when shown.",
+    "SCR-confirmed ticks its five automatic actions in order: first at 300 ms, then every 450 ms (last at 2100 ms).",
+    "Acknowledge letter (F1.S6) stays on SCR-employee; the banner turns green and the button reads Acknowledged."
+  ],
+  "screens": [
+    { "id": "SCR-policy", "url": "index.html#SCR-policy", "states": ["default"], "elements": [
+      { "id": "activate-policy-btn", "selector": "[data-el='activate-policy-btn']", "label": "Activate policy button", "step": "F1.S1" } ] },
+    { "id": "SCR-tracker", "url": "index.html#SCR-tracker", "states": ["default"], "elements": [
+      { "id": "tracker-stats", "selector": "[data-el='tracker-stats']", "label": "Tracker stats row (highlight only)", "step": "F1.S2" },
+      { "id": "meera-card", "selector": "[data-el='meera-card']", "label": "Meera Iyer card in Manager review", "step": "F1.S2" } ] },
+    { "id": "SCR-review", "url": "index.html#SCR-review", "states": ["default"], "elements": [
+      { "id": "rec-confirm", "selector": "[data-el='rec-confirm']", "label": "Recommendation: Confirm", "step": "F1.S3" },
+      { "id": "rec-extend", "selector": "[data-el='rec-extend']", "label": "Recommendation: Extend", "step": "F1.S3" },
+      { "id": "rec-not", "selector": "[data-el='rec-not']", "label": "Recommendation: Do not confirm", "step": "F1.S3" },
+      { "id": "submit-review-btn", "selector": "[data-el='submit-review-btn']", "label": "Submit to Rahul button", "step": "F1.S3" } ] },
+    { "id": "SCR-decision", "url": "index.html#SCR-decision", "states": ["default"], "elements": [
+      { "id": "confirm-btn", "selector": "[data-el='confirm-btn']", "label": "Confirm Meera button", "step": "F1.S4" },
+      { "id": "extend-btn", "selector": "[data-el='extend-btn']", "label": "Extend button (no-op)", "step": "F1.S4" },
+      { "id": "not-confirm-btn", "selector": "[data-el='not-confirm-btn']", "label": "Do not confirm button (no-op)", "step": "F1.S4" } ] },
+    { "id": "SCR-confirmed", "url": "index.html#SCR-confirmed", "states": ["default"], "elements": [
+      { "id": "auto-actions", "selector": "[data-el='auto-actions']", "label": "Automatic actions list (highlight only)", "step": "F1.S5" },
+      { "id": "see-employee-btn", "selector": "[data-el='see-employee-btn']", "label": "See Meera's view button", "step": "F1.S5" } ] },
+    { "id": "SCR-employee", "url": "index.html#SCR-employee", "states": ["default"], "elements": [
+      { "id": "acknowledge-btn", "selector": "[data-el='acknowledge-btn']", "label": "Acknowledge letter button", "step": "F1.S6" } ] }
+  ]
+}

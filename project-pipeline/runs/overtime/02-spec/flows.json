@@ -1,0 +1,48 @@
+{
+  "hero_flow": "F1",
+  "screens": [
+    { "id": "SCR-policy", "purpose": "Show the default overtime policy", "states": ["default"] },
+    { "id": "SCR-ot-apply", "purpose": "Employee claims eligible overtime", "states": ["default", "empty", "error"] },
+    { "id": "SCR-my-requests", "purpose": "Employee tracks and withdraws requests", "states": ["default", "empty"] },
+    { "id": "SCR-review", "purpose": "Manager reviews the OT queue", "states": ["default", "empty"] },
+    { "id": "SCR-team-apply", "purpose": "Manager applies OT for the team with caps enforced", "states": ["default"] },
+    { "id": "SCR-finalize", "purpose": "Admin finalizes approved OT into a payroll month", "states": ["default", "empty"] },
+    { "id": "SCR-register", "purpose": "Admin reviews the monthly OT register", "states": ["default", "empty"] }
+  ],
+  "flows": [
+    {
+      "id": "F1",
+      "name": "Overtime from request to payroll",
+      "use_cases": ["UC1", "UC2", "UC4", "UC5"],
+      "steps": [
+        { "id": "F1.S1", "screen": "SCR-policy", "user_action": "Reads the policy card, clicks 'Start as employee'", "system_response": "Opens Apply for OT as Asha" },
+        { "id": "F1.S2", "screen": "SCR-ot-apply", "user_action": "Ticks 3 Oct and 4 Oct", "system_response": "Selected total updates against the monthly cap" },
+        { "id": "F1.S3", "screen": "SCR-ot-apply", "user_action": "Types remarks, clicks Submit", "system_response": "Creates 2 pending requests, shows My requests" },
+        { "id": "F1.S4", "screen": "SCR-my-requests", "user_action": "Clicks 'Switch to manager'", "system_response": "Opens Vikram's review queue" },
+        { "id": "F1.S5", "screen": "SCR-review", "user_action": "Clicks Approve on Asha's 3 Oct request", "system_response": "Request moves to Closed as Approved" },
+        { "id": "F1.S6", "screen": "SCR-review", "user_action": "Clicks 'Continue to payroll'", "system_response": "Opens Finalize as Priya" },
+        { "id": "F1.S7", "screen": "SCR-finalize", "user_action": "Selects approved records, keeps October 2026, clicks Consider", "system_response": "Records move into the October register; September record typed Arrear" },
+        { "id": "F1.S8", "screen": "SCR-register", "user_action": "Reviews totals and line types", "system_response": "Shows hours, payable, arrears and a reversal line" }
+      ]
+    },
+    {
+      "id": "F2",
+      "name": "Manager applies for the team",
+      "use_cases": ["UC3"],
+      "steps": [
+        { "id": "F2.S1", "screen": "SCR-review", "user_action": "Clicks 'Apply for team'", "system_response": "Opens team list with eligible OT per day" },
+        { "id": "F2.S2", "screen": "SCR-team-apply", "user_action": "Ticks eligible rows", "system_response": "Over-cap row is pink and can't be ticked" },
+        { "id": "F2.S3", "screen": "SCR-team-apply", "user_action": "Clicks 'Apply and approve selected'", "system_response": "Creates approved OT and returns to the review queue" }
+      ]
+    },
+    {
+      "id": "F3",
+      "name": "Employee fixes an error and withdraws",
+      "use_cases": ["UC1", "UC6"],
+      "steps": [
+        { "id": "F3.S1", "screen": "SCR-ot-apply", "user_action": "Ticks a day, clicks Submit with no remarks", "system_response": "Error state: 'Remarks are required.'" },
+        { "id": "F3.S2", "screen": "SCR-my-requests", "user_action": "Clicks Withdraw on a pending request", "system_response": "Request moves to History as Withdrawn" }
+      ]
+    }
+  ]
+}

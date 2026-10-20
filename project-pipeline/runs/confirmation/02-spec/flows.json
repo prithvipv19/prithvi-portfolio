@@ -1,0 +1,26 @@
+{
+  "hero_flow": "F1",
+  "screens": [
+    { "id": "SCR-policy", "purpose": "Set the confirmation policy", "states": ["default"] },
+    { "id": "SCR-tracker", "purpose": "Track every probation and its review", "states": ["default"] },
+    { "id": "SCR-review", "purpose": "Manager evaluates and recommends", "states": ["default"] },
+    { "id": "SCR-decision", "purpose": "Final reviewer decides", "states": ["default"] },
+    { "id": "SCR-confirmed", "purpose": "Show what the decision did automatically", "states": ["default"] },
+    { "id": "SCR-employee", "purpose": "Employee sees the outcome and acknowledges the letter", "states": ["default"] }
+  ],
+  "flows": [
+    {
+      "id": "F1",
+      "name": "From probation to confirmed",
+      "use_cases": ["UC1", "UC2", "UC3", "UC4", "UC5", "UC6"],
+      "steps": [
+        { "id": "F1.S1", "screen": "SCR-policy", "user_action": "Reviews the policy, clicks Activate policy", "system_response": "Policy live, opens the tracker" },
+        { "id": "F1.S2", "screen": "SCR-tracker", "user_action": "Clicks Meera Iyer's card", "system_response": "Opens the manager's review" },
+        { "id": "F1.S3", "screen": "SCR-review", "user_action": "Keeps Confirm selected, clicks Submit to Rahul", "system_response": "Sent to level 2, opens the decision" },
+        { "id": "F1.S4", "screen": "SCR-decision", "user_action": "Clicks Confirm Meera", "system_response": "Decision recorded, opens the result" },
+        { "id": "F1.S5", "screen": "SCR-confirmed", "user_action": "Watches the automatic actions, clicks See Meera's view", "system_response": "Opens the employee view" },
+        { "id": "F1.S6", "screen": "SCR-employee", "user_action": "Clicks Acknowledge letter", "system_response": "Status turns Acknowledged" }
+      ]
+    }
+  ]
+}

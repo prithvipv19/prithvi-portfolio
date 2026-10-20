@@ -1,0 +1,13 @@
+# Brief: Overtime — from attendance to payslip
+- **Problem / idea:** In shift-heavy Indian businesses (factories, plants), overtime is a big share of wages but is tracked in spreadsheets and chat. Hours get missed or padded and payroll fixes last month's mistakes by hand. The Overtime module turns extra time in attendance into policy-checked, approved, payroll-ready pay.
+- **Target users:** HR / payroll admins, line managers (reviewers), and blue-collar employees, many of whom never log in.
+- **Platform:** Web (1440×900)
+- **Audience for the video:** Recruiters and hiring managers viewing Prithvi's product portfolio — they want the product thinking, not a sales pitch.
+- **Video length:** 90 seconds
+- **Tone:** Confident and plain-spoken. Short sentences.
+- **Visual style / brand:** Match the portfolio site: lavender and mustard on white. Lavender #f7f5fe / #eeeafb / #cfc6f5, violet #2b2160 for primary actions and headings, mustard #e5b53a for highlights, ink #1e1a33 text. Display font Bricolage Grotesque, body font Figtree (Google Fonts). Rounded cards (20px radius), pill buttons. Reference implementation: `src/pages/work/overtime-module/demo.astro` and `src/lib/overtime-demo.ts` in this repo (reuse its sample data and rules).
+- **Must include:** the default overtime policy (break deduction, minimum to qualify, 15-min rounding, daily and monthly caps, Basic × multiplier pay); employee applying from attendance-derived eligible hours; manager approving; manager applying on behalf of the team with the monthly cap enforced; admin finalizing into a payroll month; the register showing regular, arrear and reversal lines.
+- **Out of scope:** Editing the policy, policy assignment, comp-off, multi-level workflow setup, mobile app, real company names or greytHR branding.
+- **Data rule:** All names, numbers and companies are fictional (NDA). Product name in the mockup: "Overtime" (no vendor logo).
+- **Captions:** Generate captions.srt; do not burn in.
+- **Voice:** macOS `say` is acceptable for this run (voice: Samantha, en_US).

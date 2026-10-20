@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1440, initial-scale=1">
+<title>Letters</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --lav-50: #f7f5fe; --lav-100: #eeeafb; --lav-200: #e4defa; --lav-300: #cfc6f5; --lav-500: #5f50ad;
+    --violet: #2b2160; --violet-2: #3a2d80; --ink: #1e1a33; --slate: #4a4470; --line: #ece8f8;
+    --mustard: #e5b53a; --mustard-50: #fbf1d3; --mustard-ink: #3d2a02;
+    --green-bg: #e3f4ea; --green-ink: #1d5c37;
+    --radius: 20px;
+    --font-display: 'Bricolage Grotesque', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
+    --font-body: 'Figtree', 'Helvetica Neue', 'Segoe UI', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #fff; color: var(--ink); font: 16px/1.45 var(--font-body); -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--font-display); color: var(--violet); margin: 0; line-height: 1.15; letter-spacing: -0.01em; }
+  button { font: inherit; color: inherit; }
+  [hidden] { display: none !important; }
+
+  .app { display: grid; grid-template-columns: 248px 1fr; width: 1440px; height: 900px; overflow: hidden; }
+
+  /* ---------- Rail: the six steps of the flow ---------- */
+  .rail { display: flex; flex-direction: column; gap: 26px; padding: 28px 18px 24px; background: var(--lav-50); border-right: 1px solid var(--lav-200); }
+  .brand { display: flex; align-items: center; gap: 10px; padding: 0 8px; }
+  .brand-mark { position: relative; width: 36px; height: 36px; border-radius: 11px; background: var(--violet); }
+  .brand-mark::before { content: ''; position: absolute; left: 8px; top: 11px; width: 20px; height: 14px; border: 2.5px solid #fff; border-radius: 3px; }
+  .brand-mark::after { content: ''; position: absolute; left: 12px; top: 9px; width: 9px; height: 9px; border-right: 2.5px solid var(--mustard); border-bottom: 2.5px solid var(--mustard); transform: rotate(45deg); }
+  .brand b { font-family: var(--font-display); font-size: 24px; color: var(--violet); }
+  .rail-label { margin: 0 0 10px; padding: 0 8px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate); }
+  .steps { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+  .steps li { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 16px; border: 2px solid transparent; }
+  .steps .n { flex: none; display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--lav-200); color: var(--violet); font-weight: 700; font-size: 14px; }
+  .steps b { display: block; font-size: 15px; line-height: 1.2; color: var(--violet); }
+  .steps small { display: block; font-size: 13px; color: var(--slate); }
+  .steps li.done .n { background: var(--violet); color: #fff; }
+  .steps li.cur { background: #fff; border-color: var(--violet); box-shadow: 0 4px 14px rgb(43 33 96 / 0.10); }
+  .steps li.cur .n { background: var(--mustard); color: var(--mustard-ink); }
+  .rail-foot { margin-top: auto; }
+  .data-note { margin: 0; padding: 10px 12px; border-radius: 14px; background: var(--mustard-50); color: var(--mustard-ink); font-size: 13px; }
+
+  /* ---------- Main ---------- */
+  main { position: relative; height: 900px; overflow: hidden; }
+  .screen { height: 100%; padding: 30px 40px 30px; display: flex; flex-direction: column; gap: 20px; animation: enter 260ms ease-out both; }
+  @keyframes enter { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+  .eyebrow { margin: 0 0 6px; font-size: 13.5px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--lav-500); }
+  .top h1 { font-size: 36px; }
+  .top p.sub { margin: 6px 0 0; color: var(--slate); font-size: 17px; }
+  .who { display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 6px; border-radius: 999px; background: var(--lav-50); border: 1px solid var(--lav-200); white-space: nowrap; }
+  .avatar { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--violet); color: #fff; font-weight: 700; font-size: 13.5px; }
+  .who > span:last-child { font-size: 14px; color: var(--slate); }
+  .who b { display: block; color: var(--ink); font-size: 15px; line-height: 1.2; }
+
+  .card { padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: 0 2px 12px rgb(43 33 96 / 0.05); }
+  .card-lav { background: var(--lav-50); border-color: var(--lav-200); box-shadow: none; }
+  .card h2 { font-size: 21px; }
+  .card h2 + p { margin: 4px 0 0; color: var(--slate); font-size: 14.5px; }
+  .muted { color: var(--slate); }
+  .spacer { flex: 1; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 26px; border: 2px solid var(--violet); border-radius: 999px; background: var(--violet); color: #fff; font-weight: 700; font-size: 16px; cursor: pointer; white-space: nowrap; transition: background 120ms, transform 120ms; }
+  .btn:hover { background: var(--violet-2); }
+  .btn:active { transform: scale(0.98); }
+  .btn-lg { min-height: 60px; padding: 0 34px; font-size: 18px; }
+  .btn-ghost { background: #fff; color: var(--violet); }
+  .btn-ghost:hover { background: var(--lav-100); }
+  .btn-mustard { background: var(--mustard); border-color: var(--mustard); color: var(--mustard-ink); }
+  .btn-mustard:hover { background: #d9a92c; }
+  .btn svg { width: 20px; height: 20px; }
+  .btn-ok { background: var(--green-bg); border-color: var(--green-bg); color: var(--green-ink); cursor: default; }
+  .btn-ok:hover { background: var(--green-bg); }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+  .pill-wait { background: var(--mustard-50); color: #5e4204; }
+  .pill-ok { background: var(--green-bg); color: var(--green-ink); }
+  .pill-lav { background: var(--lav-100); color: var(--violet); }
+
+  /* ---------- The letter (shared by several screens) ---------- */
+  .paper { position: relative; padding: 34px 44px 30px; border: 1px solid var(--lav-200); border-radius: 16px; background: #fff; box-shadow: 0 10px 34px rgb(43 33 96 / 0.10); font-size: 16px; line-height: 1.6; color: var(--ink); }
+  .lh { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 2px solid var(--violet); }
+  .lh b { font-family: var(--font-display); font-size: 19px; color: var(--violet); }
+  .lh span { font-size: 13.5px; color: var(--slate); }
+  .paper p { margin: 0 0 12px; }
+  .paper .meta { display: flex; justify-content: space-between; font-size: 14.5px; color: var(--slate); }
+  .paper .subj { font-weight: 700; }
+  .mf { display: inline-block; padding: 0 7px; border-radius: 7px; background: var(--lav-100); color: var(--violet); font-weight: 700; font-size: 0.93em; line-height: 1.5; border: 1px dashed var(--lav-500); white-space: nowrap; }
+  .mv { padding: 0 3px; border-radius: 4px; background: var(--mustard-50); box-shadow: inset 0 -2px 0 var(--mustard); font-weight: 700; white-space: nowrap; }
+  .sig { display: grid; gap: 2px; margin-top: 4px; }
+  .sig-box { position: relative; width: 230px; height: 64px; border-radius: 10px; }
+  .sig-box.empty { border: 2px dashed var(--lav-300); display: grid; place-items: center; color: var(--slate); font-size: 13.5px; }
+  .sig-box svg { position: absolute; inset: 0; width: 230px; height: 64px; }
+  .sig-box path { fill: none; stroke: var(--violet); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 900; stroke-dashoffset: 0; }
+  .sig-box.draw path { animation: draw 900ms ease-out both; }
+  @keyframes draw { from { stroke-dashoffset: 900; } to { stroke-dashoffset: 0; } }
+  .sig small { color: var(--slate); font-size: 14px; }
+  .sig { position: relative; }
+  .stamp { position: absolute; left: 270px; top: 34px; padding: 8px 14px; border: 2.5px solid var(--green-ink); border-radius: 12px; color: var(--green-ink); font-weight: 700; font-size: 13.5px; transform: rotate(-6deg); background: #fff; white-space: nowrap; }
+  .stamp.pop { animation: pop 380ms 500ms ease-out both; }
+  @keyframes pop { from { opacity: 0; transform: rotate(-6deg) scale(1.4); } to { opacity: 1; transform: rotate(-6deg) scale(1); } }
+
+  /* ---------- SCR-template ---------- */
+  .tpl-grid { display: grid; grid-template-columns: 1fr 400px; gap: 24px; min-height: 0; flex: 1; }
+  .side { display: flex; flex-direction: column; gap: 16px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chips .mf { font-size: 15px; padding: 4px 10px; }
+  .series { margin-top: 12px; padding: 12px 16px; border-radius: 14px; background: #fff; border: 1.5px solid var(--lav-300); font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--violet); letter-spacing: 0.01em; }
+  .series + small { display: block; margin-top: 8px; color: var(--slate); font-size: 14px; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 12px; padding: 5px; border-radius: 999px; background: #fff; border: 1.5px solid var(--lav-300); }
+  .seg button { min-height: 44px; border: 0; border-radius: 999px; background: transparent; color: var(--violet); font-weight: 700; cursor: pointer; }
+  .seg button[aria-pressed='true'] { background: var(--violet); color: #fff; }
+  .actions { display: flex; align-items: center; gap: 12px; justify-content: flex-end; }
+
+  /* ---------- SCR-generate ---------- */
+  .gen-grid { display: grid; grid-template-columns: 1fr 470px; gap: 24px; flex: 1; min-height: 0; }
+  .form { display: flex; flex-direction: column; gap: 16px; }
+  .q { display: flex; align-items: center; gap: 10px; margin: 0 0 12px; font-weight: 700; color: var(--violet); font-size: 17px; }
+  .q .n { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--violet); color: #fff; font-size: 14px; }
+  .pick { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border: 2px solid var(--lav-300); border-radius: 16px; background: #fff; }
+  .pick .ic { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; background: var(--lav-100); color: var(--violet); }
+  .pick .ic svg { width: 24px; height: 24px; }
+  .pick b { display: block; font-size: 17px; }
+  .pick small { display: block; color: var(--slate); font-size: 14px; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border: 2px solid var(--lav-300); border-radius: 16px; background: #fff; text-align: left; cursor: pointer; }
+  .opt .radio { flex: none; width: 22px; height: 22px; margin-top: 2px; border-radius: 50%; border: 2px solid var(--lav-500); }
+  .opt[aria-pressed='true'] { border-color: var(--violet); background: var(--lav-50); box-shadow: 0 0 0 2px var(--violet) inset; }
+  .opt[aria-pressed='true'] .radio { border: 7px solid var(--violet); }
+  .opt b { display: block; font-size: 16px; color: var(--ink); }
+  .opt small { display: block; color: var(--slate); font-size: 14px; }
+  .pick.sel { border-color: var(--violet); box-shadow: 0 0 0 2px var(--violet) inset; cursor: pointer; }
+  .match { display: flex; flex-direction: column; gap: 14px; }
+  .filter { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; padding: 10px 18px; border: 2px solid var(--violet); border-radius: 999px; background: var(--violet); color: #fff; font-weight: 700; font-size: 17px; cursor: pointer; }
+  .filter svg { width: 20px; height: 20px; }
+  .bignum { display: flex; align-items: baseline; gap: 12px; }
+  .bignum b { font-family: var(--font-display); font-size: 64px; line-height: 1; color: var(--violet); }
+  .bignum span { font-size: 18px; color: var(--slate); font-weight: 600; }
+  .people { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .people li { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 14px; background: #fff; border: 1px solid var(--lav-200); }
+  .people .avatar { width: 32px; height: 32px; font-size: 12.5px; background: var(--lav-300); color: var(--violet); }
+  .people b { display: block; font-size: 14.5px; line-height: 1.2; }
+  .people small { display: block; font-size: 13px; color: var(--slate); }
+  .people li.more { justify-content: center; background: var(--mustard-50); border-color: #ecd690; color: var(--mustard-ink); font-weight: 700; }
+
+  /* ---------- SCR-preview ---------- */
+  .pv-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; flex: 1; min-height: 0; }
+  .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .pager .count { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--violet); }
+  .pager .count small { font-family: var(--font-body); font-size: 15px; color: var(--slate); font-weight: 600; }
+  .pager .arrows { display: flex; gap: 8px; }
+  .round { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--violet); background: #fff; color: var(--violet); cursor: pointer; }
+  .round:hover { background: var(--lav-100); }
+  .round[disabled] { border-color: var(--lav-300); color: #8a83ad; cursor: default; background: #fff; }
+  .round svg { width: 22px; height: 22px; }
+  .facts { display: grid; gap: 0; margin: 14px 0 0; }
+  .facts div { display: flex; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--lav-200); }
+  .facts div:last-child { border-bottom: 0; }
+  .facts dt { color: var(--slate); font-size: 15px; }
+  .facts dd { margin: 0; font-weight: 700; text-align: right; font-size: 15px; }
+  .legend { display: flex; align-items: center; gap: 10px; font-size: 14.5px; color: var(--slate); }
+
+  /* ---------- SCR-sign-inbox ---------- */
+  .in-grid { display: grid; grid-template-columns: 300px 1fr 300px; gap: 22px; flex: 1; min-height: 0; }
+  .inbox { display: grid; gap: 10px; align-content: start; margin: 0; padding: 0; list-style: none; }
+  .inbox li { padding: 14px 16px; border-radius: 16px; border: 1px solid var(--lav-200); background: #fff; }
+  .inbox li.on { border: 2px solid var(--violet); background: var(--lav-50); }
+  .inbox li b { display: block; font-size: 16px; }
+  .inbox li small { display: block; color: var(--slate); font-size: 14px; margin: 2px 0 8px; }
+  .inbox li.old { background: #fbfafe; }
+  .timeline { display: grid; gap: 0; margin: 12px 0 0; padding: 0; list-style: none; }
+  .timeline li { position: relative; padding: 0 0 18px 30px; }
+  .timeline li::before { content: ''; position: absolute; left: 6px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--violet); }
+  .timeline li:not(:last-child)::after { content: ''; position: absolute; left: 11px; top: 20px; bottom: 0; width: 2px; background: var(--lav-300); }
+  .timeline li.next::before { background: var(--mustard); box-shadow: 0 0 0 4px var(--mustard-50); }
+  .timeline b { display: block; font-size: 15px; }
+  .timeline small { display: block; color: var(--slate); font-size: 13.5px; }
+  .stack { display: flex; flex-direction: column; gap: 12px; }
+  .stack .btn { width: 100%; }
+  .paper.sm { padding: 26px 34px 22px; font-size: 15px; line-height: 1.55; }
+  .paper.sm .lh { margin-bottom: 12px; padding-bottom: 10px; }
+  .paper.sm p { margin-bottom: 10px; }
+  .paper.sm .lh span { display: none; }
+
+  /* ---------- SCR-release ---------- */
+  .rel-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; flex: 1; min-height: 0; }
+  .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .stat { padding: 14px 18px; border-radius: 16px; background: var(--lav-50); border: 1px solid var(--lav-200); }
+  .stat span { display: block; font-size: 14px; color: var(--slate); }
+  .stat b { font-family: var(--font-display); font-size: 28px; color: var(--violet); line-height: 1.2; }
+  .stat-ok { background: var(--green-bg); border-color: #bfe3cc; }
+  .stat-ok b { color: var(--green-ink); }
+  .stat-ok span { color: var(--green-ink); }
+  .toggles { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .tg { display: flex; align-items: center; gap: 16px; padding: 20px 22px; border: 2px solid var(--lav-300); border-radius: 18px; background: #fff; text-align: left; cursor: pointer; }
+  .tg .ic { flex: none; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 14px; background: var(--lav-100); color: var(--violet); }
+  .tg .ic svg { width: 26px; height: 26px; }
+  .tg b { display: block; font-size: 18px; color: var(--ink); }
+  .tg small { display: block; color: var(--slate); font-size: 14.5px; }
+  .tg .sw { flex: none; position: relative; width: 56px; height: 32px; margin-left: auto; border-radius: 999px; background: var(--lav-300); transition: background 160ms; }
+  .tg .sw::after { content: ''; position: absolute; left: 4px; top: 4px; width: 24px; height: 24px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgb(0 0 0 / 0.2); transition: transform 160ms; }
+  .tg[aria-checked='true'] { border-color: var(--violet); background: var(--lav-50); }
+  .tg[aria-checked='true'] .sw { background: var(--violet); }
+  .tg[aria-checked='true'] .sw::after { transform: translateX(24px); }
+  .mini { display: grid; place-items: center; padding: 18px; border-radius: 16px; background: var(--lav-50); }
+  .mini .paper { width: 100%; padding: 18px 22px; font-size: 12px; line-height: 1.5; box-shadow: 0 6px 18px rgb(43 33 96 / 0.10); }
+  .mini .lh b { font-size: 14px; }
+  .mini .lh span { font-size: 12px; }
+  .mini .paper p { margin-bottom: 6px; }
+  .mini .lh span { display: none; }
+  .mini .stamp { display: none; }
+  .mini .sig-box { transform: scale(0.8); transform-origin: left center; }
+  .in-grid .paper { align-self: start; }
+
+  /* ---------- SCR-employee-letters ---------- */
+  .emp-grid { display: grid; grid-template-columns: 340px 1fr; gap: 24px; flex: 1; min-height: 0; }
+  .crumbs { display: flex; gap: 8px; align-items: center; font-weight: 700; color: var(--violet); font-size: 15px; }
+  .crumbs span { color: var(--slate); font-weight: 500; }
+  .doclist { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+  .doclist li { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; border: 1px solid var(--lav-200); background: #fff; }
+  .doclist li.on { border: 2px solid var(--violet); background: var(--lav-50); }
+  .doclist .ic { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: var(--lav-100); color: var(--violet); }
+  .doclist .ic svg { width: 22px; height: 22px; }
+  .doclist b { display: block; font-size: 15.5px; line-height: 1.25; }
+  .doclist small { display: block; color: var(--slate); font-size: 13.5px; }
+  .ask { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 18px; background: var(--mustard-50); border: 1px solid #ecd690; }
+  .ask p { margin: 0; color: var(--mustard-ink); font-size: 16px; }
+  .ask p b { display: block; font-size: 17px; }
+  .ask.done { background: var(--green-bg); border-color: #bfe3cc; }
+  .ask.done p { color: var(--green-ink); }
+  .ask.done { animation: flash 420ms ease-out; }
+  @keyframes flash { from { transform: scale(0.98); } to { transform: none; } }
+  .viewer { display: flex; flex-direction: column; gap: 14px; min-height: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="rail" aria-label="Letters flow">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><b>Letters</b></div>
+    <div>
+      <p class="rail-label">Increment cycle 2026</p>
+      <ol class="steps" id="steps">
+        <li data-for="SCR-template"><span class="n">1</span><span><b>Template</b><small>Priya · HR admin</small></span></li>
+        <li data-for="SCR-generate"><span class="n">2</span><span><b>Generate</b><small>Priya · HR admin</small></span></li>
+        <li data-for="SCR-preview"><span class="n">3</span><span><b>Preview</b><small>Priya · HR admin</small></span></li>
+        <li data-for="SCR-sign-inbox"><span class="n">4</span><span><b>Approve &amp; sign</b><small>Rahul · Head of HR</small></span></li>
+        <li data-for="SCR-release"><span class="n">5</span><span><b>Release</b><small>Priya · HR admin</small></span></li>
+        <li data-for="SCR-employee-letters"><span class="n">6</span><span><b>Acknowledge</b><small>Asha · Employee</small></span></li>
+      </ol>
+    </div>
+    <div class="rail-foot">
+      <p class="data-note">Northwind Components Pvt Ltd is fictional. All names and figures are sample data.</p>
+    </div>
+  </aside>
+
+  <main id="main">
+    <!-- 1. Template -->
+    <section class="screen" data-screen="SCR-template" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">Templates</p>
+          <h1>Annual increment letter</h1>
+          <p class="sub">Write it once. Merge fields fill in each employee's details.</p>
+        </div>
+        <div class="who"><span class="avatar">PN</span><span><b>Priya Nair</b>HR admin</span></div>
+      </div>
+      <div class="tpl-grid">
+        <div class="paper" data-letter="template"></div>
+        <div class="side">
+          <div class="card card-lav">
+            <h2>Merge fields</h2>
+            <p>Filled from each employee's record.</p>
+            <div class="chips">
+              <span class="mf">${employeeName}</span><span class="mf">${employeeId}</span><span class="mf">${designation}</span>
+              <span class="mf">${department}</span><span class="mf">${ctc}</span><span class="mf">${effectiveDate}</span><span class="mf">${letterNumber}</span>
+            </div>
+          </div>
+          <div class="card card-lav">
+            <h2>Letter number series</h2>
+            <div class="series">NW/INC/2026/####</div>
+            <small>Next number: NW/INC/2026/0101</small>
+          </div>
+          <div class="card card-lav">
+            <h2>Employee must</h2>
+            <div class="seg" role="group" aria-label="Employee action">
+              <button type="button" data-el="action-acknowledge" aria-pressed="true">Acknowledge</button>
+              <button type="button" data-el="action-accept-reject" aria-pressed="false">Accept or reject</button>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <div class="actions">
+            <button type="button" class="btn btn-ghost">Edit template</button>
+            <button type="button" class="btn btn-lg" data-el="use-template-btn" data-go="SCR-generate">Use template
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Generate -->
+    <section class="screen" data-screen="SCR-generate" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">Generate letters</p>
+          <h1>One template, many letters</h1>
+          <p class="sub">Choose who approves and who gets a letter.</p>
+        </div>
+        <div class="who"><span class="avatar">PN</span><span><b>Priya Nair</b>HR admin</span></div>
+      </div>
+      <div class="gen-grid">
+        <div class="form">
+          <div class="card">
+            <p class="q"><span class="n">1</span>Template</p>
+            <div class="pick">
+              <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg></span>
+              <span><b>Annual increment letter</b><small>Employee must acknowledge · NW/INC/2026/####</small></span>
+            </div>
+          </div>
+          <div class="card">
+            <p class="q"><span class="n">2</span>Approval type</p>
+            <div class="opts" role="group" aria-label="Approval type">
+              <button type="button" class="opt" data-el="approval-signatory" aria-pressed="true"><span class="radio"></span><span><b>Signatory approval</b><small>Signed before release</small></span></button>
+              <button type="button" class="opt" data-el="approval-none" aria-pressed="false"><span class="radio"></span><span><b>No approval needed</b><small>Release straight away</small></span></button>
+            </div>
+          </div>
+          <div class="card">
+            <p class="q"><span class="n">3</span>Signatory</p>
+            <div class="pick sel" data-el="signatory-select" role="button" tabindex="0">
+              <span class="avatar">RM</span>
+              <span><b>Rahul Mehta</b><small>Head of HR · authorised signatory</small></span>
+            </div>
+          </div>
+        </div>
+        <div class="card card-lav match">
+          <p class="q" style="margin:0"><span class="n">4</span>Employees</p>
+          <button type="button" class="filter" data-el="employee-filter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16l-6 8v5l-4 2v-7z"/></svg>
+            Engineering · Bengaluru
+          </button>
+          <div class="bignum" data-el="matched-count"><b>24</b><span>employees matched</span></div>
+          <ul class="people">
+            <li><span class="avatar">AR</span><span><b>Asha Rao</b><small>Senior Engineer</small></span></li>
+            <li><span class="avatar">AP</span><span><b>Arjun Pillai</b><small>Engineer II</small></span></li>
+            <li><span class="avatar">DM</span><span><b>Divya Menon</b><small>Lead Engineer</small></span></li>
+            <li><span class="avatar">KI</span><span><b>Karthik Iyer</b><small>Engineer II</small></span></li>
+            <li><span class="avatar">NK</span><span><b>Neha Kulkarni</b><small>Senior Engineer</small></span></li>
+            <li><span class="avatar">SJ</span><span><b>Sameer Joshi</b><small>Engineer I</small></span></li>
+            <li><span class="avatar">FS</span><span><b>Farah Sheikh</b><small>QA Engineer</small></span></li>
+            <li class="more">+ 17 more</li>
+          </ul>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-lg" data-el="preview-letters-btn" data-go="SCR-preview">Preview 24 letters
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Preview -->
+    <section class="screen" data-screen="SCR-preview" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">Preview</p>
+          <h1>Every letter, merged with real data</h1>
+          <p class="sub">Check each letter before it goes for signature.</p>
+        </div>
+        <div class="who"><span class="avatar">PN</span><span><b>Priya Nair</b>HR admin</span></div>
+      </div>
+      <div class="pv-grid">
+        <div>
+          <div class="pager">
+            <span class="count" data-el="letter-counter">Letter <span id="pv-n">1</span> of 24 <small id="pv-name">· Asha Rao</small></span>
+            <span class="legend"><span class="mv">Asha Rao</span> merged value</span>
+            <span class="arrows">
+              <button type="button" class="round" data-el="prev-letter-btn" aria-label="Previous letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+              <button type="button" class="round" data-el="next-letter-btn" aria-label="Next letter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+            </span>
+          </div>
+          <div class="paper" id="pv-letter"></div>
+        </div>
+        <div class="side">
+          <div class="card card-lav">
+            <h2>Batch</h2>
+            <dl class="facts">
+              <div><dt>Letters</dt><dd>24 drafts</dd></div>
+              <div><dt>Template</dt><dd>Annual increment letter</dd></div>
+              <div><dt>Numbers</dt><dd>NW/INC/2026/0101–0124</dd></div>
+              <div><dt>Signatory</dt><dd>Rahul Mehta</dd></div>
+              <div><dt>Employee must</dt><dd>Acknowledge</dd></div>
+            </dl>
+          </div>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-lg" data-el="send-approval-btn" data-go="SCR-sign-inbox">Send for approval
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Signatory inbox -->
+    <section class="screen" data-screen="SCR-sign-inbox" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">Letter signature inbox</p>
+          <h1>Approve and sign in one click</h1>
+          <p class="sub">Your signature is applied to all 24 letters in the batch.</p>
+        </div>
+        <div class="who"><span class="avatar">RM</span><span><b>Rahul Mehta</b>Head of HR</span></div>
+      </div>
+      <div class="in-grid">
+        <ul class="inbox">
+          <li class="on"><b>Annual increment letters</b><small>24 letters · from Priya Nair · today</small><span class="pill pill-wait" id="in-status">Awaiting your signature</span></li>
+          <li class="old"><b>Address proof letters</b><small>3 letters · 14 Oct</small><span class="pill pill-ok">Signed</span></li>
+          <li class="old"><b>Experience letters</b><small>2 letters · 2 Oct</small><span class="pill pill-ok">Signed</span></li>
+        </ul>
+        <div class="paper sm" id="in-letter"></div>
+        <div class="stack">
+          <div class="card card-lav">
+            <h2>Timeline</h2>
+            <ul class="timeline">
+              <li><b>24 letters generated</b><small>Priya Nair · 10:05</small></li>
+              <li><b>Sent for approval</b><small>Priya Nair · 10:12</small></li>
+              <li class="next" id="in-tl"><b>Your signature</b><small>Pending</small></li>
+            </ul>
+          </div>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-lg" data-el="approve-sign-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21c3-1 5-4 7-8s4-7 6-7 1 4-2 7-4 6-1 6 5-3 5-3"/></svg>
+            <span>Approve &amp; sign</span></button>
+          <button type="button" class="btn btn-ghost" data-el="reject-btn">Reject</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Release -->
+    <section class="screen" data-screen="SCR-release" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">Release</p>
+          <h1>Deliver the signed letters</h1>
+          <p class="sub">Choose how the 24 letters reach employees.</p>
+        </div>
+        <div class="who"><span class="avatar">PN</span><span><b>Priya Nair</b>HR admin</span></div>
+      </div>
+      <div class="summary">
+        <div class="stat stat-ok"><span>Signed by Rahul Mehta</span><b>24 of 24</b></div>
+        <div class="stat"><span>Letter numbers</span><b>0101–0124</b></div>
+        <div class="stat"><span>Recipients</span><b>Engineering · Bengaluru</b></div>
+      </div>
+      <div class="rel-grid">
+        <div class="toggles" role="group" aria-label="Delivery options">
+          <button type="button" class="tg" role="switch" aria-checked="true" data-el="toggle-portal">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+            <span><b>Publish to employee portal</b><small>Appears in Documents › Letters</small></span><span class="sw"></span></button>
+          <button type="button" class="tg" role="switch" aria-checked="true" data-el="toggle-email">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+            <span><b>Email as PDF</b><small>Sent to each work email</small></span><span class="sw"></span></button>
+          <button type="button" class="tg" role="switch" aria-checked="true" data-el="toggle-password">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+            <span><b>Password-protect PDF</b><small>Employee ID + birth year</small></span><span class="sw"></span></button>
+          <button type="button" class="tg" role="switch" aria-checked="true" data-el="toggle-acknowledge">
+            <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+            <span><b>Require acknowledgement</b><small>Reminder after 3 days</small></span><span class="sw"></span></button>
+        </div>
+        <div class="side">
+          <div class="mini"><div class="paper" id="rel-letter"></div></div>
+          <div class="spacer"></div>
+          <button type="button" class="btn btn-lg btn-mustard" data-el="release-btn" data-go="SCR-employee-letters">Release 24 letters
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Employee letters -->
+    <section class="screen" data-screen="SCR-employee-letters" hidden>
+      <div class="top">
+        <div>
+          <p class="eyebrow">My documents</p>
+          <h1>Your increment letter is here</h1>
+          <p class="sub">Read it, acknowledge it, keep it.</p>
+        </div>
+        <div class="who"><span class="avatar">AR</span><span><b>Asha Rao</b>Senior Engineer</span></div>
+      </div>
+      <div class="emp-grid">
+        <div class="stack">
+          <div class="crumbs">Documents <span>›</span> Letters</div>
+          <ul class="doclist">
+            <li class="on"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+              <span><b>Increment letter 2026</b><small>Today · NW/INC/2026/0101</small><span class="pill pill-wait" id="emp-status" style="margin-top:6px">New</span></span></li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+              <span><b>Address proof letter</b><small>12 Mar 2026</small></span></li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+              <span><b>Increment letter 2025</b><small>14 Oct 2025</small></span></li>
+            <li><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></span>
+              <span><b>Offer letter</b><small>4 Jul 2022</small></span></li>
+          </ul>
+        </div>
+        <div class="viewer">
+          <div class="ask" id="emp-ask">
+            <p id="emp-ask-text"><b>Rahul Mehta asks you to acknowledge this letter.</b>Signed and issued today.</p>
+            <span class="spacer"></span>
+            <button type="button" class="btn btn-ghost" data-el="download-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download PDF</button>
+            <button type="button" class="btn" data-el="acknowledge-btn">Acknowledge</button>
+          </div>
+          <div class="paper sm" id="emp-letter"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var SCREENS = ['SCR-template', 'SCR-generate', 'SCR-preview', 'SCR-sign-inbox', 'SCR-release', 'SCR-employee-letters'];
+  var STATES = { default: true };
+
+  var PEOPLE = [
+    { name: 'Asha Rao', id: 'E1042', designation: 'Senior Engineer', dept: 'Engineering, Bengaluru', ctc: '₹18,40,000', no: 'NW/INC/2026/0101' },
+    { name: 'Arjun Pillai', id: 'E1057', designation: 'Engineer II', dept: 'Engineering, Bengaluru', ctc: '₹12,60,000', no: 'NW/INC/2026/0102' },
+    { name: 'Divya Menon', id: 'E0981', designation: 'Lead Engineer', dept: 'Engineering, Bengaluru', ctc: '₹26,10,000', no: 'NW/INC/2026/0103' }
+  ];
+  var SIG_PATH = 'M10 44c10-18 18-30 22-28s-6 30-2 30 10-26 16-26-4 22 2 22 8-12 12-12-2 10 4 10 10-16 16-16 0 14 6 14 12-20 18-20-6 26 2 22 14-18 22-18 4 12 10 10 22-14 30-14 12 6 20 4';
+
+  // Letter body. mode: 'template' (merge-field chips) or 'merged' (real values highlighted).
+  function letter(p, mode, signed, animate) {
+    var f = function (field, value) {
+      return mode === 'template' ? '<span class="mf">${' + field + '}</span>' : '<span class="mv">' + value + '</span>';
+    };
+    var sig;
+    if (mode === 'template') sig = '<div class="sig-box empty">Signature applied on approval</div>';
+    else if (signed) sig = '<div class="sig-box' + (animate ? ' draw' : '') + '"><svg viewBox="0 0 230 64" aria-hidden="true"><path d="' + SIG_PATH + '"/></svg></div>';
+    else sig = '<div class="sig-box empty">Awaiting signature</div>';
+    return '<div class="lh"><b>Northwind Components Pvt Ltd</b><span>Whitefield, Bengaluru</span></div>' +
+      '<p class="meta"><span>Ref: ' + f('letterNumber', p.no) + '</span><span>20 October 2026</span></p>' +
+      '<p>Dear ' + f('employeeName', p.name) + ' (' + f('employeeId', p.id) + '),</p>' +
+      '<p class="subj">Revision of your compensation</p>' +
+      '<p>In recognition of your work this year, we are pleased to revise your annual CTC to ' + f('ctc', p.ctc) +
+      ', effective ' + f('effectiveDate', '1 October 2026') + '. You continue as ' + f('designation', p.designation) +
+      ' in ' + f('department', p.dept) + '.</p>' +
+      '<p>All other terms of your employment stay the same. Please acknowledge this letter on the employee portal.</p>' +
+      '<div class="sig"><span>For Northwind Components Pvt Ltd</span>' + sig + '<span><b>Rahul Mehta</b></span><small>Head of HR</small>' +
+      (signed && mode !== 'template' ? '<span class="stamp' + (animate ? ' pop' : '') + '">Digitally signed · 20 Oct 2026</span>' : '') + '</div>';
+  }
+
+  var $ = function (s) { return document.querySelector(s); };
+  var pvIndex = 0;
+  var timer = null;
+
+  // Each screen resets to its default state when shown.
+  var enter = {
+    'SCR-template': function () {
+      $('[data-letter="template"]').innerHTML = letter(PEOPLE[0], 'template');
+      setSeg('action-acknowledge');
+    },
+    'SCR-generate': function () { setApproval('approval-signatory'); },
+    'SCR-preview': function () { pvIndex = 0; renderPreview(); },
+    'SCR-sign-inbox': function () {
+      $('#in-letter').innerHTML = letter(PEOPLE[0], 'merged', false);
+      var st = $('#in-status'); st.className = 'pill pill-wait'; st.textContent = 'Awaiting your signature';
+      var tl = $('#in-tl'); tl.className = 'next'; tl.innerHTML = '<b>Your signature</b><small>Pending</small>';
+      var b = $('[data-el="approve-sign-btn"]'); b.className = 'btn btn-lg'; b.querySelector('span').textContent = 'Approve & sign'; b.disabled = false;
+    },
+    'SCR-release': function () {
+      $('#rel-letter').innerHTML = letter(PEOPLE[0], 'merged', true);
+      document.querySelectorAll('.tg').forEach(function (t) { t.setAttribute('aria-checked', 'true'); });
+    },
+    'SCR-employee-letters': function () {
+      $('#emp-letter').innerHTML = letter(PEOPLE[0], 'merged', true);
+      var st = $('#emp-status'); st.className = 'pill pill-wait'; st.textContent = 'New';
+      $('#emp-ask').className = 'ask';
+      $('#emp-ask-text').innerHTML = '<b>Rahul Mehta asks you to acknowledge this letter.</b>Signed and issued today.';
+      var b = $('[data-el="acknowledge-btn"]'); b.className = 'btn'; b.textContent = 'Acknowledge'; b.disabled = false;
+    }
+  };
+
+  function setSeg(el) {
+    document.querySelectorAll('.seg button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.el === el)); });
+  }
+  function setApproval(el) {
+    document.querySelectorAll('.opt').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.el === el)); });
+  }
+  function renderPreview() {
+    var p = PEOPLE[pvIndex];
+    $('#pv-letter').innerHTML = letter(p, 'merged', false);
+    $('#pv-n').textContent = pvIndex + 1;
+    $('#pv-name').textContent = '· ' + p.name;
+    $('[data-el="prev-letter-btn"]').disabled = pvIndex === 0;
+  }
+
+  function show(id, state) {
+    clearTimeout(timer);
+    document.querySelectorAll('main [data-screen]').forEach(function (s) { s.hidden = s.dataset.screen !== id; });
+    var i = SCREENS.indexOf(id);
+    document.querySelectorAll('#steps li').forEach(function (li, k) {
+      li.className = k < i ? 'done' : k === i ? 'cur' : '';
+    });
+    document.body.dataset.current = id;
+    document.body.dataset.state = state;
+    enter[id]();
+    window.__letters = { screen: id, state: state };
+  }
+  function onHash() {
+    var raw = decodeURIComponent(location.hash.replace(/^#/, ''));
+    var parts = raw.split('?');
+    var id = SCREENS.indexOf(parts[0]) >= 0 ? parts[0] : SCREENS[0];
+    var m = /state=([\w-]+)/.exec(parts[1] || '');
+    var state = m && STATES[m[1]] ? m[1] : 'default';
+    show(id, state);
+  }
+  function go(id) {
+    var h = '#' + id + '?state=default';
+    if (location.hash === h) onHash(); else location.hash = h;
+  }
+
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('[data-el], [data-go]');
+    if (!t) return;
+    var el = t.dataset.el;
+    if (el === 'action-acknowledge' || el === 'action-accept-reject') return setSeg(el);
+    if (el === 'approval-signatory' || el === 'approval-none') return setApproval(el);
+    if (el === 'next-letter-btn') { pvIndex = Math.min(pvIndex + 1, PEOPLE.length - 1); return renderPreview(); }
+    if (el === 'prev-letter-btn') { pvIndex = Math.max(pvIndex - 1, 0); return renderPreview(); }
+    if (t.classList.contains('tg')) return t.setAttribute('aria-checked', String(t.getAttribute('aria-checked') !== 'true'));
+    if (el === 'approve-sign-btn') {
+      if (t.disabled) return;
+      t.disabled = true;
+      $('#in-letter').innerHTML = letter(PEOPLE[0], 'merged', true, true);
+      var st = $('#in-status'); st.className = 'pill pill-ok'; st.textContent = 'Signed · 24 letters';
+      var tl = $('#in-tl'); tl.className = ''; tl.innerHTML = '<b>Signed by you</b><small>Rahul Mehta · 10:31</small>';
+      t.className = 'btn btn-lg btn-ok'; t.querySelector('span').textContent = 'Signed';
+      // Fixed delay so the signature animation is seen, then move to Release.
+      timer = setTimeout(function () { go('SCR-release'); }, 1400);
+      return;
+    }
+    if (el === 'acknowledge-btn') {
+      if (t.disabled) return;
+      t.disabled = true;
+      var s = $('#emp-status'); s.className = 'pill pill-ok'; s.textContent = 'Acknowledged';
+      $('#emp-ask').className = 'ask done';
+      $('#emp-ask-text').innerHTML = '<b>Acknowledged · 20 Oct, 10:42</b>Rahul Mehta and HR can see this.';
+      t.className = 'btn btn-ok'; t.textContent = '✓ Acknowledged';
+      return;
+    }
+    if (t.dataset.go) go(t.dataset.go);
+  });
+
+  window.addEventListener('hashchange', onHash);
+  onHash();
+})();
+</script>
+</body>
+</html>

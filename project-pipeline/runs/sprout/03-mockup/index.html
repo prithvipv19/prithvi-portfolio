@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sprout</title>
+<style>
+  :root {
+    --cream: #FBF6EA;
+    --cream-2: #F3ECDB;
+    --card: #FFFFFF;
+    --ink: #1E3A2A;          /* main text, 12.6:1 on cream */
+    --ink-2: #4E5F53;        /* secondary text, 6.3:1 on cream */
+    --green: #2E6A45;        /* primary, white text 6.4:1 */
+    --green-dark: #22543A;
+    --green-soft: #DCEBDC;
+    --green-softer: #EDF5EC;
+    --amber-bg: #FCE8C4;
+    --amber-ink: #7A4300;    /* 6.6:1 on amber-bg */
+    --water: #3C7FB0;
+    --water-soft: #DCEBF6;
+    --line: #E6DECB;
+    --radius: 20px;
+    --shadow: 0 1px 2px rgba(30,58,42,.06), 0 4px 14px rgba(30,58,42,.06);
+    font-family: "Avenir Next", "Avenir", "Nunito", "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--ink);
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; background: var(--cream); }
+  body { -webkit-font-smoothing: antialiased; overflow: hidden; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .app { position: relative; width: 100%; max-width: 430px; height: 100vh; margin: 0 auto; overflow: hidden; background: var(--cream); }
+
+  /* Screens */
+  [data-screen] { position: absolute; inset: 0; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+  [data-screen][hidden] { display: none; }
+  [data-screen].enter { animation: screenIn .24s ease-out both; }
+  @keyframes screenIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* Home */
+  .home-head { padding: 22px 20px 6px; }
+  .brand { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 15px; color: var(--green); letter-spacing: .2px; }
+  .greet { margin: 12px 0 2px; font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -.3px; }
+  .date { margin: 0; font-size: 15px; color: var(--ink-2); font-weight: 500; }
+  .home-body { padding: 4px 16px 96px; }
+  .section-title { display: flex; align-items: baseline; justify-content: space-between; margin: 18px 4px 10px; font-size: 13px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--ink-2); }
+  .section-title .count { font-size: 13px; letter-spacing: 0; text-transform: none; font-weight: 600; }
+  .list { display: flex; flex-direction: column; gap: 8px; }
+  .card { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 66px; padding: 10px 12px 10px 10px; background: var(--card); border: 0; border-radius: var(--radius); box-shadow: var(--shadow); text-align: left; }
+  .card.due { background: #FFFFFF; outline: 2px solid var(--green-soft); }
+  .card.just-moved { animation: moved .5s ease-out both; }
+  @keyframes moved { 0% { opacity: 0; transform: translateY(-8px) scale(.98); background: var(--green-soft); } 60% { opacity: 1; background: var(--green-softer); } 100% { transform: none; background: var(--card); } }
+  .card .open { all: unset; display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; cursor: pointer; }
+  .avatar { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; }
+  .avatar svg { width: 28px; height: 28px; }
+  .meta { min-width: 0; flex: 1; }
+  .name { font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sub { margin-top: 2px; font-size: 14px; color: var(--ink-2); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 13px; font-weight: 700; }
+  .tag.late { background: var(--amber-bg); color: var(--amber-ink); }
+  .tag.today { background: var(--water-soft); color: #1F5378; }
+  .next { font-size: 14px; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+  .chev { color: #8C9A8F; font-size: 20px; line-height: 1; margin-left: 2px; }
+  .done-dot { display: inline-flex; align-items: center; gap: 4px; color: var(--green); font-weight: 600; }
+
+  /* Water button */
+  .water { position: relative; flex: none; width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--water); background: #fff; display: grid; place-items: center; overflow: hidden; color: var(--water); }
+  .water svg { position: relative; z-index: 1; width: 20px; height: 20px; transition: color .2s; }
+  .water::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 0; background: var(--water); transition: height .45s cubic-bezier(.3,.7,.3,1); }
+  .water.filled::before { height: 100%; }
+  .water.filled { color: #fff; }
+  .water.filled svg { animation: drip .45s ease-out both; }
+  @keyframes drip { 0% { transform: translateY(-6px); } 60% { transform: translateY(2px); } 100% { transform: none; } }
+
+  /* All clear */
+  .all-clear { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: var(--radius); background: var(--green-soft); }
+  .all-clear.pop { animation: pop .45s ease-out both; }
+  @keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+  .all-clear svg { flex: none; width: 58px; height: 58px; }
+  .all-clear strong { display: block; font-size: 18px; }
+  .all-clear span { font-size: 14px; color: var(--ink-2); font-weight: 500; }
+
+  /* Empty */
+  .empty { margin: 40px 8px 0; padding: 28px 22px; text-align: center; border-radius: 24px; background: var(--card); box-shadow: var(--shadow); }
+  .empty svg { width: 96px; height: 96px; }
+  .empty .btn svg { width: 22px; height: 22px; }
+  .empty h2 { margin: 10px 0 6px; font-size: 22px; }
+  .empty p { margin: 0 0 18px; color: var(--ink-2); font-size: 16px; line-height: 1.4; }
+
+  /* Banner */
+  .banner { display: flex; gap: 10px; align-items: flex-start; margin: 10px 16px 0; padding: 12px 14px; border-radius: 16px; background: var(--amber-bg); color: var(--amber-ink); font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .banner svg { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 52px; padding: 0 22px; border: 0; border-radius: 999px; background: var(--green); color: #fff; font-size: 17px; font-weight: 700; }
+  .btn:disabled { background: #C9D3C8; color: #4E5F53; cursor: not-allowed; }
+  .btn.block { width: 100%; }
+  .fab { position: fixed; right: 18px; bottom: 24px; z-index: 5; height: 56px; padding: 0 22px 0 18px; box-shadow: 0 6px 18px rgba(46,106,69,.35); transition: transform .25s ease, opacity .2s ease; }
+  .fab svg { width: 22px; height: 22px; }
+  .app.toast-on .fab { transform: translateY(16px) scale(.9); opacity: 0; pointer-events: none; }
+
+  /* Toast */
+  .toast { position: absolute; left: 16px; right: 16px; bottom: 24px; z-index: 6; display: flex; align-items: center; gap: 12px; min-height: 56px; padding: 8px 8px 8px 18px; border-radius: 18px; background: var(--ink); color: #fff; font-size: 16px; font-weight: 600; box-shadow: 0 8px 22px rgba(30,58,42,.3); transform: translateY(120px); opacity: 0; transition: transform .25s ease, opacity .25s ease; pointer-events: none; }
+  .toast.show { transform: none; opacity: 1; pointer-events: auto; }
+  .toast .msg { flex: 1; display: flex; align-items: center; gap: 8px; }
+  .toast .undo { border: 0; background: transparent; color: #BFE5C6; font-weight: 700; font-size: 16px; height: 40px; padding: 0 14px; border-radius: 12px; }
+  .toast .undo[hidden] { display: none; }
+
+  /* Top bar */
+  .topbar { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 8px; flex: none; }
+  .topbar h1 { margin: 0; font-size: 17px; font-weight: 700; }
+  .textbtn { border: 0; background: transparent; height: 44px; min-width: 64px; padding: 0 12px; border-radius: 12px; font-size: 16px; font-weight: 600; color: var(--green); display: inline-flex; align-items: center; gap: 4px; }
+  .textbtn svg { width: 20px; height: 20px; }
+
+  /* Form */
+  .form { padding: 4px 20px 24px; display: flex; flex-direction: column; gap: 20px; flex: 1; }
+  .field label, .field .label { display: block; margin: 0 0 8px; font-size: 14px; font-weight: 700; color: var(--ink-2); letter-spacing: .3px; }
+  .input { width: 100%; height: 54px; padding: 0 16px; border: 2px solid var(--line); border-radius: 16px; background: #fff; font: inherit; font-size: 18px; font-weight: 600; color: var(--ink); outline: none; }
+  .input:focus { border-color: var(--green); }
+  .input::placeholder { color: #7D8A80; font-weight: 500; }
+  .hint { margin: 8px 2px 0; font-size: 14px; color: var(--ink-2); font-weight: 500; }
+  .note { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--amber-bg); color: var(--amber-ink); font-size: 14px; font-weight: 600; }
+  .note[hidden], .hint[hidden] { display: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { height: 44px; padding: 0 16px; border-radius: 999px; border: 2px solid var(--line); background: #fff; font-size: 15px; font-weight: 600; color: var(--ink); transition: background .15s, border-color .15s, color .15s; }
+  .chip[aria-pressed="true"] { background: var(--green); border-color: var(--green); color: #fff; }
+  .stepper { display: flex; align-items: center; gap: 12px; margin-top: 10px; }
+  .stepper[hidden] { display: none; }
+  .step-btn { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line); background: #fff; font-size: 22px; font-weight: 700; color: var(--green); }
+  .step-val { min-width: 92px; text-align: center; font-size: 17px; font-weight: 700; }
+  .seg { display: flex; gap: 8px; }
+  .seg .chip { flex: 1; padding: 0 8px; }
+  .date-input { margin-top: 10px; }
+  .date-input[hidden] { display: none; }
+  .preview { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 18px; background: var(--water-soft); color: #1F5378; font-size: 17px; font-weight: 700; }
+  .preview svg { width: 22px; height: 22px; flex: none; }
+  .error-box { padding: 12px 14px; border-radius: 14px; background: #FBE2DC; color: #8A2A14; font-size: 14px; font-weight: 600; line-height: 1.35; }
+  .error-box[hidden] { display: none; }
+  .form-foot { margin-top: auto; padding-top: 6px; }
+
+  /* Detail */
+  .detail-hero { display: flex; flex-direction: column; align-items: center; padding: 6px 20px 18px; text-align: center; }
+  .detail-hero .avatar { width: 84px; height: 84px; border-radius: 28px; }
+  .detail-hero .avatar svg { width: 52px; height: 52px; }
+  .detail-hero h2 { margin: 12px 0 2px; font-size: 28px; letter-spacing: -.3px; word-break: break-word; }
+  .detail-hero p { margin: 0; color: var(--ink-2); font-size: 15px; font-weight: 500; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 0 16px; }
+  .stat { padding: 14px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
+  .stat .k { font-size: 13px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .6px; }
+  .stat .v { margin-top: 4px; font-size: 20px; font-weight: 700; }
+  .stat.wide { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+  .stat.wide .v { margin: 0; font-size: 16px; }
+  .history { margin: 18px 16px 0; padding: 4px 16px; border-radius: 18px; background: var(--card); box-shadow: var(--shadow); }
+  .history h3 { margin: 12px 0 4px; font-size: 13px; font-weight: 700; color: var(--ink-2); text-transform: uppercase; letter-spacing: .6px; }
+  .row { display: flex; justify-content: space-between; align-items: center; height: 44px; border-top: 1px solid #EFE9DA; font-size: 16px; font-weight: 600; }
+  .row:first-of-type { border-top: 0; }
+  .row span:last-child { color: var(--ink-2); font-weight: 500; font-size: 15px; }
+  .row .drop { display: inline-flex; align-items: center; gap: 8px; }
+  .row .drop svg { width: 14px; height: 14px; color: var(--water); }
+  .history .none { padding: 14px 0 16px; color: var(--ink-2); font-size: 16px; font-weight: 500; }
+  .detail-foot { padding: 18px 16px 28px; margin-top: auto; }
+  .btn.water-big { background: var(--water); }
+  .btn.water-big[aria-pressed="true"] { background: var(--water-soft); color: #1F5378; }
+  .btn.water-big svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ============ SCR-home ============ -->
+  <section data-screen="SCR-home" id="scr-home" hidden>
+    <header class="home-head">
+      <div class="brand"><svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V11" stroke="#2E6A45" stroke-width="2.2" stroke-linecap="round"/><path d="M12 12c0-4 3-7 8-7 0 4-3 7-8 7Z" fill="#6FAF7B"/><path d="M12 14c0-3.4-2.6-6-7-6 0 3.4 2.6 6 7 6Z" fill="#2E6A45"/></svg>Sprout</div>
+      <h1 class="greet">Good morning</h1>
+      <p class="date" data-el="home-date">Monday, 19 October</p>
+    </header>
+    <div class="banner" data-el="storage-banner" id="storage-banner" role="alert" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></svg>
+      <div>Sprout can't save on this browser. Changes will be lost when you close it.</div>
+    </div>
+    <div class="home-body" id="home-body"></div>
+    <button class="btn fab" data-el="add-plant-btn" id="add-plant-btn" aria-label="Add plant">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add plant
+    </button>
+  </section>
+
+  <!-- ============ SCR-add-plant ============ -->
+  <section data-screen="SCR-add-plant" id="scr-add" hidden>
+    <div class="topbar">
+      <button class="textbtn" data-el="cancel-btn" id="cancel-btn">Cancel</button>
+      <h1>New plant</h1>
+      <span style="width:64px"></span>
+    </div>
+    <form class="form" id="add-form" novalidate onsubmit="return false">
+      <div class="field">
+        <label for="name-input">Name</label>
+        <input class="input" id="name-input" data-el="name-input" type="text" maxlength="40" placeholder="e.g. Pothos" autocomplete="off">
+        <p class="hint" id="name-hint" data-el="name-hint">Give your plant a name</p>
+        <p class="note" id="dup-note" data-el="duplicate-note" hidden></p>
+      </div>
+      <div class="field">
+        <span class="label">Water every</span>
+        <div class="chips" id="interval-chips">
+          <button type="button" class="chip" data-el="interval-chip-3" data-interval="3" aria-pressed="false">Every 3 days</button>
+          <button type="button" class="chip" data-el="interval-chip-7" data-interval="7" aria-pressed="true">Weekly</button>
+          <button type="button" class="chip" data-el="interval-chip-14" data-interval="14" aria-pressed="false">Every 2 weeks</button>
+          <button type="button" class="chip" data-el="interval-chip-custom" data-interval="custom" aria-pressed="false">Custom</button>
+        </div>
+        <div class="stepper" id="stepper" hidden>
+          <button type="button" class="step-btn" data-el="custom-minus" id="custom-minus" aria-label="Fewer days">−</button>
+          <div class="step-val" id="custom-val" data-el="custom-value">10 days</div>
+          <button type="button" class="step-btn" data-el="custom-plus" id="custom-plus" aria-label="More days">+</button>
+        </div>
+      </div>
+      <div class="field">
+        <span class="label">Last watered</span>
+        <div class="seg" id="last-seg">
+          <button type="button" class="chip" data-el="last-watered-today" data-last="today" aria-pressed="true">Today</button>
+          <button type="button" class="chip" data-el="last-watered-yesterday" data-last="yesterday" aria-pressed="false">Yesterday</button>
+          <button type="button" class="chip" data-el="last-watered-pick" data-last="pick" aria-pressed="false">Pick a day</button>
+        </div>
+        <input class="input date-input" id="last-date" data-el="last-watered-date" type="date" min="2026-09-01" max="2026-10-19" value="2026-10-15" hidden>
+      </div>
+      <div class="preview" data-el="next-preview" id="next-preview">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5c3.5 4.4 6.5 7.9 6.5 11.5a6.5 6.5 0 0 1-13 0c0-3.6 3-7.1 6.5-11.5Z"/></svg>
+        <span id="next-preview-text">Next water: in 7 days</span>
+      </div>
+      <div class="error-box" id="save-error" data-el="save-error" role="alert" hidden>Couldn't save this plant. Your browser storage may be full or switched off. Try again.</div>
+      <div class="form-foot">
+        <button type="button" class="btn block" data-el="save-btn" id="save-btn" disabled>Save plant</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ SCR-plant-detail ============ -->
+  <section data-screen="SCR-plant-detail" id="scr-detail" hidden>
+    <div class="topbar">
+      <button class="textbtn" data-el="back-btn" id="back-btn" aria-label="Back to home">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5 8 12l7 7"/></svg>Back
+      </button>
+      <span></span><span style="width:64px"></span>
+    </div>
+    <div id="detail-body" style="display:flex;flex-direction:column;flex:1"></div>
+  </section>
+
+  <!-- Toast -->
+  <div class="toast" id="toast" data-el="toast" role="status" aria-live="polite">
+    <div class="msg"><svg width="18" height="18" viewBox="0 0 24 24" fill="#BFE5C6"><path d="M12 2.5c3.5 4.4 6.5 7.9 6.5 11.5a6.5 6.5 0 0 1-13 0c0-3.6 3-7.1 6.5-11.5Z"/></svg><span id="toast-msg">Fern watered</span></div>
+    <button class="undo" data-el="toast-undo" id="toast-undo">Undo</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Fixed clock ----------
+  var TODAY = '2026-10-19';
+  var DAY = 86400000;
+  function dayNum(iso) { var p = iso.split('-'); return Math.round(Date.UTC(+p[0], +p[1] - 1, +p[2]) / DAY); }
+  function isoFromNum(n) { return new Date(n * DAY).toISOString().slice(0, 10); }
+  var T = dayNum(TODAY);
+  var MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var WD = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  function fmtDate(iso) { var d = new Date(dayNum(iso) * DAY); return WD[d.getUTCDay()] + ' ' + d.getUTCDate() + ' ' + MONTHS[d.getUTCMonth()]; }
+  function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+
+  // ---------- Leaf avatars ----------
+  var LEAVES = {
+    fern:     { bg: '#DCEBDC', svg: '<path d="M16 28V8" stroke="#2E6A45" stroke-width="2" stroke-linecap="round"/><g fill="#4C8F5E"><path d="M16 10c-3 0-5 1-6 3 3 0 5-1 6-3Z"/><path d="M16 10c3 0 5 1 6 3-3 0-5-1-6-3Z"/><path d="M16 15c-4 0-6 1.5-7 4 4 0 6-1.5 7-4Z"/><path d="M16 15c4 0 6 1.5 7 4-4 0-6-1.5-7-4Z"/><path d="M16 20c-4 0-7 2-8 4.5 4.5 0 7-2 8-4.5Z"/><path d="M16 20c4 0 7 2 8 4.5-4.5 0-7-2-8-4.5Z"/></g>' },
+    monstera: { bg: '#D4E8D9', svg: '<path d="M16 29v-6" stroke="#2E6A45" stroke-width="2" stroke-linecap="round"/><path d="M16 4C9 4 5 9 5 15c0 5 4.5 8 11 8s11-3 11-8c0-6-4-11-11-11Z" fill="#2E7A4C"/><path d="M16 6v16M16 12l-7-3M16 12l7-3M16 17l-8 1M16 17l8 1" stroke="#D4E8D9" stroke-width="1.8" stroke-linecap="round"/>' },
+    calathea: { bg: '#EFE3EE', svg: '<path d="M16 29V14" stroke="#5E3A5A" stroke-width="2" stroke-linecap="round"/><path d="M16 4c-6 3-8 8-6 14 1 3 4 4 6 4s5-1 6-4c2-6 0-11-6-14Z" fill="#3F7A55"/><path d="M16 6v15" stroke="#B9D7BF" stroke-width="1.5"/><g fill="#9AC6A5"><ellipse cx="13" cy="11" rx="1.6" ry="2.6"/><ellipse cx="19" cy="11" rx="1.6" ry="2.6"/><ellipse cx="12.6" cy="16.5" rx="1.6" ry="2.6"/><ellipse cx="19.4" cy="16.5" rx="1.6" ry="2.6"/></g>' },
+    'peace-lily': { bg: '#E6EFE2', svg: '<path d="M16 29V12" stroke="#2E6A45" stroke-width="2" stroke-linecap="round"/><path d="M11 29c-3-4-4-10 0-15 1 6 2 10 0 15Z" fill="#3E8656"/><path d="M21 29c3-4 4-10 0-15-1 6-2 10 0 15Z" fill="#3E8656"/><path d="M16 3c-4 3-5 8-2 12h4c3-4 2-9-2-12Z" fill="#FFFFFF" stroke="#C8D8C5" stroke-width="1"/><path d="M16 9v6" stroke="#E7C76A" stroke-width="2.2" stroke-linecap="round"/>' },
+    'snake-plant': { bg: '#E3EBD3', svg: '<g stroke-linejoin="round"><path d="M10 29c-1-8 0-16 2-24 2 8 2 16 1 24Z" fill="#3B6E3F" stroke="#C9D98E" stroke-width="1.2"/><path d="M15 29c-1-9 0-18 2-26 2 8 2 17 1 26Z" fill="#477D45" stroke="#C9D98E" stroke-width="1.2"/><path d="M20 29c0-6 1-12 3-18 1 6 1 12 0 18Z" fill="#3B6E3F" stroke="#C9D98E" stroke-width="1.2"/></g>' },
+    pothos:   { bg: '#E9F0D6', svg: '<path d="M8 6c6 2 8 8 8 22" stroke="#2E6A45" stroke-width="1.8" fill="none" stroke-linecap="round"/><g fill="#7FAE4A"><path d="M9 7c-4 0-6 3-5 6 3 0 5-2 5-6Z"/><path d="M13 13c-4 1-5 4-4 7 3-1 5-3 4-7Z"/><path d="M15 19c4-1 7 1 7 4-3 1-6 0-7-4Z"/><path d="M12 9c3-3 7-3 9-1-2 3-6 3-9 1Z"/></g><g fill="#E6E9A8"><circle cx="6.5" cy="10" r=".9"/><circle cx="18" cy="21.5" r=".9"/></g>' },
+    generic:  { bg: '#DCEBDC', svg: '<path d="M16 28V14" stroke="#2E6A45" stroke-width="2" stroke-linecap="round"/><path d="M16 15c0-5 4-9 10-9 0 5-4 9-10 9Z" fill="#6FAF7B"/><path d="M16 18c0-4.4-3.4-8-9-8 0 4.4 3.4 8 9 8Z" fill="#2E6A45"/>' }
+  };
+  function avatarHTML(p) {
+    var l = LEAVES[p.icon] || LEAVES.generic;
+    return '<div class="avatar" style="background:' + l.bg + '"><svg viewBox="0 0 32 32" aria-hidden="true">' + l.svg + '</svg></div>';
+  }
+  var DROP = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5c3.5 4.4 6.5 7.9 6.5 11.5a6.5 6.5 0 0 1-13 0c0-3.6 3-7.1 6.5-11.5Z"/></svg>';
+  var SPROUT_ART = '<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="56" rx="20" ry="4" fill="#BFD8C1"/><path d="M20 44h24l-3 12H23Z" fill="#C97B4E"/><rect x="18" y="40" width="28" height="6" rx="2" fill="#B5683D"/><path d="M32 40V24" stroke="#2E6A45" stroke-width="3" stroke-linecap="round"/><path d="M32 27c0-8 6-14 16-14 0 8-6 14-16 14Z" fill="#6FAF7B"/><path d="M32 31c0-7-5-12-13-12 0 7 5 12 13 12Z" fill="#2E6A45"/><circle cx="50" cy="8" r="2" fill="#7DB3DA"/><circle cx="14" cy="12" r="1.6" fill="#7DB3DA"/></svg>';
+
+  // ---------- Seed data ----------
+  function weekly(lastIso, n, step) { var out = [], d = dayNum(lastIso); for (var i = 0; i < n; i++) out.push(isoFromNum(d - i * step)); return out; }
+  function seedPlants() {
+    return [
+      { id: 'fern',        name: 'Fern',        icon: 'fern',        interval: 7,  history: weekly('2026-10-11', 5, 7) },
+      { id: 'monstera',    name: 'Monstera',    icon: 'monstera',    interval: 7,  history: weekly('2026-10-12', 5, 7) },
+      { id: 'calathea',    name: 'Calathea',    icon: 'calathea',    interval: 3,  history: weekly('2026-10-18', 5, 3) },
+      { id: 'peace-lily',  name: 'Peace lily',  icon: 'peace-lily',  interval: 7,  history: weekly('2026-10-16', 5, 7) },
+      { id: 'snake-plant', name: 'Snake plant', icon: 'snake-plant', interval: 14, history: weekly('2026-10-14', 5, 14) }
+    ];
+  }
+  function waterSeed(plants, ids) { plants.forEach(function (p) { if (ids.indexOf(p.id) > -1) p.history.unshift(TODAY); }); return plants; }
+
+  var SCENES = {
+    'SCR-home': {
+      default: function () { return { plants: seedPlants() }; },
+      empty:   function () { return { plants: [] }; },
+      success: function () { return { plants: waterSeed(seedPlants(), ['fern', 'monstera']) }; },
+      error:   function () { return { plants: seedPlants(), storageBroken: true }; }
+    },
+    'SCR-add-plant': {
+      default: function () { return { plants: seedPlants(), form: {} }; },
+      error:   function () { return { plants: seedPlants(), form: { name: 'Fern', saveError: true } }; }
+    },
+    'SCR-plant-detail': {
+      default: function () { return { plants: waterSeed(seedPlants(), ['fern', 'monstera']), plant: 'monstera' }; },
+      empty:   function () { var ps = seedPlants(); ps.push({ id: 'pothos', name: 'Pothos', icon: 'pothos', interval: 3, history: [] }); return { plants: ps, plant: 'pothos' }; }
+    }
+  };
+
+  // ---------- State ----------
+  var S = { plants: [], storageBroken: false, undo: null, justMoved: null, popClear: false };
+
+  function persist() {
+    if (S.storageBroken) return;
+    try { localStorage.setItem('sprout.plants', JSON.stringify(S.plants)); } catch (e) { /* storage unavailable */ }
+  }
+  function find(id) { for (var i = 0; i < S.plants.length; i++) if (S.plants[i].id === id) return S.plants[i]; return null; }
+  function status(p) {
+    if (!p.history.length) return { diff: 0, never: true };
+    var due = dayNum(p.history[0]) + p.interval;
+    return { diff: due - T, last: T - dayNum(p.history[0]) };
+  }
+  function lateText(d) { var n = -d; return n > 14 ? 'Over 2 weeks late' : plural(n, 'day') + ' late'; }
+  function wateredToday(p) { return p.history[0] === TODAY; }
+
+  // ---------- Home ----------
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+  function renderHome() {
+    document.getElementById('storage-banner').hidden = !S.storageBroken;
+    var body = document.getElementById('home-body');
+    var fab = document.getElementById('add-plant-btn');
+    if (!S.plants.length) {
+      fab.hidden = true;
+      body.innerHTML = '<div class="empty" data-el="empty-state">' + SPROUT_ART.replace('<svg', '<svg style="width:96px;height:96px"') +
+        '<h2>No plants yet</h2><p>Add your first one and Sprout will tell you when it needs water.</p>' +
+        '<button class="btn" data-el="empty-add-btn" id="empty-add-btn">' +
+        '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add your first plant</button></div>';
+      document.getElementById('empty-add-btn').onclick = function () { go('SCR-add-plant'); };
+      return;
+    }
+    fab.hidden = false;
+    var due = [], good = [];
+    S.plants.forEach(function (p) { var s = status(p); (s.diff <= 0 ? due : good).push({ p: p, s: s }); });
+    var byDiff = function (a, b) { return a.s.diff - b.s.diff || a.p.name.localeCompare(b.p.name); };
+    due.sort(byDiff); good.sort(byDiff);
+
+    var h = '';
+    h += '<div class="section-title" data-el="today-section"><span>Needs water today</span>' + (due.length ? '<span class="count">' + plural(due.length, 'plant') + '</span>' : '') + '</div>';
+    if (due.length) {
+      h += '<div class="list" id="due-list">';
+      due.forEach(function (x) {
+        var p = x.p, tag = x.s.never ? '<span class="tag today">Not watered yet</span>' : x.s.diff < 0 ? '<span class="tag late">' + lateText(x.s.diff) + '</span>' : '<span class="tag today">Due today</span>';
+        h += '<div class="card due" data-el="plant-card-' + p.id + '" data-plant="' + p.id + '">' +
+          '<button class="open" data-open="' + p.id + '" aria-label="Open ' + esc(p.name) + '">' + avatarHTML(p) +
+          '<div class="meta"><div class="name">' + esc(p.name) + '</div><div class="sub">' + tag + '</div></div></button>' +
+          '<button class="water" data-el="water-btn-' + p.id + '" data-water="' + p.id + '" aria-label="Log watering for ' + esc(p.name) + '">' + DROP + '</button></div>';
+      });
+      h += '</div>';
+    } else {
+      h += '<div class="all-clear' + (S.popClear ? ' pop' : '') + '" data-el="all-clear">' + SPROUT_ART + '<div><strong>All watered — nice work!</strong><span>Nothing else is due today.</span></div></div>';
+    }
+    if (good.length) {
+      h += '<div class="section-title" data-el="all-good-section"><span>All good</span><span class="count">' + plural(good.length, 'plant') + '</span></div><div class="list" id="good-list">';
+      good.forEach(function (x) {
+        var p = x.p;
+        var sub = wateredToday(p) ? '<span class="done-dot"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 10 17l9-10"/></svg>Watered today</span>'
+          : 'Watered ' + (x.s.last === 1 ? 'yesterday' : x.s.last + ' days ago');
+        h += '<div class="card' + (S.justMoved === p.id ? ' just-moved' : '') + '" data-el="plant-card-' + p.id + '" data-plant="' + p.id + '">' +
+          '<button class="open" data-open="' + p.id + '" aria-label="Open ' + esc(p.name) + '">' + avatarHTML(p) +
+          '<div class="meta"><div class="name">' + esc(p.name) + '</div><div class="sub">' + sub + '</div></div>' +
+          '<span class="next" data-el="next-label-' + p.id + '">Next in ' + plural(x.s.diff, 'day') + '</span><span class="chev" aria-hidden="true">›</span></button></div>';
+      });
+      h += '</div>';
+    }
+    body.innerHTML = h;
+    S.justMoved = null; S.popClear = false;
+  }
+
+  document.getElementById('home-body').addEventListener('click', function (e) {
+    var w = e.target.closest('[data-water]');
+    if (w) { e.stopPropagation(); waterFromHome(w.getAttribute('data-water'), w); return; }
+    var o = e.target.closest('[data-open]');
+    if (o) { go('SCR-plant-detail', { plant: o.getAttribute('data-open') }); }
+  });
+
+  var busy = false;
+  function logWatering(p) {
+    if (wateredToday(p)) return false; // second tap on the same day is ignored
+    S.undo = { id: p.id, history: p.history.slice() };
+    p.history.unshift(TODAY);
+    persist();
+    return true;
+  }
+  function waterFromHome(id, btn) {
+    var p = find(id);
+    if (!p || busy) return;
+    busy = true;
+    btn.classList.add('filled');
+    btn.setAttribute('aria-pressed', 'true');
+    setTimeout(function () {
+      var hadDue = S.plants.filter(function (q) { return status(q).diff <= 0; }).length;
+      if (logWatering(p)) {
+        S.justMoved = p.id;
+        if (hadDue === 1) S.popClear = true;
+        showToast(p.name + ' watered', true);
+      }
+      renderHome();
+      busy = false;
+    }, 520);
+  }
+
+  // ---------- Toast ----------
+  var toastTimer = null;
+  function showToast(msg, undoable) {
+    var t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    document.getElementById('toast-undo').hidden = !undoable;
+    t.classList.add('show');
+    document.getElementById('app').classList.add('toast-on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 5000);
+  }
+  function hideToast() {
+    clearTimeout(toastTimer);
+    document.getElementById('toast').classList.remove('show');
+    document.getElementById('app').classList.remove('toast-on');
+    S.undo = null;
+  }
+  document.getElementById('toast-undo').addEventListener('click', function () {
+    if (!S.undo) return;
+    var p = find(S.undo.id);
+    if (p) { p.history = S.undo.history; persist(); }
+    hideToast();
+    render(current.screen);
+  });
+
+  // ---------- Add plant ----------
+  var F = null;
+  function resetForm(pre) {
+    pre = pre || {};
+    F = { name: pre.name || '', interval: 7, custom: false, customDays: 10, last: 'today', pickDate: '2026-10-15', saveError: !!pre.saveError };
+    document.getElementById('name-input').value = F.name;
+    syncForm();
+  }
+  function lastIso() { return F.last === 'today' ? TODAY : F.last === 'yesterday' ? isoFromNum(T - 1) : (F.pickDate || TODAY); }
+  function syncForm() {
+    var name = F.name.trim();
+    var days = F.custom ? F.customDays : F.interval;
+    document.querySelectorAll('#interval-chips .chip').forEach(function (c) {
+      var v = c.getAttribute('data-interval');
+      c.setAttribute('aria-pressed', String(F.custom ? v === 'custom' : v === String(F.interval)));
+    });
+    document.getElementById('stepper').hidden = !F.custom;
+    document.getElementById('custom-val').textContent = plural(F.customDays, 'day');
+    document.querySelectorAll('#last-seg .chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c.getAttribute('data-last') === F.last)); });
+    var di = document.getElementById('last-date'); di.hidden = F.last !== 'pick'; di.value = F.pickDate;
+    var next = dayNum(lastIso()) + days - T;
+    document.getElementById('next-preview-text').textContent = next > 0 ? 'Next water: in ' + plural(next, 'day') : next === 0 ? 'Next water: today' : 'Next water: today (' + lateText(next).toLowerCase() + ')';
+    document.getElementById('name-hint').hidden = !!name;
+    var dup = name && S.plants.some(function (p) { return p.name.toLowerCase() === name.toLowerCase(); });
+    var note = document.getElementById('dup-note');
+    note.hidden = !dup;
+    if (dup) note.textContent = 'You already have a ' + name + ' — add anyway?';
+    document.getElementById('save-error').hidden = !F.saveError;
+    document.getElementById('save-btn').disabled = !name;
+  }
+  document.getElementById('name-input').addEventListener('input', function (e) { F.name = e.target.value.slice(0, 40); F.saveError = false; syncForm(); });
+  document.getElementById('interval-chips').addEventListener('click', function (e) {
+    var c = e.target.closest('.chip'); if (!c) return;
+    var v = c.getAttribute('data-interval');
+    if (v === 'custom') F.custom = true; else { F.custom = false; F.interval = +v; }
+    syncForm();
+  });
+  document.getElementById('custom-minus').addEventListener('click', function () { F.customDays = Math.max(1, F.customDays - 1); syncForm(); });
+  document.getElementById('custom-plus').addEventListener('click', function () { F.customDays = Math.min(30, F.customDays + 1); syncForm(); });
+  document.getElementById('last-seg').addEventListener('click', function (e) { var c = e.target.closest('.chip'); if (!c) return; F.last = c.getAttribute('data-last'); syncForm(); });
+  document.getElementById('last-date').addEventListener('change', function (e) { F.pickDate = e.target.value || TODAY; syncForm(); });
+  document.getElementById('add-plant-btn').addEventListener('click', function () { go('SCR-add-plant'); });
+  document.getElementById('cancel-btn').addEventListener('click', function () { go('SCR-home'); });
+  document.getElementById('save-btn').addEventListener('click', function () {
+    var name = F.name.trim(); if (!name) return;
+    var base = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'plant', id = base, n = 2;
+    while (find(id)) id = base + '-' + (n++);
+    var icon = LEAVES[base] ? base : 'generic';
+    S.plants.push({ id: id, name: name, icon: icon, interval: F.custom ? F.customDays : F.interval, history: [lastIso()] });
+    persist();
+    S.justMoved = id;
+    go('SCR-home');
+    showToast(name + ' added', false);
+  });
+
+  // ---------- Detail ----------
+  var detailId = null;
+  function renderDetail() {
+    var p = find(detailId) || S.plants[0];
+    var box = document.getElementById('detail-body');
+    if (!p) { box.innerHTML = ''; return; }
+    var s = status(p);
+    var lastTxt = s.never ? 'Not yet' : s.last === 0 ? 'Watered today' : s.last === 1 ? 'Yesterday' : s.last + ' days ago';
+    var nextTxt = s.never ? 'Water when soil is dry' : s.diff > 0 ? 'In ' + plural(s.diff, 'day') : s.diff === 0 ? 'Today' : lateText(s.diff);
+    var intTxt = 'Every ' + plural(p.interval, 'day') + (p.interval === 7 ? ' · Weekly' : p.interval === 14 ? ' · Every 2 weeks' : '');
+    var h = '<div class="detail-hero">' + avatarHTML(p) + '<h2 data-el="detail-name">' + esc(p.name) + '</h2><p>' + (s.never ? 'Not watered in Sprout yet' : 'Last watered ' + fmtDate(p.history[0])) + '</p></div>';
+    h += '<div class="stats">' +
+      '<div class="stat" data-el="detail-last"><div class="k">Last watered</div><div class="v">' + lastTxt + '</div></div>' +
+      '<div class="stat" data-el="detail-next"><div class="k">Next</div><div class="v"' + (s.diff < 0 ? ' style="color:var(--amber-ink)"' : '') + '>' + nextTxt + '</div></div>' +
+      '<div class="stat wide" data-el="detail-interval"><div class="k">Interval</div><div class="v">' + intTxt + '</div></div></div>';
+    h += '<div class="history" data-el="detail-history"><h3>Recent waterings</h3>';
+    if (!p.history.length) h += '<div class="none" data-el="detail-history-empty">Not watered in Sprout yet. Tap the button below after you water it.</div>';
+    p.history.slice(0, 5).forEach(function (d) {
+      var ago = T - dayNum(d);
+      h += '<div class="row"><span class="drop">' + DROP + fmtDate(d) + '</span><span>' + (ago === 0 ? 'Today' : ago === 1 ? 'Yesterday' : ago + ' days ago') + '</span></div>';
+    });
+    h += '</div>';
+    var done = wateredToday(p);
+    h += '<div class="detail-foot"><button class="btn block water-big" data-el="detail-water-btn" id="detail-water-btn" aria-pressed="' + done + '">' + DROP + (done ? 'Watered today' : 'Log watering') + '</button></div>';
+    box.innerHTML = h;
+    document.getElementById('detail-water-btn').onclick = function () { if (logWatering(p)) { showToast(p.name + ' watered', true); renderDetail(); } };
+  }
+  document.getElementById('back-btn').addEventListener('click', function () { go('SCR-home'); });
+
+  // ---------- Router ----------
+  var SCREEN_EL = { 'SCR-home': 'scr-home', 'SCR-add-plant': 'scr-add', 'SCR-plant-detail': 'scr-detail' };
+  var current = { screen: null };
+
+  function parseHash() {
+    var raw = (location.hash || '').replace(/^#/, '');
+    var q = raw.indexOf('?');
+    var screen = q === -1 ? raw : raw.slice(0, q);
+    var params = {};
+    if (q !== -1) raw.slice(q + 1).split('&').forEach(function (kv) { if (!kv) return; var i = kv.indexOf('='); params[decodeURIComponent(i < 0 ? kv : kv.slice(0, i))] = i < 0 ? '' : decodeURIComponent(kv.slice(i + 1)); });
+    if (!SCREEN_EL[screen]) screen = 'SCR-home';
+    return { screen: screen, params: params };
+  }
+
+  function applyScene(screen, state) {
+    var scenes = SCENES[screen];
+    var make = scenes[state] || scenes.default;
+    var d = make();
+    hideToast();
+    busy = false;
+    S.plants = d.plants; S.storageBroken = !!d.storageBroken; S.undo = null; S.justMoved = null; S.popClear = false;
+    if (d.plant) detailId = d.plant;
+    if (screen === 'SCR-add-plant') resetForm(d.form);
+    persist();
+    return scenes[state] ? state : 'default';
+  }
+
+  function render(screen) {
+    if (screen === 'SCR-home') renderHome();
+    if (screen === 'SCR-plant-detail') renderDetail();
+  }
+
+  function show(screen, animate) {
+    Object.keys(SCREEN_EL).forEach(function (k) {
+      var el = document.getElementById(SCREEN_EL[k]);
+      var on = k === screen;
+      el.hidden = !on;
+      el.classList.remove('enter');
+      if (on && animate) { void el.offsetWidth; el.classList.add('enter'); }
+      if (on) el.scrollTop = 0;
+    });
+    current.screen = screen;
+    document.body.setAttribute('data-current-screen', screen);
+  }
+
+  function route(first) {
+    var r = parseHash();
+    var hasState = Object.prototype.hasOwnProperty.call(r.params, 'state');
+    if (first || hasState) {
+      var st = applyScene(r.screen, hasState ? r.params.state : 'default');
+      document.body.setAttribute('data-state', st);
+    } else {
+      document.body.setAttribute('data-state', 'live');
+    }
+    if (r.params.plant) detailId = r.params.plant;
+    if (r.screen === 'SCR-add-plant' && !first && !hasState) resetForm({});
+    if (r.screen !== 'SCR-home') hideToast();
+    render(r.screen);
+    show(r.screen, !first && !hasState);
+    // Strip the seed marker so re-entering the same deep link fires hashchange and reseeds.
+    if (hasState) history.replaceState(null, '', '#' + r.screen + (r.params.plant ? '?plant=' + encodeURIComponent(r.params.plant) : ''));
+  }
+
+  function go(screen, params) {
+    var h = '#' + screen + (params && params.plant ? '?plant=' + encodeURIComponent(params.plant) : '');
+    if (location.hash === h) route(false); else location.hash = h;
+  }
+
+  window.addEventListener('hashchange', function () { route(false); });
+  window.sprout = { reset: function (screen, state) { location.hash = '#' + (screen || 'SCR-home') + '?state=' + (state || 'default'); }, today: TODAY };
+  route(true);
+})();
+</script>
+</body>
+</html>

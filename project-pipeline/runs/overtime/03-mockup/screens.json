@@ -1,0 +1,511 @@
+{
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "entry": "index.html",
+  "notes": [
+    "Deep link with ?state=<state> reseeds the demo data for that screen and state. A hash without ?state keeps the current in-memory data (used by in-app navigation); on a cold load it seeds the default state.",
+    "Checkbox data-el values sit on a 40x40 label wrapping the input; click the data-el to toggle.",
+    "Elements with a 'state' field only exist in that state; others exist in the screen's default state.",
+    "Toasts last 3.2 s (CSS animation). Approve/Reject cards slide out for 300 ms before the queue re-renders."
+  ],
+  "rail": {
+    "elements": [
+      {
+        "id": "persona-employee",
+        "selector": "[data-el='persona-employee']",
+        "label": "Persona switcher: Asha Rao (Employee)"
+      },
+      {
+        "id": "persona-manager",
+        "selector": "[data-el='persona-manager']",
+        "label": "Persona switcher: Vikram Shah (Manager)"
+      },
+      {
+        "id": "persona-admin",
+        "selector": "[data-el='persona-admin']",
+        "label": "Persona switcher: Priya (Payroll admin)"
+      },
+      {
+        "id": "nav-policy",
+        "selector": "[data-el='nav-policy']",
+        "label": "Rail link: Overtime policy"
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "SCR-policy",
+      "url": "index.html#SCR-policy",
+      "deep_links": {
+        "default": "index.html#SCR-policy?state=default"
+      },
+      "states": [
+        "default"
+      ],
+      "persona": "(last used, Employee by default)",
+      "screenshots": {
+        "default": "screenshots/SCR-policy--default.png"
+      },
+      "elements": [
+        {
+          "id": "policy-card",
+          "selector": "[data-el='policy-card']",
+          "label": "Plant overtime policy card with five rule tiles",
+          "step": "F1.S1"
+        },
+        {
+          "id": "worked-example",
+          "selector": "[data-el='worked-example']",
+          "label": "Worked example: Asha's 4 Oct from clocked 5:20 to Rs 1,000",
+          "step": "F1.S1"
+        },
+        {
+          "id": "start-employee-btn",
+          "selector": "[data-el='start-employee-btn']",
+          "label": "Start as employee button",
+          "step": "F1.S1"
+        }
+      ]
+    },
+    {
+      "id": "SCR-ot-apply",
+      "url": "index.html#SCR-ot-apply",
+      "deep_links": {
+        "default": "index.html#SCR-ot-apply?state=default",
+        "empty": "index.html#SCR-ot-apply?state=empty",
+        "error": "index.html#SCR-ot-apply?state=error"
+      },
+      "states": [
+        "default",
+        "empty",
+        "error"
+      ],
+      "persona": "employee",
+      "screenshots": {
+        "default": "screenshots/SCR-ot-apply--default.png",
+        "empty": "screenshots/SCR-ot-apply--empty.png",
+        "error": "screenshots/SCR-ot-apply--error.png"
+      },
+      "elements": [
+        {
+          "id": "nav-apply",
+          "selector": "[data-el='nav-apply']",
+          "label": "Rail link: Apply for OT"
+        },
+        {
+          "id": "day-check-2026-10-03",
+          "selector": "[data-el='day-check-2026-10-03']",
+          "label": "Checkbox for Sat, 3 Oct (2:15 h eligible)",
+          "step": "F1.S2"
+        },
+        {
+          "id": "day-check-2026-10-04",
+          "selector": "[data-el='day-check-2026-10-04']",
+          "label": "Checkbox for Sun, 4 Oct (4:00 h eligible, capped)",
+          "step": "F1.S2"
+        },
+        {
+          "id": "day-check-2026-10-08",
+          "selector": "[data-el='day-check-2026-10-08']",
+          "label": "Checkbox for Thu, 8 Oct (below minimum, disabled)"
+        },
+        {
+          "id": "day-check-2026-10-12",
+          "selector": "[data-el='day-check-2026-10-12']",
+          "label": "Checkbox for Mon, 12 Oct (1:30 h eligible)",
+          "step": "F3.S1"
+        },
+        {
+          "id": "selected-total",
+          "selector": "[data-el='selected-total']",
+          "label": "Selected total vs monthly cap meter",
+          "step": "F1.S2"
+        },
+        {
+          "id": "reason-2026-10-03",
+          "selector": "[data-el='reason-2026-10-03']",
+          "label": "Per-day reason input, 3 Oct"
+        },
+        {
+          "id": "reason-2026-10-04",
+          "selector": "[data-el='reason-2026-10-04']",
+          "label": "Per-day reason input, 4 Oct"
+        },
+        {
+          "id": "remarks-input",
+          "selector": "[data-el='remarks-input']",
+          "label": "Remarks for your manager (required)",
+          "step": "F1.S3"
+        },
+        {
+          "id": "submit-btn",
+          "selector": "[data-el='submit-btn']",
+          "label": "Submit to Vikram Shah button",
+          "step": "F1.S3"
+        },
+        {
+          "id": "apply-error",
+          "selector": "[data-el='apply-error']",
+          "label": "Inline error: Remarks are required.",
+          "step": "F3.S1",
+          "state": "error"
+        },
+        {
+          "id": "empty-my-requests",
+          "selector": "[data-el='empty-my-requests']",
+          "label": "Empty state: See my requests button",
+          "state": "empty"
+        }
+      ]
+    },
+    {
+      "id": "SCR-my-requests",
+      "url": "index.html#SCR-my-requests",
+      "deep_links": {
+        "default": "index.html#SCR-my-requests?state=default",
+        "empty": "index.html#SCR-my-requests?state=empty"
+      },
+      "states": [
+        "default",
+        "empty"
+      ],
+      "persona": "employee",
+      "screenshots": {
+        "default": "screenshots/SCR-my-requests--default.png",
+        "empty": "screenshots/SCR-my-requests--empty.png"
+      },
+      "elements": [
+        {
+          "id": "nav-my-requests",
+          "selector": "[data-el='nav-my-requests']",
+          "label": "Rail link: My requests"
+        },
+        {
+          "id": "tab-pending",
+          "selector": "[data-el='tab-pending']",
+          "label": "Pending tab"
+        },
+        {
+          "id": "tab-history",
+          "selector": "[data-el='tab-history']",
+          "label": "History tab"
+        },
+        {
+          "id": "request-row-2026-10-03",
+          "selector": "[data-el='request-row-2026-10-03']",
+          "label": "Pending request row, 3 Oct"
+        },
+        {
+          "id": "withdraw-2026-10-03",
+          "selector": "[data-el='withdraw-2026-10-03']",
+          "label": "Withdraw button, 3 Oct request"
+        },
+        {
+          "id": "withdraw-2026-10-04",
+          "selector": "[data-el='withdraw-2026-10-04']",
+          "label": "Withdraw button, 4 Oct request",
+          "step": "F3.S2"
+        },
+        {
+          "id": "switch-to-manager",
+          "selector": "[data-el='switch-to-manager']",
+          "label": "Switch to manager button",
+          "step": "F1.S4"
+        },
+        {
+          "id": "empty-apply-btn",
+          "selector": "[data-el='empty-apply-btn']",
+          "label": "Empty state: Apply for overtime button",
+          "state": "empty"
+        }
+      ]
+    },
+    {
+      "id": "SCR-review",
+      "url": "index.html#SCR-review",
+      "deep_links": {
+        "default": "index.html#SCR-review?state=default",
+        "empty": "index.html#SCR-review?state=empty"
+      },
+      "states": [
+        "default",
+        "empty"
+      ],
+      "persona": "manager",
+      "screenshots": {
+        "default": "screenshots/SCR-review--default.png",
+        "empty": "screenshots/SCR-review--empty.png"
+      },
+      "elements": [
+        {
+          "id": "nav-review",
+          "selector": "[data-el='nav-review']",
+          "label": "Rail link: Review queue"
+        },
+        {
+          "id": "tab-review",
+          "selector": "[data-el='tab-review']",
+          "label": "To review tab"
+        },
+        {
+          "id": "tab-closed",
+          "selector": "[data-el='tab-closed']",
+          "label": "Closed tab"
+        },
+        {
+          "id": "tab-apply-team",
+          "selector": "[data-el='tab-apply-team']",
+          "label": "Apply for team tab",
+          "step": "F2.S1"
+        },
+        {
+          "id": "request-card-asha-2026-10-03",
+          "selector": "[data-el='request-card-asha-2026-10-03']",
+          "label": "Asha Rao's 3 Oct request card",
+          "step": "F1.S5"
+        },
+        {
+          "id": "remarks-asha-2026-10-03",
+          "selector": "[data-el='remarks-asha-2026-10-03']",
+          "label": "Reviewer remarks input, Asha 3 Oct"
+        },
+        {
+          "id": "reject-asha-2026-10-03",
+          "selector": "[data-el='reject-asha-2026-10-03']",
+          "label": "Reject button, Asha 3 Oct"
+        },
+        {
+          "id": "approve-asha-2026-10-03",
+          "selector": "[data-el='approve-asha-2026-10-03']",
+          "label": "Approve button, Asha 3 Oct",
+          "step": "F1.S5"
+        },
+        {
+          "id": "approve-asha-2026-10-04",
+          "selector": "[data-el='approve-asha-2026-10-04']",
+          "label": "Approve button, Asha 4 Oct"
+        },
+        {
+          "id": "approve-ravi-2026-10-05",
+          "selector": "[data-el='approve-ravi-2026-10-05']",
+          "label": "Approve button, Ravi Kumar 5 Oct"
+        },
+        {
+          "id": "approve-meena-2026-10-13",
+          "selector": "[data-el='approve-meena-2026-10-13']",
+          "label": "Approve button, Meena Iyer 13 Oct"
+        },
+        {
+          "id": "continue-payroll-btn",
+          "selector": "[data-el='continue-payroll-btn']",
+          "label": "Continue to payroll button",
+          "step": "F1.S6"
+        },
+        {
+          "id": "empty-apply-team",
+          "selector": "[data-el='empty-apply-team']",
+          "label": "Empty state: Apply for team button",
+          "state": "empty"
+        }
+      ]
+    },
+    {
+      "id": "SCR-team-apply",
+      "url": "index.html#SCR-team-apply",
+      "deep_links": {
+        "default": "index.html#SCR-team-apply?state=default"
+      },
+      "states": [
+        "default"
+      ],
+      "persona": "manager",
+      "screenshots": {
+        "default": "screenshots/SCR-team-apply--default.png"
+      },
+      "elements": [
+        {
+          "id": "nav-team-apply",
+          "selector": "[data-el='nav-team-apply']",
+          "label": "Rail link: Apply for team"
+        },
+        {
+          "id": "team-select-all",
+          "selector": "[data-el='team-select-all']",
+          "label": "Select all eligible rows checkbox",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-check-ravi-2026-10-11",
+          "selector": "[data-el='team-check-ravi-2026-10-11']",
+          "label": "Row checkbox, Ravi Kumar 11 Oct",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-check-meena-2026-10-06",
+          "selector": "[data-el='team-check-meena-2026-10-06']",
+          "label": "Row checkbox, Meena Iyer 6 Oct",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-check-joseph-2026-10-16",
+          "selector": "[data-el='team-check-joseph-2026-10-16']",
+          "label": "Row checkbox, Joseph D'Souza 16 Oct",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-row-joseph-2026-10-18",
+          "selector": "[data-el='team-row-joseph-2026-10-18']",
+          "label": "Over-cap row (pink), Joseph D'Souza 18 Oct",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-check-joseph-2026-10-18",
+          "selector": "[data-el='team-check-joseph-2026-10-18']",
+          "label": "Disabled checkbox on the over-cap row",
+          "step": "F2.S2"
+        },
+        {
+          "id": "team-apply-btn",
+          "selector": "[data-el='team-apply-btn']",
+          "label": "Apply and approve selected button",
+          "step": "F2.S3"
+        },
+        {
+          "id": "team-cancel",
+          "selector": "[data-el='team-cancel']",
+          "label": "Back to queue button"
+        }
+      ]
+    },
+    {
+      "id": "SCR-finalize",
+      "url": "index.html#SCR-finalize",
+      "deep_links": {
+        "default": "index.html#SCR-finalize?state=default",
+        "empty": "index.html#SCR-finalize?state=empty"
+      },
+      "states": [
+        "default",
+        "empty"
+      ],
+      "persona": "admin",
+      "screenshots": {
+        "default": "screenshots/SCR-finalize--default.png",
+        "empty": "screenshots/SCR-finalize--empty.png"
+      },
+      "elements": [
+        {
+          "id": "nav-finalize",
+          "selector": "[data-el='nav-finalize']",
+          "label": "Rail link: Finalize for payroll"
+        },
+        {
+          "id": "pay-month-select",
+          "selector": "[data-el='pay-month-select']",
+          "label": "Payroll month select (October 2026 by default)",
+          "step": "F1.S7"
+        },
+        {
+          "id": "fin-select-all",
+          "selector": "[data-el='fin-select-all']",
+          "label": "Select all approved records checkbox",
+          "step": "F1.S7"
+        },
+        {
+          "id": "fin-row-meena-2026-09-27",
+          "selector": "[data-el='fin-row-meena-2026-09-27']",
+          "label": "Meena Iyer 27 Sep row, typed Arrear",
+          "step": "F1.S7"
+        },
+        {
+          "id": "fin-check-asha-2026-10-03",
+          "selector": "[data-el='fin-check-asha-2026-10-03']",
+          "label": "Row checkbox, Asha Rao 3 Oct"
+        },
+        {
+          "id": "ignore-btn",
+          "selector": "[data-el='ignore-btn']",
+          "label": "Ignore button"
+        },
+        {
+          "id": "consider-btn",
+          "selector": "[data-el='consider-btn']",
+          "label": "Consider for payroll button",
+          "step": "F1.S7"
+        },
+        {
+          "id": "empty-register-btn",
+          "selector": "[data-el='empty-register-btn']",
+          "label": "Empty state: Open the OT register button",
+          "state": "empty"
+        }
+      ]
+    },
+    {
+      "id": "SCR-register",
+      "url": "index.html#SCR-register",
+      "deep_links": {
+        "default": "index.html#SCR-register?state=default",
+        "empty": "index.html#SCR-register?state=empty"
+      },
+      "states": [
+        "default",
+        "empty"
+      ],
+      "persona": "admin",
+      "screenshots": {
+        "default": "screenshots/SCR-register--default.png",
+        "empty": "screenshots/SCR-register--empty.png"
+      },
+      "elements": [
+        {
+          "id": "nav-register",
+          "selector": "[data-el='nav-register']",
+          "label": "Rail link: OT register"
+        },
+        {
+          "id": "register-month-select",
+          "selector": "[data-el='register-month-select']",
+          "label": "Register month select"
+        },
+        {
+          "id": "register-totals",
+          "selector": "[data-el='register-totals']",
+          "label": "Totals: hours, payable, arrears, reversals",
+          "step": "F1.S8"
+        },
+        {
+          "id": "total-payable",
+          "selector": "[data-el='total-payable']",
+          "label": "Payable total tile",
+          "step": "F1.S8"
+        },
+        {
+          "id": "arrear-line",
+          "selector": "[data-el='arrear-line']",
+          "label": "Arrear line: Meena Iyer, 27 Sep",
+          "step": "F1.S8"
+        },
+        {
+          "id": "reversal-line",
+          "selector": "[data-el='reversal-line']",
+          "label": "Reversal line: Ravi Kumar, 14 Sep, -1:00 h",
+          "step": "F1.S8"
+        },
+        {
+          "id": "back-to-finalize",
+          "selector": "[data-el='back-to-finalize']",
+          "label": "Back to finalize button"
+        },
+        {
+          "id": "empty-finalize-btn",
+          "selector": "[data-el='empty-finalize-btn']",
+          "label": "Empty state: Go to finalize button",
+          "state": "empty"
+        }
+      ]
+    }
+  ]
+}

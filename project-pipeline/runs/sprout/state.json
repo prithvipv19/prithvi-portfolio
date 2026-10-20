@@ -1,0 +1,29 @@
+{
+  "project": "sprout",
+  "created": "2026-10-19",
+  "current_stage": 3,
+  "stages": {
+    "1-research": {
+      "status": "passed",
+      "attempts": 1
+    },
+    "2-spec": {
+      "status": "approved",
+      "attempts": 1,
+      "approved_by_user": false,
+      "note": "auto-approved for test run"
+    },
+    "3-mockup": {
+      "status": "pending",
+      "attempts": 0
+    },
+    "4-script": {
+      "status": "pending",
+      "attempts": 0
+    },
+    "5-video": {
+      "status": "pending",
+      "attempts": 0
+    }
+  }
+}

@@ -1,0 +1,543 @@
+{
+  "fps": 30,
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "total_duration_s": 96.5,
+  "notes": [
+    "Record each scene from its own deep link: index.html#<screen>?state=<state>. A click that navigates keeps recording on the new screen until the scene ends.",
+    "Element targets resolve via 03-mockup/screens.json (screen elements, plus rail elements for persona-*).",
+    "SC-05 re-ticks 3 and 4 Oct at 0.0-0.2 s because the default deep link reseeds an empty selection.",
+    "SC-08 opens zoomed on the payroll footer so Asha's re-seeded 3 Oct card stays out of frame."
+  ],
+  "scenes": [
+    {
+      "id": "SC-01",
+      "flow_step": null,
+      "screen": "SCR-policy",
+      "state": "default",
+      "start_s": 0.0,
+      "duration_s": 7.5,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "Factory overtime lives in spreadsheets and chat. Hours get missed, and payroll fixes them by hand.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "wait",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 1.6,
+          "type": "move",
+          "target": "worked-example"
+        },
+        {
+          "at_s": 3.0,
+          "type": "highlight",
+          "target": "worked-example",
+          "duration_s": 3.0
+        }
+      ],
+      "camera": {
+        "type": "zoom",
+        "target": "worked-example",
+        "scale": 1.15,
+        "at_s": 1.0,
+        "duration_s": 5.5
+      },
+      "caption": "Overtime today: spreadsheets, chat and manual fixes"
+    },
+    {
+      "id": "SC-02",
+      "flow_step": null,
+      "screen": "SCR-policy",
+      "state": "default",
+      "start_s": 7.5,
+      "duration_s": 7.0,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "Overtime serves three people. Asha on the line, Vikram her manager, Priya in payroll.",
+      "actions": [
+        {
+          "at_s": 2.4,
+          "type": "highlight",
+          "target": "persona-employee",
+          "duration_s": 1.2
+        },
+        {
+          "at_s": 3.8,
+          "type": "highlight",
+          "target": "persona-manager",
+          "duration_s": 1.2
+        },
+        {
+          "at_s": 5.2,
+          "type": "highlight",
+          "target": "persona-admin",
+          "duration_s": 1.4
+        }
+      ],
+      "caption": "Three roles: employee, manager, payroll admin"
+    },
+    {
+      "id": "SC-03",
+      "flow_step": "F1.S1",
+      "screen": "SCR-policy",
+      "state": "default",
+      "start_s": 14.5,
+      "duration_s": 7.0,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "One plain policy sets the rules. Five hours twenty clocked becomes four paid hours.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "highlight",
+          "target": "policy-card",
+          "duration_s": 1.8
+        },
+        {
+          "at_s": 2.4,
+          "type": "highlight",
+          "target": "worked-example",
+          "duration_s": 2.6
+        },
+        {
+          "at_s": 5.2,
+          "type": "move",
+          "target": "start-employee-btn"
+        },
+        {
+          "at_s": 6.0,
+          "type": "click",
+          "target": "start-employee-btn"
+        }
+      ],
+      "caption": "One readable policy"
+    },
+    {
+      "id": "SC-04",
+      "flow_step": "F1.S2",
+      "screen": "SCR-ot-apply",
+      "state": "default",
+      "start_s": 21.5,
+      "duration_s": 8.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Asha never types hours. Short days are blocked. She ticks two days, and the cap meter updates.",
+      "actions": [
+        {
+          "at_s": 2.0,
+          "type": "hover",
+          "target": "day-check-2026-10-08",
+          "duration_s": 1.2
+        },
+        {
+          "at_s": 4.0,
+          "type": "click",
+          "target": "day-check-2026-10-03"
+        },
+        {
+          "at_s": 4.8,
+          "type": "click",
+          "target": "day-check-2026-10-04"
+        },
+        {
+          "at_s": 5.6,
+          "type": "highlight",
+          "target": "selected-total",
+          "duration_s": 2.0
+        }
+      ],
+      "caption": "Eligible hours come from attendance"
+    },
+    {
+      "id": "SC-05",
+      "flow_step": "F1.S3",
+      "screen": "SCR-ot-apply",
+      "state": "default",
+      "start_s": 29.5,
+      "duration_s": 6.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "She adds a note and submits. Both requests go to Vikram.",
+      "actions": [
+        {
+          "at_s": 0.0,
+          "type": "click",
+          "target": "day-check-2026-10-03"
+        },
+        {
+          "at_s": 0.2,
+          "type": "click",
+          "target": "day-check-2026-10-04"
+        },
+        {
+          "at_s": 0.6,
+          "type": "click",
+          "target": "remarks-input"
+        },
+        {
+          "at_s": 0.9,
+          "type": "type",
+          "target": "remarks-input",
+          "text": "Covered the Line 2 backlog",
+          "duration_s": 1.6
+        },
+        {
+          "at_s": 2.8,
+          "type": "move",
+          "target": "submit-btn"
+        },
+        {
+          "at_s": 3.4,
+          "type": "click",
+          "target": "submit-btn"
+        },
+        {
+          "at_s": 3.9,
+          "type": "wait",
+          "duration_s": 1.8
+        }
+      ],
+      "caption": "Submitted to the manager"
+    },
+    {
+      "id": "SC-06",
+      "flow_step": "F1.S4",
+      "screen": "SCR-my-requests",
+      "state": "default",
+      "start_s": 35.5,
+      "duration_s": 5.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "She can withdraw until it's decided. Now, over to Vikram.",
+      "actions": [
+        {
+          "at_s": 0.5,
+          "type": "hover",
+          "target": "withdraw-2026-10-03",
+          "duration_s": 1.4
+        },
+        {
+          "at_s": 2.6,
+          "type": "move",
+          "target": "switch-to-manager"
+        },
+        {
+          "at_s": 3.6,
+          "type": "click",
+          "target": "switch-to-manager"
+        }
+      ],
+      "caption": "Track or withdraw"
+    },
+    {
+      "id": "SC-07",
+      "flow_step": "F1.S5",
+      "screen": "SCR-review",
+      "state": "default",
+      "start_s": 40.5,
+      "duration_s": 7.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Hours arrive policy-checked, with the amount and reason. Vikram approves in one click.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "highlight",
+          "target": "request-card-asha-2026-10-03",
+          "duration_s": 2.8
+        },
+        {
+          "at_s": 3.6,
+          "type": "move",
+          "target": "approve-asha-2026-10-03"
+        },
+        {
+          "at_s": 4.6,
+          "type": "click",
+          "target": "approve-asha-2026-10-03"
+        },
+        {
+          "at_s": 5.0,
+          "type": "wait",
+          "duration_s": 1.5
+        }
+      ],
+      "caption": "Policy-checked before review"
+    },
+    {
+      "id": "SC-08",
+      "flow_step": "F1.S6",
+      "screen": "SCR-review",
+      "state": "default",
+      "start_s": 47.5,
+      "duration_s": 3.5,
+      "transition_in": {
+        "type": "zoom-in",
+        "duration_s": 0.4
+      },
+      "narration": "Then on to payroll.",
+      "actions": [
+        {
+          "at_s": 0.6,
+          "type": "move",
+          "target": "continue-payroll-btn"
+        },
+        {
+          "at_s": 1.8,
+          "type": "click",
+          "target": "continue-payroll-btn"
+        }
+      ],
+      "camera": {
+        "type": "zoom",
+        "target": "continue-payroll-btn",
+        "scale": 1.6,
+        "at_s": 0.0,
+        "duration_s": 0.4
+      },
+      "caption": "Hand-off to payroll"
+    },
+    {
+      "id": "SC-09",
+      "flow_step": "F1.S7",
+      "screen": "SCR-finalize",
+      "state": "default",
+      "start_s": 51.0,
+      "duration_s": 8.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Priya picks the payroll month. September hours become an arrear on their own.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "highlight",
+          "target": "pay-month-select",
+          "duration_s": 1.4
+        },
+        {
+          "at_s": 2.0,
+          "type": "highlight",
+          "target": "fin-row-meena-2026-09-27",
+          "duration_s": 2.4
+        },
+        {
+          "at_s": 4.8,
+          "type": "click",
+          "target": "fin-select-all"
+        },
+        {
+          "at_s": 5.8,
+          "type": "move",
+          "target": "consider-btn"
+        },
+        {
+          "at_s": 6.6,
+          "type": "click",
+          "target": "consider-btn"
+        }
+      ],
+      "caption": "Approval says it was worked. Finalizing says when it's paid."
+    },
+    {
+      "id": "SC-10",
+      "flow_step": "F1.S8",
+      "screen": "SCR-register",
+      "state": "default",
+      "start_s": 59.0,
+      "duration_s": 8.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "The register shows regular lines, the arrear, and a reversal for hours cut after payout.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "highlight",
+          "target": "register-totals",
+          "duration_s": 1.4
+        },
+        {
+          "at_s": 2.2,
+          "type": "highlight",
+          "target": "arrear-line",
+          "duration_s": 2.0
+        },
+        {
+          "at_s": 4.4,
+          "type": "highlight",
+          "target": "reversal-line",
+          "duration_s": 2.4
+        }
+      ],
+      "caption": "Regular, arrear and reversal lines"
+    },
+    {
+      "id": "SC-11",
+      "flow_step": "F2.S1",
+      "screen": "SCR-review",
+      "state": "default",
+      "start_s": 67.0,
+      "duration_s": 5.0,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "Many workers never log in, so Vikram applies for them.",
+      "actions": [
+        {
+          "at_s": 1.0,
+          "type": "move",
+          "target": "tab-apply-team"
+        },
+        {
+          "at_s": 2.4,
+          "type": "click",
+          "target": "tab-apply-team"
+        },
+        {
+          "at_s": 2.9,
+          "type": "wait",
+          "duration_s": 1.8
+        }
+      ],
+      "caption": "Apply for people without app access"
+    },
+    {
+      "id": "SC-12",
+      "flow_step": "F2.S2",
+      "screen": "SCR-team-apply",
+      "state": "default",
+      "start_s": 72.0,
+      "duration_s": 9.5,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Joseph's last day would cross his monthly cap, so that row is pink and locked. The rest are approved at once.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "click",
+          "target": "team-check-ravi-2026-10-11"
+        },
+        {
+          "at_s": 1.0,
+          "type": "click",
+          "target": "team-check-meena-2026-10-06"
+        },
+        {
+          "at_s": 1.6,
+          "type": "click",
+          "target": "team-check-joseph-2026-10-16"
+        },
+        {
+          "at_s": 2.4,
+          "type": "highlight",
+          "target": "team-row-joseph-2026-10-18",
+          "duration_s": 2.8
+        },
+        {
+          "at_s": 3.4,
+          "type": "hover",
+          "target": "team-check-joseph-2026-10-18",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 6.0,
+          "type": "move",
+          "target": "team-apply-btn"
+        },
+        {
+          "at_s": 6.8,
+          "type": "click",
+          "target": "team-apply-btn"
+        },
+        {
+          "at_s": 7.3,
+          "type": "wait",
+          "duration_s": 1.8
+        }
+      ],
+      "caption": "Monthly cap enforced for the team"
+    },
+    {
+      "id": "SC-13",
+      "flow_step": null,
+      "screen": "SCR-register",
+      "state": "default",
+      "start_s": 81.5,
+      "duration_s": 10.5,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "Every rupee is checked, approved once, and paid in the right month. I took it from zero to one, to over a hundred enterprises.",
+      "actions": [
+        {
+          "at_s": 0.6,
+          "type": "highlight",
+          "target": "total-payable",
+          "duration_s": 3.0
+        },
+        {
+          "at_s": 4.0,
+          "type": "highlight",
+          "target": "register-totals",
+          "duration_s": 3.0
+        }
+      ],
+      "caption": "Policy-checked, approved, paid in the right month"
+    },
+    {
+      "id": "SC-14",
+      "flow_step": null,
+      "screen": "SCR-policy",
+      "state": "default",
+      "start_s": 92.0,
+      "duration_s": 4.5,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "Extra time in attendance, paid by the rules.",
+      "actions": [
+        {
+          "at_s": 0.4,
+          "type": "highlight",
+          "target": "policy-card",
+          "duration_s": 3.5
+        }
+      ],
+      "camera": {
+        "type": "zoom",
+        "target": "policy-card",
+        "scale": 1.1,
+        "at_s": 0.3,
+        "duration_s": 4.0
+      },
+      "caption": "Overtime: extra time in attendance, paid by the rules"
+    }
+  ]
+}

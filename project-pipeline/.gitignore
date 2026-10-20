@@ -1,0 +1,11 @@
+node_modules/
+runs/*/05-video/captures/
+
+# Generated run output: rebuilt by each run's tools/ scripts.
+# Published videos live in public/videos/.
+runs/*/03-mockup/screenshots/
+runs/*/03-mockup/tools/*.png
+runs/*/05-video/demo.mp4
+runs/*/05-video/voiceover/
+runs/*/05-video/tools/checks/
+runs/*/05-video/tools/raw/

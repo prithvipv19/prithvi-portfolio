@@ -61,7 +61,7 @@ const linkList = (Object.keys(linkLabels) as (keyof typeof links)[])
         </a>
       )}
 
-      {video && <div class="media"><LocalVideo {...video} title={title} /></div>}
+      {video && <div class="media" id="video"><LocalVideo {...video} title={title} /></div>}
       {links.video && <div class="media"><VideoEmbed src={links.video} title={title} /></div>}
       {gallery.length > 0 && <Gallery images={gallery} note={galleryNote} />}
 

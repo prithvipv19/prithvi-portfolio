@@ -1,0 +1,237 @@
+{
+  "fps": 30,
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "total_duration_s": 36.3,
+  "scenes": [
+    {
+      "id": "SC-01",
+      "flow_step": "F1.S1",
+      "screen": "SCR-template",
+      "state": "default",
+      "start_s": 0,
+      "duration_s": 6.2,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.5
+      },
+      "narration": "One reusable template. Merge fields, a number series, and what the employee must do.",
+      "actions": [
+        {
+          "at_s": 1.0,
+          "type": "highlight",
+          "target": "action-acknowledge",
+          "duration_s": 1.5
+        },
+        {
+          "at_s": 3.2,
+          "type": "move",
+          "target": "use-template-btn"
+        },
+        {
+          "at_s": 4.8,
+          "type": "click",
+          "target": "use-template-btn"
+        }
+      ],
+      "caption": "Reusable template with merge fields"
+    },
+    {
+      "id": "SC-02",
+      "flow_step": "F1.S2",
+      "screen": "SCR-generate",
+      "state": "default",
+      "start_s": 6.2,
+      "duration_s": 6.2,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Generate in bulk. Pick the approval, the signatory, and filter employees. Twenty four matched.",
+      "actions": [
+        {
+          "at_s": 0.6,
+          "type": "highlight",
+          "target": "approval-signatory",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 1.8,
+          "type": "highlight",
+          "target": "signatory-select",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 3.0,
+          "type": "highlight",
+          "target": "employee-filter",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 4.0,
+          "type": "highlight",
+          "target": "matched-count",
+          "duration_s": 0.8
+        },
+        {
+          "at_s": 4.6,
+          "type": "move",
+          "target": "preview-letters-btn"
+        },
+        {
+          "at_s": 5.4,
+          "type": "click",
+          "target": "preview-letters-btn"
+        }
+      ],
+      "caption": "Bulk generation by filter"
+    },
+    {
+      "id": "SC-03",
+      "flow_step": "F1.S3",
+      "screen": "SCR-preview",
+      "state": "default",
+      "start_s": 12.4,
+      "duration_s": 6.2,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Preview each letter with that employee's real data merged in. Then send for approval.",
+      "actions": [
+        {
+          "at_s": 0.5,
+          "type": "highlight",
+          "target": "letter-counter",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 1.8,
+          "type": "click",
+          "target": "next-letter-btn"
+        },
+        {
+          "at_s": 3.8,
+          "type": "move",
+          "target": "send-approval-btn"
+        },
+        {
+          "at_s": 5.3,
+          "type": "click",
+          "target": "send-approval-btn"
+        }
+      ],
+      "caption": "Preview with real data"
+    },
+    {
+      "id": "SC-04",
+      "flow_step": "F1.S4",
+      "screen": "SCR-sign-inbox",
+      "state": "default",
+      "start_s": 18.6,
+      "duration_s": 6.2,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "The signatory approves and signs from their inbox. One click signs the whole batch.",
+      "actions": [
+        {
+          "at_s": 2.5,
+          "type": "move",
+          "target": "approve-sign-btn"
+        },
+        {
+          "at_s": 3.2,
+          "type": "highlight",
+          "target": "approve-sign-btn",
+          "duration_s": 1.0
+        },
+        {
+          "at_s": 4.4,
+          "type": "click",
+          "target": "approve-sign-btn"
+        }
+      ],
+      "caption": "Approve and sign in the inbox"
+    },
+    {
+      "id": "SC-05",
+      "flow_step": "F1.S5",
+      "screen": "SCR-release",
+      "state": "default",
+      "start_s": 24.8,
+      "duration_s": 6.0,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Release to the portal, by email as a password-protected PDF, and require acknowledgement.",
+      "actions": [
+        {
+          "at_s": 0.5,
+          "type": "highlight",
+          "target": "toggle-portal",
+          "duration_s": 0.9
+        },
+        {
+          "at_s": 1.5,
+          "type": "highlight",
+          "target": "toggle-email",
+          "duration_s": 0.9
+        },
+        {
+          "at_s": 2.5,
+          "type": "highlight",
+          "target": "toggle-password",
+          "duration_s": 0.9
+        },
+        {
+          "at_s": 3.5,
+          "type": "highlight",
+          "target": "toggle-acknowledge",
+          "duration_s": 0.9
+        },
+        {
+          "at_s": 4.3,
+          "type": "move",
+          "target": "release-btn"
+        },
+        {
+          "at_s": 5.2,
+          "type": "click",
+          "target": "release-btn"
+        }
+      ],
+      "caption": "Release with delivery options"
+    },
+    {
+      "id": "SC-06",
+      "flow_step": "F1.S6",
+      "screen": "SCR-employee-letters",
+      "state": "default",
+      "start_s": 30.8,
+      "duration_s": 5.5,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Employees acknowledge in their documents. Signed, delivered, acknowledged, in minutes.",
+      "actions": [
+        {
+          "at_s": 2.5,
+          "type": "move",
+          "target": "acknowledge-btn"
+        },
+        {
+          "at_s": 4.0,
+          "type": "click",
+          "target": "acknowledge-btn"
+        }
+      ],
+      "caption": "Employee acknowledges"
+    }
+  ]
+}

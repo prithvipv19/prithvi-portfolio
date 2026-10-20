@@ -1,0 +1,102 @@
+1
+00:00:00,300 --> 00:00:03,164
+Factory overtime lives
+in spreadsheets and chat.
+
+2
+00:00:03,164 --> 00:00:06,442
+Hours get missed, and
+payroll fixes them by hand.
+
+3
+00:00:07,800 --> 00:00:09,567
+Overtime serves three people.
+
+4
+00:00:09,567 --> 00:00:13,528
+Asha on the line, Vikram her
+manager, Priya in payroll.
+
+5
+00:00:14,800 --> 00:00:16,930
+One plain policy sets the rules.
+
+6
+00:00:16,930 --> 00:00:19,991
+Five hours twenty clocked
+becomes four paid hours.
+
+7
+00:00:21,800 --> 00:00:24,899
+Asha never types hours.
+Short days are blocked.
+
+8
+00:00:24,899 --> 00:00:28,065
+She ticks two days, and
+the cap meter updates.
+
+9
+00:00:29,800 --> 00:00:33,396
+She adds a note and submits.
+Both requests go to Vikram.
+
+10
+00:00:35,800 --> 00:00:39,710
+She can withdraw until it's
+decided. Now, over to Vikram.
+
+11
+00:00:40,800 --> 00:00:44,039
+Hours arrive policy-checked,
+with the amount and reason.
+
+12
+00:00:44,039 --> 00:00:45,879
+Vikram approves in one click.
+
+13
+00:00:47,800 --> 00:00:49,109
+Then on to payroll.
+
+14
+00:00:51,300 --> 00:00:53,002
+Priya picks the payroll month.
+
+15
+00:00:53,002 --> 00:00:55,755
+September hours become
+an arrear on their own.
+
+16
+00:00:59,300 --> 00:01:04,803
+The register shows regular lines, the arrear,
+and a reversal for hours cut after payout.
+
+17
+00:01:07,300 --> 00:01:10,763
+Many workers never log in,
+so Vikram applies for them.
+
+18
+00:01:12,300 --> 00:01:16,714
+Joseph's last day would cross his monthly
+cap, so that row is pink and locked.
+
+19
+00:01:16,714 --> 00:01:18,620
+The rest are approved at once.
+
+20
+00:01:21,800 --> 00:01:25,828
+Every rupee is checked, approved
+once, and paid in the right month.
+
+21
+00:01:25,828 --> 00:01:29,725
+I took it from zero to one,
+to over a hundred enterprises.
+
+22
+00:01:32,300 --> 00:01:35,233
+Extra time in attendance, paid by the rules.

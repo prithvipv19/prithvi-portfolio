@@ -1,0 +1,26 @@
+{
+  "hero_flow": "F1",
+  "screens": [
+    { "id": "SCR-template", "purpose": "Show a reusable letter template with merge fields", "states": ["default"] },
+    { "id": "SCR-generate", "purpose": "Set up bulk generation for many employees", "states": ["default"] },
+    { "id": "SCR-preview", "purpose": "Preview merged letters and send for approval", "states": ["default"] },
+    { "id": "SCR-sign-inbox", "purpose": "Signatory approves and signs the batch", "states": ["default"] },
+    { "id": "SCR-release", "purpose": "Admin releases signed letters with delivery options", "states": ["default"] },
+    { "id": "SCR-employee-letters", "purpose": "Employee opens and acknowledges the letter", "states": ["default"] }
+  ],
+  "flows": [
+    {
+      "id": "F1",
+      "name": "Increment letters from template to acknowledgement",
+      "use_cases": ["UC1", "UC2", "UC3", "UC4", "UC5", "UC6"],
+      "steps": [
+        { "id": "F1.S1", "screen": "SCR-template", "user_action": "Reviews the template, clicks Use template", "system_response": "Opens Generate letters with the template chosen" },
+        { "id": "F1.S2", "screen": "SCR-generate", "user_action": "Picks approval type, signatory and employee filter, clicks Preview letters", "system_response": "Creates 24 drafts, opens Preview" },
+        { "id": "F1.S3", "screen": "SCR-preview", "user_action": "Steps to the next letter, clicks Send for approval", "system_response": "Batch sent to the signatory, opens the signatory inbox" },
+        { "id": "F1.S4", "screen": "SCR-sign-inbox", "user_action": "Clicks Approve & sign", "system_response": "Signature applied, opens Release" },
+        { "id": "F1.S5", "screen": "SCR-release", "user_action": "Keeps delivery options on, clicks Release 24 letters", "system_response": "Letters delivered, opens the employee's documents" },
+        { "id": "F1.S6", "screen": "SCR-employee-letters", "user_action": "Clicks Acknowledge", "system_response": "Status turns Acknowledged" }
+      ]
+    }
+  ]
+}

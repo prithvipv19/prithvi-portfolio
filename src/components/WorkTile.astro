@@ -7,11 +7,11 @@ interface Props {
 }
 
 const { entry, headingLevel: Heading = 'h3' } = Astro.props;
-const { title, type, kind, icon, tone, impact, demo } = entry.data;
+const { title, type, kind, icon, tone, impact, demo, video } = entry.data;
 const href = url(`work/${entry.id}/`);
 ---
 
-{demo ? (
+{demo || video ? (
   <article class="tile has-ctas">
     <div class:list={['art', tone]} aria-hidden="true">
       <i class={`ti ti-${icon}`}></i>
@@ -21,8 +21,9 @@ const href = url(`work/${entry.id}/`);
       <Heading class="title">{title}</Heading>
       {impact && <span class="impact">{impact}</span>}
       <div class="ctas">
-        <a class="cta cta-try" href={url(demo)}><i class="ti ti-player-play" aria-hidden="true"></i>Try me<span class="visually-hidden">: {title} demo</span></a>
-        <a class="cta" href={href}><i class="ti ti-route" aria-hidden="true"></i>Show the flow<span class="visually-hidden">: {title}</span></a>
+        {demo && <a class="cta cta-try" href={url(demo)}><i class="ti ti-player-play" aria-hidden="true"></i>Try me<span class="visually-hidden">: {title} demo</span></a>}
+        {video && <a class="cta" href={`${href}#video`}><i class="ti ti-video" aria-hidden="true"></i>Watch video<span class="visually-hidden">: {title}</span></a>}
+        {demo && <a class="cta" href={href}><i class="ti ti-route" aria-hidden="true"></i>Show the flow<span class="visually-hidden">: {title}</span></a>}
       </div>
     </div>
   </article>

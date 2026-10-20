@@ -1,0 +1,11 @@
+# Brief: Sprout — houseplant watering tracker
+- **Problem / idea:** People with a handful of houseplants forget when each one was last watered, so plants get over- or under-watered. Sprout shows which plants need water today and logs a watering in one tap.
+- **Target users:** Casual plant owners with 3–15 indoor plants, not hobbyist experts.
+- **Platform:** Mobile web (390×844)
+- **Audience for the video:** Portfolio viewers / hiring managers looking at product thinking
+- **Video length:** 45 seconds (this is a small test run — keep scope tight)
+- **Tone:** Warm, plain-spoken, a little playful
+- **Visual style / brand:** Soft greens and cream, rounded cards, friendly sans-serif
+- **Must include:** "Needs water today" list, one-tap watering log, adding a new plant
+- **Out of scope:** Accounts/sign-in, social features, plant identification by camera, push notifications backend
+- **Test-run constraints:** Keep it small — at most 4 screens and 2 flows. Research should be brief (3 alternatives, short sections).

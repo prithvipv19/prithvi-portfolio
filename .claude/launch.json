@@ -9,6 +9,12 @@
         "dev"
       ],
       "port": 4321
+    },
+    {
+      "name": "overtime-mockup",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4340", "--directory", "project-pipeline/runs/overtime/03-mockup"],
+      "port": 4340
     }
   ]
 }

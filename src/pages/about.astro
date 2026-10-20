@@ -1,16 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Contact from '../components/Contact.astro';
-import { resume } from '../lib/resume';
+import { resume, yearOf } from '../lib/resume';
 import { url } from '../lib/site';
 
-const { about, skills, basics } = resume;
-const skillIcons: Record<string, string> = {
-  Domains: 'world',
-  'Product strategy': 'bulb',
-  'Delivery & growth': 'rocket',
-  'AI & tools': 'sparkles',
-};
+const { about, basics, education } = resume;
+// Oldest first, so the path reads left to right
+const studies = education
+  .slice()
+  .sort((a, b) => Number(yearOf(a.end)) - Number(yearOf(b.end)))
+  .map((e) => ({
+    ...e,
+    icon: /mba|master/i.test(e.degree) ? 'briefcase-2' : 'cpu',
+    years: [yearOf(e.start), yearOf(e.end)].filter(Boolean).join(' – '),
+    note: e.timeline?.highlight,
+  }));
 ---
 
 <BaseLayout title="About" description={about[0]}>
@@ -30,17 +34,41 @@ const skillIcons: Record<string, string> = {
     </section>
   </div>
 
-  <section class="section tint" aria-labelledby="bring-title">
+  <section class="section tint" aria-labelledby="edu-title">
     <div class="wrap">
-      <h2 id="bring-title" class="reveal">What I bring to a team</h2>
-      <div class="groups">
-        {skills.map((s) => (
-          <div class="group reveal">
-            <h3><i class={`ti ti-${skillIcons[s.group] ?? 'point'}`} aria-hidden="true"></i>{s.group}</h3>
-            <ul class="chips">{s.items.map((item) => <li class="chip chip-outline">{item}</li>)}</ul>
-          </div>
-        ))}
+      <div class="sec-title reveal">
+        <span class="ico" aria-hidden="true"><i class="ti ti-school"></i></span>
+        <h2 id="edu-title">Education</h2>
+        <p class="sub">From engineering to the business of building products.</p>
       </div>
+      <ol class="path">
+        {studies.map((e, i) => (
+          <li class="degree reveal">
+            <span class="step" aria-hidden="true">{e.years}</span>
+            <div class="card">
+              <span class="icon" aria-hidden="true"><i class={`ti ti-${e.icon}`}></i></span>
+              <div>
+                <h3>{e.degree}</h3>
+                <p class="school">{e.school}</p>
+                {e.note && <p class="note"><i class="ti ti-sparkles" aria-hidden="true"></i>{e.note}</p>}
+              </div>
+            </div>
+            {i < studies.length - 1 && <span class="arrow" aria-hidden="true"><i class="ti ti-arrow-right"></i></span>}
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="bring-title">
+    <div class="wrap bring reveal">
+      <div>
+        <h2 id="bring-title">What I bring</h2>
+        <ul class="chips">
+          {basics.focus.map((f) => <li class="chip chip-outline"><i class={`ti ti-${f.icon}`} aria-hidden="true"></i>{f.label}</li>)}
+        </ul>
+      </div>
+      <a class="more" href={url('experience/#skills')}>All skills <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
     </div>
   </section>
 
@@ -65,14 +93,39 @@ const skillIcons: Record<string, string> = {
   }
   .portrait img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
-  .groups { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
-  .group { padding: 1.4rem 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
-  .group h3 { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.9rem; }
-  .group h3 i { color: var(--ochre); }
+  /* Education as a two-step path */
+  .path { display: grid; grid-template-columns: repeat(2, 1fr); gap: 3rem; margin: 0; padding: 0; list-style: none; }
+  .degree { position: relative; display: flex; flex-direction: column; gap: 0.6rem; }
+  .step { align-self: flex-start; padding: 3px 12px; border-radius: 999px; background: var(--violet); color: #fff; font-size: var(--step--1); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .card { flex: 1; display: flex; gap: 1rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+  .icon { display: inline-flex; flex: none; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 16px; background: var(--lav-100); color: var(--violet); font-size: 1.6rem; }
+  .card h3 { margin: 0 0 0.25rem; font-size: 1.25rem; }
+  .school { margin: 0; color: var(--slate); }
+  .note { display: flex; gap: 0.4rem; align-items: center; margin: 0.75rem 0 0; font-size: var(--step--1); color: var(--violet); }
+  .note i { color: var(--ochre); }
+  .arrow {
+    position: absolute;
+    top: calc(50% + 0.9rem);
+    right: -2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--mustard);
+    color: var(--mustard-ink);
+    transform: translateY(-50%);
+  }
+
+  .bring { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem 2rem; }
+  .bring h2 { margin-bottom: 1rem; font-size: var(--step-2); }
+  .bring .chips { max-width: 46rem; }
 
   @media (max-width: 52rem) {
     .intro { grid-template-columns: 1fr; gap: 1.5rem; }
     .photo { order: -1; max-width: 240px; }
-    .groups { grid-template-columns: 1fr; }
+    .path { grid-template-columns: 1fr; gap: 2.5rem; }
+    .arrow { top: auto; bottom: -2.2rem; right: auto; left: 1.5rem; transform: rotate(90deg); }
   }
 </style>

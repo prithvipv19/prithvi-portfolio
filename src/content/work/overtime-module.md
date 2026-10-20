@@ -10,7 +10,7 @@ featured: true
 order: 0
 company: Greytip (greytHR)
 role: Product Manager L3
-impact: 100+ enterprises
+impact: 1,000+ enterprises
 tags: [HRMS, Payroll, Workflows, 0 to 1]
 demo: work/overtime-module/demo/
 video:
@@ -54,7 +54,7 @@ In factories and other shift-heavy businesses, overtime is a large share of wage
 
 ## Outcome
 
-- Adopted by 100+ enterprises.
+- Adopted by 1,000+ enterprises.
 
 ## What I'd do next
 

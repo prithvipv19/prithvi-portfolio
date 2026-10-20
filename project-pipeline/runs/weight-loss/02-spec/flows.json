@@ -1,0 +1,233 @@
+{
+  "hero_flow": "F1",
+  "screens": [
+    {
+      "id": "SCR-onboarding",
+      "purpose": "One-time profile setup",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-dashboard",
+      "purpose": "Hub of tiles",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-meal-upload",
+      "purpose": "Start a meal entry (Step 1: Upload Photo)",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-meal-photo",
+      "purpose": "Photo chosen, ready to extract",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-meal-review",
+      "purpose": "Review and edit the AI draft (Step 2)",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-meal-details",
+      "purpose": "Meal name, meal time and save (Step 3)",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-meal-saved",
+      "purpose": "Meal saved, Today's Calorie Budget and meals list",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-capture-weight",
+      "purpose": "Start a scale capture",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-capture-weight-confirm",
+      "purpose": "Confirm the AI scale reading",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-capture-weight-saved",
+      "purpose": "Weight logged confirmation",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-reports-graph",
+      "purpose": "Weight trend vs calories in and out",
+      "states": [
+        "default"
+      ]
+    },
+    {
+      "id": "SCR-log-water",
+      "purpose": "Record water intake (not mocked up)",
+      "states": [
+        "default",
+        "existing-entry prompt"
+      ]
+    },
+    {
+      "id": "SCR-log-calories",
+      "purpose": "Record activity and calories burned (not mocked up)",
+      "states": [
+        "default"
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "F1",
+      "name": "Photo to progress",
+      "use_cases": [
+        "UC1",
+        "UC2",
+        "UC3",
+        "UC4",
+        "UC5",
+        "UC6"
+      ],
+      "steps": [
+        {
+          "id": "F1.S1",
+          "screen": "SCR-onboarding",
+          "user_action": "Form is filled with Alex's values; taps the 'Continue to Dashboard' button",
+          "system_response": "Saves the profile (inputs for BMR) and opens the Dashboard"
+        },
+        {
+          "id": "F1.S2",
+          "screen": "SCR-dashboard",
+          "user_action": "Taps the 'Log Meal' tile",
+          "system_response": "Opens Log Meal"
+        },
+        {
+          "id": "F1.S3",
+          "screen": "SCR-log-meal-upload",
+          "user_action": "Taps the dashed 'Select or Take a Photo' button under 'Step 1: Upload Photo'",
+          "system_response": "Shows the photo preview with Remove and an 'Extract Nutrition' button"
+        },
+        {
+          "id": "F1.S4",
+          "screen": "SCR-log-meal-photo",
+          "user_action": "Taps the 'Extract Nutrition' button",
+          "system_response": "AI analyses the photo and returns the draft with name, items, weights and nutrition"
+        },
+        {
+          "id": "F1.S5",
+          "screen": "SCR-log-meal-review",
+          "user_action": "Edits the weight (g) field on one item row",
+          "system_response": "Item kcal and the Calories, Protein, Carbs, Fat totals recalculate"
+        },
+        {
+          "id": "F1.S6",
+          "screen": "SCR-log-meal-details",
+          "user_action": "Chooses 'Lunch' in the 'For which meal of the day?' dropdown, then taps 'Save Meal'",
+          "system_response": "Saves the meal under that time and shows the success message"
+        },
+        {
+          "id": "F1.S7",
+          "screen": "SCR-log-meal-saved",
+          "user_action": "Reads the 'Today's Calorie Budget' card, then taps 'Back'",
+          "system_response": "Budget (Consumed, Target, Remaining) and meals list include the new meal; Back returns to the Dashboard"
+        },
+        {
+          "id": "F1.S8",
+          "screen": "SCR-dashboard",
+          "user_action": "Taps the featured 'Capture Weight' tile",
+          "system_response": "Opens Capture Weight"
+        },
+        {
+          "id": "F1.S9",
+          "screen": "SCR-capture-weight",
+          "user_action": "Taps the 'Take or Upload Photo' button",
+          "system_response": "Reads the scale display and shows the confirm card"
+        },
+        {
+          "id": "F1.S10",
+          "screen": "SCR-capture-weight-confirm",
+          "user_action": "Checks the 'Weight (kg)' field (85.7) and taps 'Save Weight'",
+          "system_response": "Saves weight for today and shows the success message"
+        },
+        {
+          "id": "F1.S11",
+          "screen": "SCR-capture-weight-saved",
+          "user_action": "Taps 'Back'",
+          "system_response": "Returns to the Dashboard"
+        },
+        {
+          "id": "F1.S12",
+          "screen": "SCR-dashboard",
+          "user_action": "Taps the 'Reports' tile",
+          "system_response": "Opens Reports on the Graph tab"
+        },
+        {
+          "id": "F1.S13",
+          "screen": "SCR-reports-graph",
+          "user_action": "Taps the 'Month' range button",
+          "system_response": "Chart shows weight line against Calorie Intake and Calories Burnt bars; Target Weight 78 kg, Latest Weight 85.7 kg"
+        }
+      ]
+    },
+    {
+      "id": "F2",
+      "name": "Log water",
+      "use_cases": [
+        "UC7"
+      ],
+      "steps": [
+        {
+          "id": "F2.S1",
+          "screen": "SCR-dashboard",
+          "user_action": "Taps the 'Log Water' tile",
+          "system_response": "Opens Log Water"
+        },
+        {
+          "id": "F2.S2",
+          "screen": "SCR-log-water",
+          "user_action": "Enters 'Quantity (liters)' and saves",
+          "system_response": "Saves the entry and lists it under Recent Entries; if one exists for the date, asks to update or save as new"
+        }
+      ]
+    },
+    {
+      "id": "F3",
+      "name": "Log activity",
+      "use_cases": [
+        "UC8"
+      ],
+      "steps": [
+        {
+          "id": "F3.S1",
+          "screen": "SCR-dashboard",
+          "user_action": "Taps the 'Log Calories' tile",
+          "system_response": "Opens Log Calories"
+        },
+        {
+          "id": "F3.S2",
+          "screen": "SCR-log-calories",
+          "user_action": "Picks an activity, enters steps or duration and intensity, adjusts calories if needed, saves",
+          "system_response": "Estimates calories burned and saves the activity"
+        }
+      ]
+    }
+  ]
+}

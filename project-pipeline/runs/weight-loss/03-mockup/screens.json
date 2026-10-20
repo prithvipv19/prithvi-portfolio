@@ -1,0 +1,459 @@
+{
+  "viewport": {
+    "width": 390,
+    "height": 844,
+    "deviceScaleFactor": 2
+  },
+  "entry": "index.html",
+  "deep_link": "index.html#<SCR-id>?state=default",
+  "ready_signal": "html[data-ready='1'] (fonts loaded)",
+  "hero_flow": "F1",
+  "flow_order": [
+    "SCR-onboarding",
+    "SCR-dashboard",
+    "SCR-log-meal-upload",
+    "SCR-log-meal-photo",
+    "SCR-log-meal-review",
+    "SCR-log-meal-details",
+    "SCR-log-meal-saved",
+    "SCR-dashboard",
+    "SCR-capture-weight",
+    "SCR-capture-weight-confirm",
+    "SCR-capture-weight-saved",
+    "SCR-dashboard",
+    "SCR-reports-graph"
+  ],
+  "selector_note": "Only the active screen has content in the DOM (inactive screens are emptied), so every [data-el='…'] selector matches exactly one element at a time.",
+  "screens": [
+    {
+      "id": "SCR-onboarding",
+      "url": "index.html#SCR-onboarding",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "continue-btn",
+          "selector": "[data-el='continue-btn']",
+          "label": "Continue to Dashboard button",
+          "step": "F1.S1",
+          "action": "click",
+          "leads_to": "SCR-dashboard"
+        },
+        {
+          "id": "height-input",
+          "selector": "[data-el='height-input']",
+          "label": "Height (cm) field, prefilled 176"
+        },
+        {
+          "id": "goal-weight-input",
+          "selector": "[data-el='goal-weight-input']",
+          "label": "Goal Weight (kg) field, prefilled 78"
+        }
+      ],
+      "notes": "Form is prefilled with Alex's values; Night Training theme and Yellow accent selected. The screen scrolls internally; the Continue button is below the fold (Playwright click auto-scrolls it into view)."
+    },
+    {
+      "id": "SCR-dashboard",
+      "url": "index.html#SCR-dashboard",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "tile-log-meal",
+          "selector": "[data-el='tile-log-meal']",
+          "label": "Log Meal tile",
+          "step": "F1.S2",
+          "action": "click",
+          "leads_to": "SCR-log-meal-upload"
+        },
+        {
+          "id": "tile-capture-weight",
+          "selector": "[data-el='tile-capture-weight']",
+          "label": "Capture Weight tile (featured)",
+          "step": "F1.S8",
+          "action": "click",
+          "leads_to": "SCR-capture-weight"
+        },
+        {
+          "id": "tile-reports",
+          "selector": "[data-el='tile-reports']",
+          "label": "Reports tile",
+          "step": "F1.S12",
+          "action": "click",
+          "leads_to": "SCR-reports-graph"
+        },
+        {
+          "id": "tile-log-water",
+          "selector": "[data-el='tile-log-water']",
+          "label": "Log Water tile",
+          "step": "F2.S1",
+          "action": "click",
+          "leads_to": null,
+          "note": "F2 not mocked up; tile does not navigate"
+        },
+        {
+          "id": "tile-log-calories",
+          "selector": "[data-el='tile-log-calories']",
+          "label": "Log Calories tile",
+          "step": "F3.S1",
+          "action": "click",
+          "leads_to": null,
+          "note": "F3 not mocked up; tile does not navigate"
+        }
+      ],
+      "notes": "Reused for F1.S2, F1.S8 and F1.S12. Reports tile sits below the fold; it scrolls into view on click."
+    },
+    {
+      "id": "SCR-log-meal-upload",
+      "url": "index.html#SCR-log-meal-upload",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "select-photo-btn",
+          "selector": "[data-el='select-photo-btn']",
+          "label": "Select or Take a Photo (dashed) button",
+          "step": "F1.S3",
+          "action": "click",
+          "leads_to": "SCR-log-meal-photo"
+        },
+        {
+          "id": "budget-card",
+          "selector": "[data-el='budget-card']",
+          "label": "Today's Calorie Budget card (327 consumed before the meal)"
+        },
+        {
+          "id": "meal-back-btn",
+          "selector": "[data-el='meal-back-btn']",
+          "label": "Back button",
+          "leads_to": "SCR-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "SCR-log-meal-photo",
+      "url": "index.html#SCR-log-meal-photo",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "extract-btn",
+          "selector": "[data-el='extract-btn']",
+          "label": "Extract Nutrition button",
+          "step": "F1.S4",
+          "action": "click",
+          "leads_to": "SCR-log-meal-review",
+          "delay_ms": 1200,
+          "note": "Shows 'Analyzing...' for 1.2 s, then the draft"
+        },
+        {
+          "id": "meal-photo",
+          "selector": "[data-el='meal-photo']",
+          "label": "Meal photo preview (inline SVG chicken rice bowl)"
+        },
+        {
+          "id": "remove-photo-btn",
+          "selector": "[data-el='remove-photo-btn']",
+          "label": "Remove photo button",
+          "leads_to": "SCR-log-meal-upload"
+        }
+      ]
+    },
+    {
+      "id": "SCR-log-meal-review",
+      "url": "index.html#SCR-log-meal-review",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "item-weight-rice",
+          "selector": "[data-el='item-weight-rice']",
+          "label": "Weight (g) field on the Jasmine rice row (AI draft 200 g)",
+          "step": "F1.S5",
+          "action": "fill",
+          "value": "150",
+          "commit": "press Enter (or blur)",
+          "leads_to": "SCR-log-meal-details",
+          "delay_ms": 800,
+          "note": "Item kcal and totals recalc live on input (538 -> 473 kcal). After Enter/blur the page smooth-scrolls to Step 3 and the screen becomes SCR-log-meal-details after 0.8 s."
+        },
+        {
+          "id": "food-items",
+          "selector": "[data-el='food-items']",
+          "label": "Food Items list (4 AI items)"
+        },
+        {
+          "id": "macro-totals",
+          "selector": "[data-el='macro-totals']",
+          "label": "Macronutrients (Total) grid"
+        },
+        {
+          "id": "item-weight-chicken",
+          "selector": "[data-el='item-weight-chicken']",
+          "label": "Weight (g) field, chicken row"
+        },
+        {
+          "id": "item-weight-broccoli",
+          "selector": "[data-el='item-weight-broccoli']",
+          "label": "Weight (g) field, broccoli row"
+        },
+        {
+          "id": "item-weight-dressing",
+          "selector": "[data-el='item-weight-dressing']",
+          "label": "Weight (g) field, dressing row"
+        }
+      ],
+      "notes": "Opens scrolled to 'Step 2: Nutrition Information'."
+    },
+    {
+      "id": "SCR-log-meal-details",
+      "url": "index.html#SCR-log-meal-details",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "meal-time-select",
+          "selector": "[data-el='meal-time-select']",
+          "label": "'For which meal of the day?' dropdown",
+          "step": "F1.S6",
+          "action": "click",
+          "note": "Opens an option list (Morning, Mid Afternoon, Lunch, Mid Evening, Dinner); Lunch is preselected as in the app"
+        },
+        {
+          "id": "meal-time-option-lunch",
+          "selector": "[data-el='meal-time-option-lunch']",
+          "label": "'Lunch' option in the dropdown",
+          "step": "F1.S6",
+          "action": "click"
+        },
+        {
+          "id": "save-meal-btn",
+          "selector": "[data-el='save-meal-btn']",
+          "label": "Save Meal button",
+          "step": "F1.S6",
+          "action": "click",
+          "leads_to": "SCR-log-meal-saved",
+          "delay_ms": 700,
+          "note": "Shows 'Saving...' for 0.7 s"
+        },
+        {
+          "id": "meal-name-input",
+          "selector": "[data-el='meal-name-input']",
+          "label": "Meal Name field (Chicken rice bowl)"
+        }
+      ],
+      "notes": "Opens scrolled to 'Step 3: Meal Details'. Rice is 150 g here (the S5 edit)."
+    },
+    {
+      "id": "SCR-log-meal-saved",
+      "url": "index.html#SCR-log-meal-saved",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "budget-card",
+          "selector": "[data-el='budget-card']",
+          "label": "Today's Calorie Budget card: Consumed 800, Target 1800, Remaining 1000",
+          "step": "F1.S7",
+          "action": "highlight"
+        },
+        {
+          "id": "meal-success",
+          "selector": "[data-el='meal-success']",
+          "label": "'Meal logged successfully!' banner",
+          "step": "F1.S7",
+          "action": "highlight"
+        },
+        {
+          "id": "meals-lunch-group",
+          "selector": "[data-el='meals-lunch-group']",
+          "label": "Lunch group with Chicken rice bowl and its accumulated total",
+          "step": "F1.S7",
+          "action": "highlight",
+          "note": "Below the fold: scroll into view to show it"
+        },
+        {
+          "id": "meal-back-btn",
+          "selector": "[data-el='meal-back-btn']",
+          "label": "Back button",
+          "step": "F1.S7",
+          "action": "click",
+          "leads_to": "SCR-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "SCR-capture-weight",
+      "url": "index.html#SCR-capture-weight",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "take-photo-btn",
+          "selector": "[data-el='take-photo-btn']",
+          "label": "Take or Upload Photo button",
+          "step": "F1.S9",
+          "action": "click",
+          "leads_to": "SCR-capture-weight-confirm",
+          "delay_ms": 1400,
+          "note": "Shows the scale photo and 'Reading your scale...' for 1.4 s, then the confirm card"
+        },
+        {
+          "id": "weight-back-btn",
+          "selector": "[data-el='weight-back-btn']",
+          "label": "Back button",
+          "leads_to": "SCR-dashboard"
+        }
+      ]
+    },
+    {
+      "id": "SCR-capture-weight-confirm",
+      "url": "index.html#SCR-capture-weight-confirm",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "weight-input",
+          "selector": "[data-el='weight-input']",
+          "label": "Weight (kg) field, 85.7",
+          "step": "F1.S10",
+          "action": "highlight"
+        },
+        {
+          "id": "save-weight-btn",
+          "selector": "[data-el='save-weight-btn']",
+          "label": "Save Weight button",
+          "step": "F1.S10",
+          "action": "click",
+          "leads_to": "SCR-capture-weight-saved",
+          "delay_ms": 900,
+          "note": "Shows 'Logging 85.7 kg for today...' for 0.9 s"
+        },
+        {
+          "id": "scale-photo",
+          "selector": "[data-el='scale-photo']",
+          "label": "Scale photo preview (inline SVG display reading 85.7 kg)"
+        },
+        {
+          "id": "confirm-card",
+          "selector": "[data-el='confirm-card']",
+          "label": "Confirm the reading card"
+        }
+      ]
+    },
+    {
+      "id": "SCR-capture-weight-saved",
+      "url": "index.html#SCR-capture-weight-saved",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "weight-back-btn",
+          "selector": "[data-el='weight-back-btn']",
+          "label": "Back button",
+          "step": "F1.S11",
+          "action": "click",
+          "leads_to": "SCR-dashboard"
+        },
+        {
+          "id": "weight-success",
+          "selector": "[data-el='weight-success']",
+          "label": "'Weight logged: 85.7 kg' message"
+        }
+      ]
+    },
+    {
+      "id": "SCR-reports-graph",
+      "url": "index.html#SCR-reports-graph",
+      "states": [
+        "default"
+      ],
+      "elements": [
+        {
+          "id": "range-month",
+          "selector": "[data-el='range-month']",
+          "label": "Month range button",
+          "step": "F1.S13",
+          "action": "click",
+          "note": "Chart redraws for Oct 6-20 and the screen smooth-scrolls to the bottom so the whole chart is visible"
+        },
+        {
+          "id": "weight-chart",
+          "selector": "[data-el='weight-chart']",
+          "label": "Combo chart card (weight line, intake and burnt bars)",
+          "step": "F1.S13",
+          "action": "highlight"
+        },
+        {
+          "id": "target-weight-pill",
+          "selector": "[data-el='target-weight-pill']",
+          "label": "Target Weight 78 kg pill",
+          "step": "F1.S13",
+          "action": "highlight"
+        },
+        {
+          "id": "latest-weight-pill",
+          "selector": "[data-el='latest-weight-pill']",
+          "label": "Latest Weight 85.7 kg, down 0.3 kg vs previous",
+          "step": "F1.S13",
+          "action": "highlight"
+        },
+        {
+          "id": "range-week",
+          "selector": "[data-el='range-week']",
+          "label": "Week range button"
+        },
+        {
+          "id": "range-year",
+          "selector": "[data-el='range-year']",
+          "label": "Year range button"
+        },
+        {
+          "id": "reports-back-btn",
+          "selector": "[data-el='reports-back-btn']",
+          "label": "Back button",
+          "leads_to": "SCR-dashboard"
+        }
+      ],
+      "notes": "Opens on Graph + Week (the app's default). Deep link index.html#SCR-reports-graph?state=default&range=month opens straight in Month.",
+      "url_params": {
+        "range": [
+          "week",
+          "month",
+          "year"
+        ]
+      }
+    },
+    {
+      "id": "SCR-log-water",
+      "url": null,
+      "states": [
+        "default",
+        "existing-entry prompt"
+      ],
+      "elements": [],
+      "notes": "Not mocked up (secondary flow F2, out of the brief's hero-only scope).",
+      "mocked": false
+    },
+    {
+      "id": "SCR-log-calories",
+      "url": null,
+      "states": [
+        "default"
+      ],
+      "elements": [],
+      "notes": "Not mocked up (secondary flow F3, out of the brief's hero-only scope).",
+      "mocked": false
+    }
+  ]
+}

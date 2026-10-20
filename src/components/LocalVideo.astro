@@ -7,12 +7,14 @@ interface Props {
   captions?: string;
   poster?: string;
   label?: string;
+  /** Phone-shaped video: shown in a narrow, centred portrait frame. */
+  portrait?: boolean;
 }
 
-const { src, title, captions, poster, label = 'Watch the walkthrough' } = Astro.props;
+const { src, title, captions, poster, label = 'Watch the walkthrough', portrait = false } = Astro.props;
 ---
 
-<figure class="local-video">
+<figure class:list={['local-video', { portrait }]}>
   <div class="frame" data-local-video>
     <video controls preload="none" playsinline poster={poster && url(poster)} aria-label={`${title}: walkthrough video`}>
       <source src={url(src)} type="video/mp4" />
@@ -50,6 +52,8 @@ const { src, title, captions, poster, label = 'Watch the walkthrough' } = Astro.
     overflow: hidden;
     background: var(--ink);
   }
+  .portrait .frame { aspect-ratio: 390 / 844; max-width: 22rem; margin-inline: auto; }
+  .portrait figcaption { text-align: center; }
   video { display: block; width: 100%; height: 100%; object-fit: contain; background: var(--ink); }
   .play {
     position: absolute;

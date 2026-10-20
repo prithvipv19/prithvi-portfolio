@@ -36,7 +36,7 @@ const work = defineCollection({
     demo: z.string().optional(),
     /** Self-hosted walkthrough video; paths are relative to public/, e.g. "videos/x.mp4". */
     video: z
-      .object({ src: z.string(), captions: z.string().optional(), poster: z.string().optional(), label: z.string().optional() })
+      .object({ src: z.string(), captions: z.string().optional(), poster: z.string().optional(), label: z.string().optional(), portrait: z.boolean().default(false) })
       .optional(),
     /** Figma prototype share URL, shown as a click-to-load embed. */
     prototype: z.url().optional(),

@@ -1,0 +1,524 @@
+{
+  "fps": 30,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "total_duration_s": 38.6,
+  "voice": "macOS say, Samantha (en_US), rate 180 wpm",
+  "lead_in_s": 0.3,
+  "timing_changes": [
+    "SC-02: 2.8s -> 2.9s",
+    "SC-08: 3.8s -> 4s"
+  ],
+  "scenes": [
+    {
+      "id": "SC-01",
+      "flow_step": null,
+      "screen": "SCR-onboarding",
+      "state": "default",
+      "start_s": 0,
+      "duration_s": 3,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.4
+      },
+      "narration": "Logging food is why people quit.",
+      "actions": [
+        {
+          "at_s": 0.5,
+          "type": "highlight",
+          "target": "height-input",
+          "duration_s": 1.2
+        },
+        {
+          "at_s": 1.8,
+          "type": "highlight",
+          "target": "goal-weight-input",
+          "duration_s": 1
+        }
+      ],
+      "caption": "Logging food is why people quit",
+      "original_start_s": 0,
+      "original_duration_s": 3,
+      "voiceover": {
+        "file": "voiceover/SC-01.wav",
+        "start_s": 0.3,
+        "duration_s": 1.746
+      }
+    },
+    {
+      "id": "SC-02",
+      "flow_step": "F1.S1",
+      "screen": "SCR-onboarding",
+      "state": "default",
+      "start_s": 3,
+      "duration_s": 2.9,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Onboarding captures what BMR needs.",
+      "actions": [
+        {
+          "at_s": 0.2,
+          "type": "scroll",
+          "target": "continue-btn",
+          "to": "continue-btn"
+        },
+        {
+          "at_s": 1,
+          "type": "move",
+          "target": "continue-btn"
+        },
+        {
+          "at_s": 2,
+          "type": "click",
+          "target": "continue-btn"
+        }
+      ],
+      "caption": "Onboarding captures what BMR needs",
+      "original_start_s": 3,
+      "original_duration_s": 2.8,
+      "voiceover": {
+        "file": "voiceover/SC-02.wav",
+        "start_s": 3.3,
+        "duration_s": 2.235
+      }
+    },
+    {
+      "id": "SC-03",
+      "flow_step": "F1.S2",
+      "screen": "SCR-dashboard",
+      "state": "default",
+      "start_s": 5.9,
+      "duration_s": 2.9,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.4
+      },
+      "narration": "Log a meal from a photo.",
+      "actions": [
+        {
+          "at_s": 0.5,
+          "type": "move",
+          "target": "tile-log-meal"
+        },
+        {
+          "at_s": 1,
+          "type": "highlight",
+          "target": "tile-log-meal",
+          "duration_s": 0.8
+        },
+        {
+          "at_s": 1.8,
+          "type": "click",
+          "target": "tile-log-meal"
+        }
+      ],
+      "caption": "Log a meal from a photo",
+      "original_start_s": 5.8,
+      "original_duration_s": 2.9,
+      "voiceover": {
+        "file": "voiceover/SC-03.wav",
+        "start_s": 6.2,
+        "duration_s": 1.398
+      }
+    },
+    {
+      "id": "SC-04",
+      "flow_step": "F1.S3",
+      "screen": "SCR-log-meal-upload",
+      "state": "default",
+      "start_s": 8.8,
+      "duration_s": 1.2,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "move",
+          "target": "select-photo-btn"
+        },
+        {
+          "at_s": 0.7,
+          "type": "click",
+          "target": "select-photo-btn"
+        }
+      ],
+      "caption": "Select or take a photo",
+      "original_start_s": 8.7,
+      "original_duration_s": 1.2,
+      "voiceover": null
+    },
+    {
+      "id": "SC-05",
+      "flow_step": "F1.S4",
+      "screen": "SCR-log-meal-photo",
+      "state": "default",
+      "start_s": 10,
+      "duration_s": 2.1,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Gemini reads the photo.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "move",
+          "target": "extract-btn"
+        },
+        {
+          "at_s": 0.6,
+          "type": "click",
+          "target": "extract-btn"
+        }
+      ],
+      "caption": "AI reads the photo",
+      "original_start_s": 9.9,
+      "original_duration_s": 2.1,
+      "voiceover": {
+        "file": "voiceover/SC-05.wav",
+        "start_s": 10.3,
+        "duration_s": 1.422
+      }
+    },
+    {
+      "id": "SC-06",
+      "flow_step": "F1.S5",
+      "screen": "SCR-log-meal-review",
+      "state": "default",
+      "start_s": 12.1,
+      "duration_s": 5,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "It drafts items and nutrition. Fix a portion, totals update.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "highlight",
+          "target": "food-items",
+          "duration_s": 1.5
+        },
+        {
+          "at_s": 2.2,
+          "type": "move",
+          "target": "item-weight-rice"
+        },
+        {
+          "at_s": 2.6,
+          "type": "type",
+          "target": "item-weight-rice",
+          "duration_s": 0.6,
+          "text": "150"
+        },
+        {
+          "at_s": 3.5,
+          "type": "highlight",
+          "target": "macro-totals",
+          "duration_s": 0.6
+        },
+        {
+          "at_s": 4,
+          "type": "type",
+          "target": "item-weight-rice",
+          "duration_s": 0.2,
+          "text": "\n"
+        }
+      ],
+      "caption": "Review and edit the AI draft",
+      "original_start_s": 12,
+      "original_duration_s": 5,
+      "voiceover": {
+        "file": "voiceover/SC-06.wav",
+        "start_s": 12.4,
+        "duration_s": 4.142
+      }
+    },
+    {
+      "id": "SC-07",
+      "flow_step": "F1.S6",
+      "screen": "SCR-log-meal-details",
+      "state": "default",
+      "start_s": 17.1,
+      "duration_s": 2.6,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Pick the meal, then save.",
+      "actions": [
+        {
+          "at_s": 0.2,
+          "type": "click",
+          "target": "meal-time-select"
+        },
+        {
+          "at_s": 0.7,
+          "type": "click",
+          "target": "meal-time-option-lunch"
+        },
+        {
+          "at_s": 1.5,
+          "type": "click",
+          "target": "save-meal-btn"
+        }
+      ],
+      "caption": "Choose the meal time and save",
+      "original_start_s": 17,
+      "original_duration_s": 2.6,
+      "voiceover": {
+        "file": "voiceover/SC-07.wav",
+        "start_s": 17.4,
+        "duration_s": 1.518
+      }
+    },
+    {
+      "id": "SC-08",
+      "flow_step": "F1.S7",
+      "screen": "SCR-log-meal-saved",
+      "state": "default",
+      "start_s": 19.7,
+      "duration_s": 4,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Budget updates. Eight hundred eaten, a thousand left.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "highlight",
+          "target": "budget-card",
+          "duration_s": 2
+        },
+        {
+          "at_s": 2.6,
+          "type": "move",
+          "target": "meal-back-btn"
+        },
+        {
+          "at_s": 3.1,
+          "type": "click",
+          "target": "meal-back-btn"
+        }
+      ],
+      "caption": "Today's calorie budget",
+      "original_start_s": 19.6,
+      "original_duration_s": 3.8,
+      "voiceover": {
+        "file": "voiceover/SC-08.wav",
+        "start_s": 20,
+        "duration_s": 3.371
+      }
+    },
+    {
+      "id": "SC-09",
+      "flow_step": "F1.S8",
+      "screen": "SCR-dashboard",
+      "state": "default",
+      "start_s": 23.7,
+      "duration_s": 1,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "click",
+          "target": "tile-capture-weight"
+        }
+      ],
+      "caption": "Capture Weight",
+      "original_start_s": 23.4,
+      "original_duration_s": 1,
+      "voiceover": null
+    },
+    {
+      "id": "SC-10",
+      "flow_step": "F1.S9",
+      "screen": "SCR-capture-weight",
+      "state": "default",
+      "start_s": 24.7,
+      "duration_s": 2.5,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.4
+      },
+      "narration": "A photo of the scale.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "move",
+          "target": "take-photo-btn"
+        },
+        {
+          "at_s": 0.5,
+          "type": "click",
+          "target": "take-photo-btn"
+        }
+      ],
+      "caption": "Snap a photo of your scale",
+      "original_start_s": 24.4,
+      "original_duration_s": 2.5,
+      "voiceover": {
+        "file": "voiceover/SC-10.wav",
+        "start_s": 25,
+        "duration_s": 1.216
+      }
+    },
+    {
+      "id": "SC-11",
+      "flow_step": "F1.S10",
+      "screen": "SCR-capture-weight-confirm",
+      "state": "default",
+      "start_s": 27.2,
+      "duration_s": 2.6,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "Confirm the reading, then save.",
+      "actions": [
+        {
+          "at_s": 0.2,
+          "type": "highlight",
+          "target": "weight-input",
+          "duration_s": 1
+        },
+        {
+          "at_s": 1.4,
+          "type": "click",
+          "target": "save-weight-btn"
+        }
+      ],
+      "caption": "Confirm the reading",
+      "original_start_s": 26.9,
+      "original_duration_s": 2.6,
+      "voiceover": {
+        "file": "voiceover/SC-11.wav",
+        "start_s": 27.5,
+        "duration_s": 1.857
+      }
+    },
+    {
+      "id": "SC-12",
+      "flow_step": "F1.S11",
+      "screen": "SCR-capture-weight-saved",
+      "state": "default",
+      "start_s": 29.8,
+      "duration_s": 1,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "click",
+          "target": "weight-back-btn"
+        }
+      ],
+      "caption": "Weight logged",
+      "original_start_s": 29.5,
+      "original_duration_s": 1,
+      "voiceover": null
+    },
+    {
+      "id": "SC-13",
+      "flow_step": "F1.S12",
+      "screen": "SCR-dashboard",
+      "state": "default",
+      "start_s": 30.8,
+      "duration_s": 1,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "click",
+          "target": "tile-reports"
+        }
+      ],
+      "caption": "Reports",
+      "original_start_s": 30.5,
+      "original_duration_s": 1,
+      "voiceover": null
+    },
+    {
+      "id": "SC-14",
+      "flow_step": "F1.S13",
+      "screen": "SCR-reports-graph",
+      "state": "default",
+      "start_s": 31.8,
+      "duration_s": 3.8,
+      "transition_in": {
+        "type": "fade",
+        "duration_s": 0.4
+      },
+      "narration": "Reports chart weight against calories in and burnt.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "click",
+          "target": "range-month"
+        },
+        {
+          "at_s": 1.2,
+          "type": "highlight",
+          "target": "weight-chart",
+          "duration_s": 1.8
+        }
+      ],
+      "caption": "Weight against calories in and out",
+      "original_start_s": 31.5,
+      "original_duration_s": 3.8,
+      "voiceover": {
+        "file": "voiceover/SC-14.wav",
+        "start_s": 32.1,
+        "duration_s": 2.62
+      }
+    },
+    {
+      "id": "SC-15",
+      "flow_step": null,
+      "screen": "SCR-reports-graph",
+      "state": "default",
+      "start_s": 35.6,
+      "duration_s": 3,
+      "transition_in": {
+        "type": "cut",
+        "duration_s": 0
+      },
+      "narration": "I built it end to end.",
+      "actions": [
+        {
+          "at_s": 0.3,
+          "type": "highlight",
+          "target": "latest-weight-pill",
+          "duration_s": 1.2
+        }
+      ],
+      "caption": "Built end to end",
+      "original_start_s": 35.3,
+      "original_duration_s": 3,
+      "voiceover": {
+        "file": "voiceover/SC-15.wav",
+        "start_s": 35.9,
+        "duration_s": 1.146
+      }
+    }
+  ]
+}
